@@ -1,4 +1,4 @@
-/* Generated on: Sat Nov 05 2022 15:08:10 GMT+0000 (Coordinated Universal Time) */
+/* Generated on: Sat Nov 05 2022 17:33:18 GMT+0000 (Coordinated Universal Time) */
 /* ==========================================================================
    normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css 
    ========================================================================== */
@@ -21,4 +21,38 @@
 .button {
   margin-top: 20px;
   margin-left: 20px;
+}
+
+.div-block-2 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 500px;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  background-color: #bbb;
+}
+
+.div-block-3 {
+  display: block;
+  width: auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 40px;
+  background-color: #e4e4e4;
+}
+
+.image {
+  width: 300px;
+}
+
+.text-block {
+  margin-bottom: 20px;
 }
