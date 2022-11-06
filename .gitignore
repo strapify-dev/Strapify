@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+#everything in folder except .gitkeep
+./server/output/*
+!.gitkeep
