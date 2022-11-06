@@ -118,3 +118,5 @@ Ensure that the Strapi server is running and the desired content has been added.
 
   - give the body data like so
   ![body](https://user-images.githubusercontent.com/113685729/200182228-9f9dcec9-f5be-4b3a-8012-65202beecaff.png)
+  
+the extracted website can then be found in server/output
