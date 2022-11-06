@@ -91,7 +91,7 @@ The Civiconnect strapify application will use these data attributes to inject St
     npm run bundlehot
     ```
     
-#### Frontned UI
+#### Frontend UI
   - cd into client folder and run the following commands
     ```shell
     npm install
@@ -104,7 +104,9 @@ The Civiconnect strapify application will use these data attributes to inject St
 ## Usage
 Ensure that the Strapi server is running and the desired content has been added. Also ensure that the custom data attributes have been created in the Webflow project.
 
-### frontend GUI
+The website can be built with either the frontend UI or by making a POST request.
+
+### frontend UI
  - ensure the frontend GUI has been started
  - enter the url and click "Scrape"
  - the extracted website can then be found in server/output
@@ -113,7 +115,7 @@ Ensure that the Strapi server is running and the desired content has been added.
 ![frontend-gui](https://user-images.githubusercontent.com/113685729/200182129-25880491-7126-4070-b852-248fc312ecfa.png)
 
 ### postman
-  - make a POST request containing the webflow url to http://localhost:3000/test
+  - make a POST request containing the webflow url to http://localhost:3000/api/test
 
   - give the content type header like so
   ![header](https://user-images.githubusercontent.com/113685729/200182226-32a0c6b7-87ee-4b08-be60-b3f77585f54a.png)
