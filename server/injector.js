@@ -1,20 +1,31 @@
 import strapiRequest from "./util/strapiRequest";
 
-//IMPORTANT!
-//in here we need to figure out how to determin what strapiData represents
-//for now we cheese it
-function modifyElmWithStrapiData(elm, strapiData) {
-	console.log(elm, strapiData)
+const this_script = document.currentScript;
+let strapi_api_url;
+if (this_script.hasAttribute("data-strapi-api-url")) {
+  strapi_api_url = this_script.attributes.getNamedItem("data-strapi-api-url").value;
+} else {
+  strapi_api_url = "http://localhost:1337";
+}
 
-	//if the strapi data is a string, then we can just set the innerHTML of the element to the strapi data 
-	if (typeof strapiData === 'string' || strapiData instanceof String) {
-		elm.innerHTML = strapiData
-	} 
-	//quick and dumb way to check if the strapiData is an image
-	else if(strapiData.data && strapiData.data.attributes && strapiData.data.attributes.alternativeText) {
-		console.log("img")
-		elm.src = `http://localhost:1337${strapiData.data.attributes.url}`
-		elm.alt = strapiData.data.attributes.alternativeText
+//IMPORTANT!
+//in here we need to figure out how to determine what strapiData represents
+function modifyElmWithStrapiData(elm, strapiData) {
+	switch (true) {
+		case elm instanceof HTMLParagraphElement:
+			elm.innerHTML = strapiData;
+			break;
+		case elm instanceof HTMLHeadingElement:
+			elm.innerHTML = strapiData;
+			break;
+		case elm instanceof HTMLImageElement:
+			elm.removeAttribute("srcset");
+			elm.removeAttribute("sizes");
+			elm.src = `${strapi_api_url}${strapiData.data.attributes.url}`; 
+			elm.alt = strapiData.data.attributes.alternativeText;
+			break;
+		default:
+			throw new Error("Strapify Error: Attempted to use an unsupported element type - " + elm.tagName);
 	}
 }
 
@@ -28,7 +39,8 @@ collectionElms.forEach(async (collectionElm) => {
 	collectionElm.children[0].remove()
 
 	//get the collection item data from strapi
-	const collectionData = await strapiRequest(collectionElm.getAttribute("strapi-collection"), "?populate=*")
+	const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
+	const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
 
 	//loop through the collection data and add it to a new clone of the template item elm
 	for (let i = 0; i < collectionData.length; i++) {
@@ -51,4 +63,4 @@ collectionElms.forEach(async (collectionElm) => {
 	}
 })
 
-
+export { strapi_api_url };
