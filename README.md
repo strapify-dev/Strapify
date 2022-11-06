@@ -1,5 +1,7 @@
 # Civiconnect Strapify
 
+The Civiconnect Strapify project is an automated solution for webflow site exporting with injected code for Strapi CMS compatibility.
+
 ## Marking Webflow elements for Strapi injection
 Suppose we have a strapi collection type called Cards with the following fields: 
   - Header (text)
