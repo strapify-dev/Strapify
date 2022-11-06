@@ -1,4 +1,4 @@
-/* Generated on: Sat Nov 05 2022 17:33:18 GMT+0000 (Coordinated Universal Time) */
+/* Generated on: Sun Nov 06 2022 14:35:26 GMT+0000 (Coordinated Universal Time) */
 /* ==========================================================================
    normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css 
    ========================================================================== */
@@ -12,47 +12,52 @@
 /* ==========================================================================
    Start of custom Webflow CSS
    ========================================================================== */
-.div-block {
-  width: 200px;
+.div-test {
+  width: 100px;
   height: 100px;
-  background-color: #27af27;
+  background-color: #ae4fb1;
 }
 
-.button {
-  margin-top: 20px;
-  margin-left: 20px;
-}
-
-.div-block-2 {
+.cards {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  height: 500px;
+  width: 100vw;
+  height: 100vh;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  grid-column-gap: 32px;
+  grid-row-gap: 32px;
+  background-color: #271212;
+}
+
+.card {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 200px;
+  height: auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  background-color: #bbb;
-}
-
-.div-block-3 {
-  display: block;
-  width: auto;
-  margin-right: auto;
-  margin-left: auto;
-  padding: 40px;
-  background-color: #e4e4e4;
-}
-
-.image {
-  width: 300px;
-}
-
-.text-block {
-  margin-bottom: 20px;
+  background-color: #fff;
 }

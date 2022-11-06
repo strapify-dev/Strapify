@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const strapiRequest = async (slug) => {
+const strapiRequest = async (slug, queryString) => {
   try {
-    const response = await axios.get(`http://localhost:1337/api/${slug}`);
+    const response = await axios.get(`http://localhost:1337/api/${slug}${queryString ? queryString : ""}`);
     return response.data.data;
   } catch (err) {
     throw new Error(`Strapi Request Failed: ${err}`);

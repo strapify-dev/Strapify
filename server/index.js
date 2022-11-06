@@ -276,7 +276,7 @@ function writeFileReadyContent(fileReadyContent, folderPath) {
 
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
 app.post("/api/test", async (req, res) => {
-  const siteData = await extractSiteData("https://ray-test-site.webflow.io/");
+  const siteData = await extractSiteData("https://civiconnect-test.webflow.io/");
   const fileReadyContent = convertSiteDataToFileReadyContent(siteData);
 
   writeFileReadyContent(fileReadyContent, "output");
