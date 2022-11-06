@@ -51,9 +51,35 @@
     ```shell
     npm run buildhot
     ```
+  - and start the webpack dev server in another terminal
+    ```shell
+    npm run bundlehot
+    ```
     
 #### Frontned UI
-  - todo
+  - cd into client folder and run the following commands
+    ```shell
+    npm install
+    ```
+    ```shell
+    npm run dev
+    ```
+  - the app will be available on localhost:8080
   
 ## Usage
-  - todo
+### frontend GUI
+ - ensure the frontend GUI has been started
+ - enter the url and click "Scrape"
+ - the extracted website can then be found in server/output
+ - if the node server is running you can visit the site at localhost:3000/
+ 
+![frontend-gui](https://user-images.githubusercontent.com/113685729/200182129-25880491-7126-4070-b852-248fc312ecfa.png)
+
+### postman
+  - make a POST request containing the webflow url to http://localhost:3000/test
+
+  - give the content type header like so
+  ![header](https://user-images.githubusercontent.com/113685729/200182226-32a0c6b7-87ee-4b08-be60-b3f77585f54a.png)
+
+  - give the body data like so
+  ![body](https://user-images.githubusercontent.com/113685729/200182228-9f9dcec9-f5be-4b3a-8012-65202beecaff.png)
