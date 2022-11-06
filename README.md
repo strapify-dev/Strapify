@@ -3,6 +3,8 @@
 ## How to Run
 #### nvm
   - you must install nvm since strapi requries Node version 16 or lower but the server requires a much newer version to use the fetch api
+    - Windows: https://github.com/coreybutler/nvm-windows
+    - Linux: https://github.com/nvm-sh/nvm
 
 #### Strapi
 
