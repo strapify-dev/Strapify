@@ -273,6 +273,7 @@ function writeFileReadyContent(fileReadyContent, folderPath) {
 
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
 app.post("/api/test", async (req, res) => {
+	//need to update this to check url validity
 	const siteData = await extractSiteData(req.body.webflowURL);
 	const fileReadyContent = convertSiteDataToFileReadyContent(siteData);
 
