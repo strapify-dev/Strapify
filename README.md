@@ -84,7 +84,7 @@ The Civiconnect strapify application will use these data attributes to inject St
     ```shell
     npm run buildhot
     ```
-  - and start the webpack dev server in another terminal
+  - and start webpack with hot realoding in another terminal (used to bundle the injector.js script) with
     ```shell
     npm run bundlehot
     ```
