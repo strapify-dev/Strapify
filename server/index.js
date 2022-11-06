@@ -230,7 +230,7 @@ function writeFileReadyContent(fileReadyContent, folderPath) {
   //delete everything in the folder
   fs.readdirSync(folderPath).forEach((file) => {
     console.log(file);
-    if (file !== "main.js") {
+    if (file !== "main.js" && file !== ".gitkeep") {
       fs.unlinkSync(path.join(folderPath, file));
     }
   });
