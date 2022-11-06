@@ -1,4 +1,4 @@
-# webflow-to-svelte (working name)
+# Civiconnect Strapify
 
 ## Marking Webflow elements for Strapi injection
 Suppose we have a strapi collection type called Cards with the following fields: 
