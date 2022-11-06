@@ -1,8 +1,4 @@
 <script>
-	import "/public/head-script0.js"
-import "/public/body-script0.js"
-import "/public/body-script1.js"
-import "/public/head-style0.css"
     import { onMount } from "svelte"
 
     async function fetchPost() {
@@ -27,21 +23,16 @@ import "/public/head-style0.css"
     }
 
     onMount(() => {
-        fetchPost()
+       // fetchPost()
     })
-
-    export let name
 </script>
 
 <div>
-	{@html "<script src=/public/body-script0.js></script>"}
-	{@html "<script src=/public/body-script1.js></script>"}
-    <h1>Hello {name}!</h1>
+    <h1>Hello!</h1>
     <p>
         Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
         how to build Svelte apps.
     </p>
-	<div class="div-block"></div><a data-w-id="14ad43d4-295c-6378-5c80-4489641ad3bd" style="opacity:0" href="/#" class="button w-button">Button Text</a>
 </div>
 
 <style>
