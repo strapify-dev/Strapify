@@ -48,8 +48,20 @@ module.exports = {
 				resolve: {
 					fullySpecified: false
 				}
+			},
+			{
+				test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/i,
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							name: '[name].[ext]',
+							outputPath: 'fonts/'
+						}
+					}
+				]
 			}
-		]
+		],
 	},
 	mode,
 	plugins: [
