@@ -387,6 +387,11 @@ app.post("/api/test", async (req, res) => {
 	});
 });
 
+app.get('/api/download', function (req, res) {
+	const file = `${__dirname}/output/download/civiconnecttestwebflowio.zip`;
+	res.download(file);
+});
+
 app.get("/*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/output/index.html"));
 });
