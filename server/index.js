@@ -5,6 +5,7 @@ const path = require("path");
 const htmlParser = require("node-html-parser");
 const port = process.env.PORT || 3000;
 const fs = require("fs");
+const archiver = require('archiver');
 
 /*-------------------------------------------------------- express setup --------------------------------------------------------*/
 const app = express();
@@ -271,6 +272,35 @@ function writeFileReadyContent(fileReadyContent, folderPath) {
 	}
 }
 
+function archiveFolder(folderPath, archivePath, archiveName) {
+	//create the archive folder if it doesn't exist
+	if (!fs.existsSync(archivePath)) {
+		fs.mkdirSync(archivePath);
+	}
+
+	//delete everything in the archive folder
+	fs.readdirSync(archivePath).forEach((file) => {
+		fs.unlinkSync(path.join(archivePath, file));
+	});
+
+	//create the archive
+	const archive = archiver("zip", {
+		zlib: { level: 9 }, // Sets the compression level.
+	});
+
+	//create a write stream
+	const output = fs.createWriteStream(path.join(archivePath, `${archiveName}.zip`));
+
+	//pipe the archive to the output
+	archive.pipe(output);
+
+	//append the folder to the archive
+	archive.directory(folderPath, false);
+
+	//finalize the archive
+	archive.finalize();
+}
+
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
 app.post("/api/test", async (req, res) => {
 	//check url validity
@@ -330,9 +360,28 @@ app.post("/api/test", async (req, res) => {
 		);
 	} catch (error) {
 		res.status(500).send("failed to copy bundle/main.js to output folder.");
+		return;
 	}
 
+	//archive the output folder
+	try {
+		archiveFolder(`output/${outputFolder}`, `output/download`, outputFolder);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("error archiving generated site files.");
+		return;
+	}
 
+	//delete the output folder
+	try {
+		fs.rmdirSync(`output/${outputFolder}`, { recursive: true });
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("error deleting generated site files.");
+		return;
+	}
+
+	//return success message and the download link
 	res.status(200).json({
 		message: `successfully generated static website with strapi injection from ${req.body.webflowURL}`,
 	});
