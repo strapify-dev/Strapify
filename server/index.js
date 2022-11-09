@@ -273,13 +273,69 @@ function writeFileReadyContent(fileReadyContent, folderPath) {
 
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
 app.post("/api/test", async (req, res) => {
-	//need to update this to check url validity
-	const siteData = await extractSiteData(req.body.webflowURL);
-	const fileReadyContent = convertSiteDataToFileReadyContent(siteData);
+	//check url validity
+	const urlExist = (await import("url-exist")).default;
+	const validURL = await urlExist(req.body.webflowURL);
 
-	writeFileReadyContent(fileReadyContent, "output");
+	//if the url is invalid return an error
+	if (!validURL) {
+		res.status(400).send("invalid webflow url given.");
+		return;
+	}
 
-	res.status(200).send("post works: " + JSON.stringify(req.body));
+	//collect the webflow site data and convert it to a file ready content
+	let siteData
+	let fileReadyContent
+
+	//try to collect the webflow site data
+	try {
+		siteData = await extractSiteData(req.body.webflowURL);
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("error extracting site data");
+		return;
+	}
+
+	//try to convert the webflow site data to a file ready content
+	try {
+		fileReadyContent = convertSiteDataToFileReadyContent(siteData);
+	} catch (error) {
+		console.log(error)
+		res.status(500).send("error converting site data to file ready content");
+		return;
+	}
+
+	//generate and write site files
+	let outputFolder = req.body.webflowURL.replace(/(^\w+:|^)\/\//, "");
+	outputFolder = outputFolder.replace(/[^a-z0-9]/gi, "");
+
+	try {
+		writeFileReadyContent(fileReadyContent, `output/${outputFolder}`);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("error writing files on server.");
+		return;
+	}
+
+	//if bundle/main.js doesn't exist, return an error
+	if (!fs.existsSync("bundle/main.js")) {
+		res.status(500).send("could not find bundle/main.js. Please bundle injector.js on the server.");
+	}
+
+	//copy the main.js file from the bundle folder to the output folder
+	try {
+		fs.copyFileSync(
+			path.join(__dirname, "bundle", "main.js"),
+			path.join(`output/${outputFolder}`, "main.js")
+		);
+	} catch (error) {
+		res.status(500).send("failed to copy bundle/main.js to output folder.");
+	}
+
+
+	res.status(200).json({
+		message: `successfully generated static website with strapi injection from ${req.body.webflowURL}`,
+	});
 });
 
 app.get("/*", (req, res) => {

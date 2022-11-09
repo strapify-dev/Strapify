@@ -7,7 +7,7 @@
     "start": "node index",
     "starthot": "npx nodemon index",
     "bundle": "webpack",
-	"bundlehot": "webpack --watch"
+    "bundlehot": "webpack --watch"
   },
   "author": "Austin Goodman",
   "license": "UNLICENSED",
@@ -19,7 +19,8 @@
     "express-flash": "0.0.2",
     "express-session": "^1.17.3",
     "mongoose": "^6.3.3",
-    "node-html-parser": "^6.1.1"
+    "node-html-parser": "^6.1.1",
+    "url-exist": "^3.0.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.19",
