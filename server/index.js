@@ -384,11 +384,22 @@ app.post("/api/test", async (req, res) => {
 	//return success message and the download link
 	res.status(200).json({
 		message: `successfully generated static website with strapi injection from ${req.body.webflowURL}`,
+		downloadURL: `http://localhost:3000/api/download?filename=${outputFolder}.zip`,
 	});
 });
 
 app.get('/api/download', function (req, res) {
-	const file = `${__dirname}/output/download/civiconnecttestwebflowio.zip`;
+	const fileName = req.query.filename;
+
+	console.log(fileName)
+
+	//if the file doesn't exist, return an error
+	if (!fs.existsSync(`output/download/${fileName}`)) {
+		res.status(404).send("file not found");
+		return;
+	}
+
+	const file = `${__dirname}/output/download/${fileName}`;
 	res.download(file);
 });
 
