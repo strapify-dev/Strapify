@@ -150,7 +150,7 @@ async function extractSiteData(url) {
 	};
 }
 
-function convertSiteDataToFileReadyContent(siteData) {
+function convertSiteDataToFileReadyContent(siteData, strapiURL) {
 	//remove the style elements from the head and create a new link tag for each style
 	for (let i = 0; i < siteData.headStylesData.length; i++) {
 		const parentNode = siteData.headStylesData[i].element.parentNode;
@@ -196,7 +196,7 @@ function convertSiteDataToFileReadyContent(siteData) {
 	//add script
 	siteData.headElement.insertAdjacentHTML(
 		"beforeend",
-		`<script src=./main.js defer>${""}</script>`
+		`<script src=./main.js defer data-strapi-api-url="${strapiURL}">${""}</script>`
 	);
 
 	//return the converted data
@@ -305,12 +305,21 @@ function archiveFolder(folderPath, archivePath, archiveName) {
 app.post("/api/test", async (req, res) => {
 	//check url validity
 	const urlExist = (await import("url-exist")).default;
-	const validURL = await urlExist(req.body.webflowURL);
 
-	//if the url is invalid return an error
-	if (!validURL) {
-		res.status(400).send("invalid webflow url given.");
+	//if the webflow url is invalid return an error
+	const validWebflowURL = await urlExist(req.body.webflowURL);
+	if (!validWebflowURL) {
+		res.status(400).send(`invalid webflow url given. Could not find site at ${req.body.webflowURL}`);
 		return;
+	}
+
+	//if the strapi url is invalid return an error
+	if (req.body.validateStrapiURL !== false) {
+		const validStrapiURL = await urlExist(req.body.strapiURL);
+		if (!validStrapiURL) {
+			res.status(400).send(`invalid strapi url given. Could not  find ${req.body.strapiURL}. If strapi is not running, add validateStrapiURL: false to the request body`);
+			return;
+		}
 	}
 
 	//collect the webflow site data and convert it to a file ready content
@@ -328,7 +337,7 @@ app.post("/api/test", async (req, res) => {
 
 	//try to convert the webflow site data to a file ready content
 	try {
-		fileReadyContent = convertSiteDataToFileReadyContent(siteData);
+		fileReadyContent = convertSiteDataToFileReadyContent(siteData, req.body.strapiURL);
 	} catch (error) {
 		console.log(error)
 		res.status(500).send("error converting site data to file ready content");
@@ -374,7 +383,7 @@ app.post("/api/test", async (req, res) => {
 
 	//delete the output folder
 	try {
-		fs.rmdirSync(`output/${outputFolder}`, { recursive: true });
+		//	fs.rmdirSync(`output/${outputFolder}`, { recursive: true });
 	} catch (error) {
 		console.log(error);
 		res.status(500).send("error deleting generated site files.");
@@ -391,14 +400,13 @@ app.post("/api/test", async (req, res) => {
 app.get('/api/download', function (req, res) {
 	const fileName = req.query.filename;
 
-	console.log(fileName)
-
 	//if the file doesn't exist, return an error
 	if (!fs.existsSync(`output/download/${fileName}`)) {
 		res.status(404).send("file not found");
 		return;
 	}
 
+	//send the file
 	const file = `${__dirname}/output/download/${fileName}`;
 	res.download(file);
 });
