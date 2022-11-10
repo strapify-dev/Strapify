@@ -2,8 +2,9 @@
     import CiviconnectSVG from "./CiviconnectSVG.svelte"
     import Header from "./Header.svelte"
     let webflowURL
-	let strapiURL = "http://localhost:1337"
+    let strapiURL = "http://localhost:1337"
     let successMessage = "waiting for url"
+    let downloadURL = ""
 
     async function fetchPost(url) {
         const postResponse = await fetch("/api/test", {
@@ -13,20 +14,25 @@
             },
             body: JSON.stringify({
                 webflowURL: url,
+                strapiURL: strapiURL,
             }),
         })
 
         if (!postResponse) {
             console.error("failed to post to server")
-            successMessage = "failed to post url"
+            successMessage = `failed to post url: no response from server`
+            return
         }
 
         if (postResponse.ok) {
-            console.log(await postResponse.text())
-            console.log(postResponse)
+            const responseData = await postResponse.json()
+            console.log(responseData)
             successMessage = "webflow url successfully downloaded"
+            downloadURL = responseData.downloadURL
         } else {
-            successMessage = "server failure"
+            const responseText = await postResponse.text()
+            console.log(responseText)
+            successMessage = `server failure: ${postResponse.status} ${postResponse.statusText} ${responseText}`
         }
     }
 
@@ -42,13 +48,27 @@
 </script>
 
 <div class="container">
-    <Header bind:webflowURL bind:strapiURL/>
+    <Header bind:webflowURL bind:strapiURL />
 
     <div class="content-panel">
-        <button class="strapify-button" on:click={onScrape}>STRAPIFY</button>
+        <div class="button-container">
+            <button class="strapify-button" on:click={onScrape}>
+                STRAPIFY
+            </button>
+            {#if downloadURL}
+                <a
+                    class="strapify-link"
+                    href={downloadURL}
+                    download="webflow-site.zip">Download</a
+                >
+            {/if}
+        </div>
 
         <div class="iframe-container">
-            <p>{successMessage}</p>
+            {#if successMessage !== "waiting for url" && successMessage !== "webflow url successfully downloaded"}
+                <p>{successMessage}</p>
+            {/if}
+
             {#if successMessage === "webflow url successfully downloaded"}
                 <iframe
                     src="http://localhost:3000/"
@@ -83,8 +103,8 @@
     }
 
     .content-panel {
-		display: flex;
-		flex-direction: column;
+        display: flex;
+        flex-direction: column;
         width: 100%;
         height: 100%;
         background: var(--color-light-blue);
@@ -101,14 +121,25 @@
     }
 
     .strapify-button {
-		margin-left: 32px;
-		margin-top: 32px;
-		width: min-content;
+        margin-left: 32px;
+        margin-top: 32px;
+        width: min-content;
         padding: 4px 32px;
         font-size: 16px;
         font-weight: 800;
         color: var(--color-white);
         background: var(--color-yellow);
+    }
+
+    .strapify-link {
+        margin-left: 32px;
+        margin-top: 32px;
+        width: min-content;
+        padding: 4px 32px;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--color-white);
+        background: var(--color-grey);
     }
 
     .iframe-container {
