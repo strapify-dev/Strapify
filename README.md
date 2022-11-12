@@ -2,6 +2,30 @@
 
 The Civiconnect Strapify project is an automated solution for webflow site exporting with injected code for Strapi CMS compatibility.
 
+## Data Attribute Syntax (WIP)
+
+### Core Attributes:
+| Attribute Name | Example Value | Max Allowed Per Element | Description |
+| --- | --- | --- | --- |
+| strapi&#x2011;collection&#x2011;name | book | 1 | Added to a container to specify that child elements will use data from the given collection's fields. |
+| strapi&#x2011;field&#x2011;name | author | inf | Specifies a field (in the collection specified on a parent with strapi-collection-name) from which data will be pulled. By default, strapify will infer what should be done with the data based on the element type and the Strapi field type. Text elements would have their inner content set whereas image elements would have the src set to a link to an image. |
+| strapi&#x2011;into | alt_text&nbsp;->&nbsp;alt | inf | Specifies that the Strapi data (alt_text), should be given as a value to an html attribute (alt). |
+
+### Array and Component Attributes:
+| Attribute Name | Example Value | Max Allowed Per Element | Description |
+| --- | --- | --- | --- |
+| strapi&#x2011;field&#x2011;name | component_name.field_name | inf | See strapi-field-name above. Uses a field of a component rather than a top level field. |
+| strapi&#x2011;field&#x2011;name | field_name[0] | inf | See strapi-field-name above. Uses an element from an field with an array (media type for example) at a specific index (0 in the example). |
+| strapi&#x2011;field&#x2011;name | field_name[] | inf | See strapi-field-name immediately above. When no index is given to the array, the element with this attribute will be duplicated with injected data for each element in the array. |
+| strapi&#x2011;into | component_name.field_name&nbsp;->&nbsp;alt | inf | Specifies that the Strapi data from a component field should be given as a value to an html attribute (alt). |
+| strapi&#x2011;into | field_name[0]&nbsp;->&nbsp;alt | inf | Specifies that the Strapi data at a specific index for a strapi data array should be given as a value to an html attribute (alt). |
+| strapi&#x2011;into | field_name[]&nbsp;->&nbsp;alt | inf | Used to apply strapi-into with elements that are duplicated for each array element in a strapi field of type array. Must be used in conjunction with strapi-field-name with the empty array index as shown above. |
+
+### strapi-into reserved keywords (WIP):
+- TEXT (strapi-into="field_name -> TEXT")
+- IMAGE (strapi-into="field_name -> IMAGE")
+TODO
+
 ## Marking Webflow elements for Strapi injection
 Suppose we have a strapi collection type called Cards with the following fields: 
   - Header (text)
