@@ -38,10 +38,20 @@ const collectionElms = document.body.querySelectorAll("[strapi-collection]");
 
 //for each collection element 
 collectionElms.forEach(async (collectionElm) => {
-	//clone the template item elm and remove it from the dom
+	//clone the template item elm
 	const itemTemplateElm = collectionElm.children[0].cloneNode(true)
-	collectionElm.children[0].remove()
 
+	//loop through collectionElm's children and delete any that themselves have children with the strapi-content attribute
+	Array.from(collectionElm.children).forEach((child) => {
+		let removeChild = child.querySelectorAll("[strapi-content]").length > 0
+
+		console.log(child, removeChild)
+
+		if (removeChild) {
+			collectionElm.removeChild(child)
+		}
+	})
+				
 	//get the collection item data from strapi
 	const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
 	const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
