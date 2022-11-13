@@ -5,6 +5,7 @@
     let strapiURL = "http://localhost:1337"
     let successMessage = "waiting for url"
     let downloadURL = ""
+    let previewURL = ""
 
     async function fetchPost(url) {
         const postResponse = await fetch("/api/test", {
@@ -26,18 +27,19 @@
 
         if (postResponse.ok) {
             const responseData = await postResponse.json()
-            console.log(responseData)
+            //   console.log(responseData)
             successMessage = "webflow url successfully downloaded"
+            previewURL = responseData.previewURL
             downloadURL = responseData.downloadURL
+            console.log(previewURL)
         } else {
             const responseText = await postResponse.text()
-            console.log(responseText)
+            //   console.log(responseText)
             successMessage = `server failure: ${postResponse.status} ${postResponse.statusText} ${responseText}`
         }
     }
 
     function onScrape() {
-        console.log(webflowURL)
         if (!webflowURL) {
             alert("Please enter a URL")
         } else {
@@ -65,15 +67,12 @@
         </div>
 
         <div class="iframe-container">
-            {#if successMessage !== "waiting for url" && successMessage !== "webflow url successfully downloaded"}
+            {#if successMessage && successMessage !== "waiting for url" && successMessage !== "webflow url successfully downloaded"}
                 <p>{successMessage}</p>
             {/if}
 
             {#if successMessage === "webflow url successfully downloaded"}
-                <iframe
-                    src="http://localhost:3000/"
-                    title="downloaded preview"
-                />
+                <iframe src={previewURL} title="downloaded preview" />
             {/if}
         </div>
     </div>

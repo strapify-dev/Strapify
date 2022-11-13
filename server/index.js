@@ -393,6 +393,7 @@ app.post("/api/test", async (req, res) => {
 	//return success message and the download link
 	res.status(200).json({
 		message: `successfully generated static website with strapi injection from ${req.body.webflowURL}`,
+		previewURL: `http://localhost:3000/api/preview/${outputFolder}/index.html`,
 		downloadURL: `http://localhost:3000/api/download?filename=${outputFolder}.zip`,
 	});
 });
@@ -411,9 +412,29 @@ app.get('/api/download', function (req, res) {
 	res.download(file);
 });
 
-app.get("/*", (req, res) => {
-	res.sendFile(path.join(__dirname, "/output/index.html"));
+//route to get the generated site
+app.get('/api/preview/:sitename/', function (req, res) {
+	const sitename = req.params.sitename;
+	
+	console.log(sitename)
+
+	res.sendFile(path.join(__dirname, `/output/${sitename}/index.html`));
 });
+
+//route to get static files reference index.html
+app.get('/api/preview/:sitename/:filename', function (req, res) {
+	const sitename = req.params.sitename;
+	const filename = req.params.filename;
+	
+	console.log(sitename)
+	console.log(filename)
+
+	res.sendFile(path.join(__dirname, `/output/${sitename}/${filename}`));
+});
+
+//  app.get("/*", (req, res) => {
+//  	res.sendFile(path.join(__dirname, "/output/index.html"));
+//  });
 
 app.listen(port, () => {
 	console.log(`Express app listening on port ${port}`);

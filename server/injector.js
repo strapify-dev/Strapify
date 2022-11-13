@@ -54,7 +54,7 @@ collectionElms.forEach(async (collectionElm) => {
 		fieldElms.forEach((fieldElm) => {
 			const fieldId = fieldElm.getAttribute("field-id");
 			const fieldValue = attributes[fieldId];
-			//fieldElm.innerHTML = fieldValue;
+			
 			modifyElmWithStrapiData(fieldElm, fieldValue);
 		});
 
