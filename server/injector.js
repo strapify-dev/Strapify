@@ -1,11 +1,12 @@
 import strapiRequest from "./util/strapiRequest";
+import { marked } from "marked";
 
 const this_script = document.currentScript;
 let strapi_api_url;
 if (this_script.hasAttribute("data-strapi-api-url")) {
-  strapi_api_url = this_script.attributes.getNamedItem("data-strapi-api-url").value;
+	strapi_api_url = this_script.attributes.getNamedItem("data-strapi-api-url").value;
 } else {
-  strapi_api_url = "http://localhost:1337";
+	strapi_api_url = "http://localhost:1337";
 }
 
 //IMPORTANT!
@@ -21,8 +22,11 @@ function modifyElmWithStrapiData(elm, strapiData) {
 		case elm instanceof HTMLImageElement:
 			elm.removeAttribute("srcset");
 			elm.removeAttribute("sizes");
-			elm.src = `${strapi_api_url}${strapiData.data.attributes.url}`; 
+			elm.src = `${strapi_api_url}${strapiData.data.attributes.url}`;
 			elm.alt = strapiData.data.attributes.alternativeText;
+			break;
+		case elm instanceof HTMLDivElement: //IMPORTANT! this is a hack for rich text. Need something more robust. Also need to sanitize
+			elm.innerHTML = marked.parse(`${strapiData}`);
 			break;
 		default:
 			throw new Error("Strapify Error: Attempted to use an unsupported element type - " + elm.tagName);
@@ -48,13 +52,13 @@ collectionElms.forEach(async (collectionElm) => {
 		const itemElm = itemTemplateElm.cloneNode(true);
 
 		//find all the field elements in the item elm
-		const fieldElms = itemElm.querySelectorAll("[field-id]");
+		const fieldElms = itemElm.querySelectorAll("[strapi-content]");
 
 		//loop through the field elements and set the inner html to the field value from the collection data
 		fieldElms.forEach((fieldElm) => {
-			const fieldId = fieldElm.getAttribute("field-id");
+			const fieldId = fieldElm.getAttribute("strapi-content");
 			const fieldValue = attributes[fieldId];
-			
+
 			modifyElmWithStrapiData(fieldElm, fieldValue);
 		});
 
