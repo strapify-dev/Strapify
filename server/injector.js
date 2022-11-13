@@ -72,6 +72,21 @@ collectionElms.forEach(async (collectionElm) => {
 			modifyElmWithStrapiData(fieldElm, fieldValue);
 		});
 
+		//find all the elments with the strapi-class-replace attribute
+		const classReplaceElms = itemElm.querySelectorAll("[strapi-class-replace]");
+
+		//loop through the class replace elements and replace the class with the value from the collection data
+		classReplaceElms.forEach((classReplaceElm) => {
+			const classReplaceData = classReplaceElm.getAttribute("strapi-class-replace");
+
+			const classToReplace = classReplaceData.split(",")[0].trim();
+			const classReplaceValue = attributes[classReplaceData.split(",")[1].trim()];
+
+			classReplaceElm.classList.remove(classToReplace);
+			classReplaceElm.classList.add(classReplaceValue);
+		})
+			
+
 		//add the item elm to the collection elm
 		collectionElm.appendChild(itemElm);
 	}
