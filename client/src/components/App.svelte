@@ -1,8 +1,9 @@
 <script>
+    import { onMount } from "svelte"
     import CiviconnectSVG from "./CiviconnectSVG.svelte"
     import Header from "./Header.svelte"
-    let webflowURL
-    let strapiURL = "http://localhost:1337"
+    let webflowURL 
+    let strapiURL 
     let successMessage = "waiting for url"
     let downloadURL = ""
     let previewURL = ""
@@ -47,6 +48,32 @@
             successMessage = "working..."
         }
     }
+
+    onMount(async () => {
+        //check local storage for strapiURL
+        const strapiURLFromStorage = localStorage.getItem("strapiURL")
+        if (strapiURLFromStorage) {
+            strapiURL = strapiURLFromStorage
+        }
+
+        //check local storage for webflowURL
+        const webflowURLFromStorage = localStorage.getItem("webflowURL")
+        if (webflowURLFromStorage) {
+            webflowURL = webflowURLFromStorage
+        }
+    })
+
+    $: /* save webflowURL */ {
+        if (webflowURL !== undefined) {
+            localStorage.setItem("webflowURL", webflowURL)
+        }
+    }
+
+	$: /* save strapiURL */ {
+		if (strapiURL  !== undefined) {
+			localStorage.setItem("strapiURL", strapiURL)
+		}
+	}
 </script>
 
 <div class="container">
@@ -151,5 +178,6 @@
     iframe {
         width: 100%;
         height: 100%;
+        box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
     }
 </style>
