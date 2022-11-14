@@ -9,6 +9,14 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	strapi_api_url = "http://localhost:1337";
 }
 
+const strapifyFieldAttributesDict = {
+	strapiField: "strapi-field",
+	strapiClassAdd: "strapi-class-add",
+	strapiClassReplace: "strapi-class-replace",
+	strapiConditionalClass: "strapi-conditional-class",
+	strapiInto: "strapi-into"
+}
+
 //IMPORTANT!
 //in here we need to figure out how to determine what strapiData represents
 function modifyElmWithStrapiData(elm, strapiData) {
@@ -17,6 +25,9 @@ function modifyElmWithStrapiData(elm, strapiData) {
 			elm.innerHTML = strapiData;
 			break;
 		case elm instanceof HTMLHeadingElement:
+			elm.innerHTML = strapiData;
+			break;
+		case elm instanceof HTMLSpanElement:
 			elm.innerHTML = strapiData;
 			break;
 		case elm instanceof HTMLImageElement:
@@ -33,15 +44,31 @@ function modifyElmWithStrapiData(elm, strapiData) {
 	}
 }
 
+//find all elements with strapi-single-type attributes modify them with strapi data
+const singleTypeElms = document.querySelectorAll(`[strapi-single-type]`);
+
+singleTypeElms.forEach(async (singleTypeElm) => {
+	const attributeValue = singleTypeElm.getAttribute("strapi-single-type");
+
+	const split = attributeValue.split(".");
+	const singleTypeName = split[0];
+	const singleTypeFieldName = split[1];
+
+	const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
+	const fieldValue = strapiData.attributes[singleTypeFieldName];
+
+	modifyElmWithStrapiData(singleTypeElm, fieldValue);
+});
+
 //find all the elements with the strapi-collection attribute
 const collectionElms = document.body.querySelectorAll("[strapi-collection]");
 
 //for each collection element 
 collectionElms.forEach(async (collectionElm) => {
-	//clone the template item elm
-	const itemTemplateElm = collectionElm.children[0].cloneNode(true)
+	//clone the template elm
+	const templateElmBase = collectionElm.children[0].cloneNode(true)
 
-	//loop through collectionElm's children and delete any that themselves have children with the strapi-content attribute
+	//loop through collectionElm's children and delete any that themselves have children with the strapi-field attribute
 	Array.from(collectionElm.children).forEach((child) => {
 		let removeChild = child.querySelectorAll("[strapi-field]").length > 0
 
@@ -49,7 +76,7 @@ collectionElms.forEach(async (collectionElm) => {
 			collectionElm.removeChild(child)
 		}
 	})
-				
+
 	//get the collection item data from strapi
 	const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
 	const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
@@ -57,24 +84,26 @@ collectionElms.forEach(async (collectionElm) => {
 	//loop through the collection data and add it to a new clone of the template item elm
 	for (let i = 0; i < collectionData.length; i++) {
 		const { id, attributes } = collectionData[i];
-		const itemElm = itemTemplateElm.cloneNode(true);
+		const templateElm = templateElmBase.cloneNode(true);
 
-		//find all the field elements in the item elm
-		const fieldElms = itemElm.querySelectorAll("[strapi-field]");
+		//find elms using strapify attributes
+		let strapifyFieldElms = {}
+		for (let fieldAttribute in strapifyFieldAttributesDict) {
+			const fieldAttributeValue = strapifyFieldAttributesDict[fieldAttribute];
+
+			strapifyFieldElms[fieldAttribute] = templateElm.querySelectorAll(`[${fieldAttributeValue}]`);
+		}
 
 		//loop through the field elements and set the inner html to the field value from the collection data
-		fieldElms.forEach((fieldElm) => {
+		strapifyFieldElms.strapiField.forEach((fieldElm) => {
 			const fieldId = fieldElm.getAttribute("strapi-field");
 			const fieldValue = attributes[fieldId];
 
 			modifyElmWithStrapiData(fieldElm, fieldValue);
 		});
 
-		//find all the elments with the strapi-class-replace attribute
-		const classReplaceElms = itemElm.querySelectorAll("[strapi-class-replace]");
-
 		//loop through the class replace elements and replace the class with the value from the collection data
-		classReplaceElms.forEach((classReplaceElm) => {
+		strapifyFieldElms.strapiClassReplace.forEach((classReplaceElm) => {
 			const classReplaceData = classReplaceElm.getAttribute("strapi-class-replace");
 
 			const classToReplace = classReplaceData.split(",")[0].trim();
@@ -83,10 +112,9 @@ collectionElms.forEach(async (collectionElm) => {
 			classReplaceElm.classList.remove(classToReplace);
 			classReplaceElm.classList.add(classReplaceValue);
 		})
-			
 
 		//add the item elm to the collection elm
-		collectionElm.appendChild(itemElm);
+		collectionElm.appendChild(templateElm);
 	}
 })
 
