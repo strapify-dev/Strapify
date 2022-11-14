@@ -9,7 +9,7 @@
     let previewURL = ""
 
     async function fetchPost(url) {
-        const postResponse = await fetch("/api/test", {
+        const postResponse = await fetch("/api/strapify", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

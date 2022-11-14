@@ -302,7 +302,7 @@ function archiveFolder(folderPath, archivePath, archiveName) {
 }
 
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
-app.post("/api/test", async (req, res) => {
+app.post("/api/strapify", async (req, res) => {
 	//check url validity
 	const urlExist = (await import("url-exist")).default;
 
