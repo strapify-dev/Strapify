@@ -313,6 +313,24 @@ app.post("/api/test", async (req, res) => {
 		return;
 	}
 
+	//check if the sitemap url is valid
+	const sitemapURL = `${req.body.webflowURL}/sitemap.xml`.replace(/\/\//g, "/");
+	const validSitemapURL = await urlExist(sitemapURL);
+
+	//if the sitemapURL is valid, extract the page urls from it
+	const pageURLs = []
+	if (validSitemapURL) {
+		const sitemapResponse = await fetch(sitemapURL);
+		const sitemap = await sitemapResponse.text();
+
+		//find all the urls in the sitemap
+		const urlRegex = /<loc>(.*?)<\/loc>/g;
+		let urlMatch;
+		while ((urlMatch = urlRegex.exec(sitemap)) !== null) {
+			pageURLs.push(urlMatch[1]);
+		}
+	}
+
 	//if the strapi url is invalid return an error
 	if (req.body.validateStrapiURL !== false) {
 		const validStrapiURL = await urlExist(req.body.strapiURL);
@@ -415,7 +433,7 @@ app.get('/api/download', function (req, res) {
 //route to get the generated site
 app.get('/api/preview/:sitename/', function (req, res) {
 	const sitename = req.params.sitename;
-	
+
 	console.log(sitename)
 
 	res.sendFile(path.join(__dirname, `/output/${sitename}/index.html`));
@@ -425,9 +443,6 @@ app.get('/api/preview/:sitename/', function (req, res) {
 app.get('/api/preview/:sitename/:filename', function (req, res) {
 	const sitename = req.params.sitename;
 	const filename = req.params.filename;
-	
-	console.log(sitename)
-	console.log(filename)
 
 	res.sendFile(path.join(__dirname, `/output/${sitename}/${filename}`));
 });
