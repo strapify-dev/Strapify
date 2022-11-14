@@ -43,9 +43,7 @@ collectionElms.forEach(async (collectionElm) => {
 
 	//loop through collectionElm's children and delete any that themselves have children with the strapi-content attribute
 	Array.from(collectionElm.children).forEach((child) => {
-		let removeChild = child.querySelectorAll("[strapi-content]").length > 0
-
-		console.log(child, removeChild)
+		let removeChild = child.querySelectorAll("[strapi-field]").length > 0
 
 		if (removeChild) {
 			collectionElm.removeChild(child)
@@ -62,11 +60,11 @@ collectionElms.forEach(async (collectionElm) => {
 		const itemElm = itemTemplateElm.cloneNode(true);
 
 		//find all the field elements in the item elm
-		const fieldElms = itemElm.querySelectorAll("[strapi-content]");
+		const fieldElms = itemElm.querySelectorAll("[strapi-field]");
 
 		//loop through the field elements and set the inner html to the field value from the collection data
 		fieldElms.forEach((fieldElm) => {
-			const fieldId = fieldElm.getAttribute("strapi-content");
+			const fieldId = fieldElm.getAttribute("strapi-field");
 			const fieldValue = attributes[fieldId];
 
 			modifyElmWithStrapiData(fieldElm, fieldValue);
