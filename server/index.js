@@ -6,6 +6,7 @@ const htmlParser = require("node-html-parser");
 const port = process.env.PORT || 3000;
 const fs = require("fs");
 const archiver = require('archiver');
+const server_url = process.env.SERVER_URL || "http://localhost:3000";
 
 /*-------------------------------------------------------- express setup --------------------------------------------------------*/
 const app = express();
@@ -303,6 +304,8 @@ function archiveFolder(folderPath, archivePath, archiveName) {
 
 /*-------------------------------------------------------- express routes --------------------------------------------------------*/
 app.post("/api/strapify", async (req, res) => {
+	console.log(req.header("x-forwarded-by"));
+
 	//check url validity
 	const urlExist = (await import("url-exist")).default;
 
@@ -411,8 +414,8 @@ app.post("/api/strapify", async (req, res) => {
 	//return success message and the download link
 	res.status(200).json({
 		message: `successfully generated static website with strapi injection from ${req.body.webflowURL}`,
-		previewURL: `http://localhost:3000/api/preview/${outputFolder}/index.html`,
-		downloadURL: `http://localhost:3000/api/download?filename=${outputFolder}.zip`,
+		previewURL: `${server_url}/api/preview/${outputFolder}/index.html`,
+		downloadURL: `${server_url}/api/download?filename=${outputFolder}.zip`,
 	});
 });
 
