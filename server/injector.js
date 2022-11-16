@@ -135,9 +135,27 @@ function processStrapiCollectionTypeElms(collectionElms) {
 		//remove the template elm candidates from the DOM
 		templateElms.forEach((templateElm) => templateElm.remove());
 
+		//get the collection query string attributes
+		const collectionName = collectionElm.getAttribute("strapi-collection")
+		const queryStringPairs = {
+			"filters": collectionElm.getAttribute("strapi-collection-filter"),
+			"sort": collectionElm.getAttribute("strapi-collection-sort"),
+			"pagination[page]=": collectionElm.getAttribute("strapi-collection-page"),
+			"pagination[pageSize]=": collectionElm.getAttribute("strapi-collection-page-size"),
+			"populate=": "*"
+		}
+
+		//generate the query string for the collection data request
+		const queryString = "?" + Object.keys(queryStringPairs).map((key) => {
+			if (queryStringPairs[key]) {
+				return `${key}${queryStringPairs[key]}`
+			}
+		}).filter(item => item).join("&")
+
+		console.log(queryString)
+
 		//get the collection item data from strapi
-		const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
-		const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
+		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 
 		//keep our strapi element data well organized in one place
 		const strapifyElmsData = {
