@@ -9,12 +9,30 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	strapi_api_url = "http://localhost:1337";
 }
 
-const strapifyFieldAttributesDict = {
-	strapiField: "strapi-field",
-	strapiClassAdd: "strapi-class-add",
-	strapiClassReplace: "strapi-class-replace",
-	strapiConditionalClass: "strapi-conditional-class",
-	strapiInto: "strapi-into"
+//an element is a strapi collection element under the following conditions:
+//1. the immediate parent element has a strapi-collection attribute
+//2. it has at least one descendant with a strapify attribute, excluding collection type attributes
+//3. the immediate parent element is the closest strapi-collection for every descendant in condition 2
+//the third condition allows for nested collections
+function isStrapifyTemplateElement(elm, parentElm) {
+	if (!parentElm.hasAttribute("strapi-collection")) {
+		console.error("parentElm must be a strapi-collection element")
+	}
+
+	const matchAttributes = ["strapi-field", "strapi-class-replace"];
+	const strapifyElms = elm.querySelectorAll(matchAttributes.map((attr) => `[${attr}]`).join(", "));
+
+	if (strapifyElms.length === 0) {
+		return false;
+	}
+
+	for (let i = 0; i < strapifyElms.length; i++) {
+		if (strapifyElms[i].closest("[strapi-collection]") !== parentElm) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 //IMPORTANT!
@@ -59,7 +77,7 @@ function processStrapiSingleTypeElms(singleTypeElms) {
 	});
 }
 
-function processStrapiFieldTypeElms(fieldElms, strapiAttributes) {
+function processStrapiFieldElms(fieldElms, strapiAttributes) {
 	//loop through the field elements and set their content to the field value from the collection data
 	fieldElms.forEach((fieldElm) => {
 		const fieldId = fieldElm.getAttribute("strapi-field");
@@ -74,8 +92,9 @@ function processStrapiClassReplaceElms(classReplaceElms, strapiAttributes) {
 	classReplaceElms.forEach((classReplaceElm) => {
 		const classReplaceData = classReplaceElm.getAttribute("strapi-class-replace");
 
-		const classToReplace = classReplaceData.split(",")[0].trim();
-		const classReplaceValue = strapiAttributes[classReplaceData.split(",")[1].trim()];
+		const split = classReplaceData.split(",");
+		const classToReplace = split[0].trim();
+		const classReplaceValue = strapiAttributes[split[1].trim()];
 
 		classReplaceElm.classList.remove(classToReplace);
 		classReplaceElm.classList.add(classReplaceValue);
@@ -83,47 +102,54 @@ function processStrapiClassReplaceElms(classReplaceElms, strapiAttributes) {
 }
 
 function processStrapiCollectionTypeElms(collectionElms) {
-	//for each collection element 
 	collectionElms.forEach(async (collectionElm) => {
-		//clone the template elm
-		const templateElmBase = collectionElm.children[0].cloneNode(true)
+		//determine template elm candidates
+		const templateElms = Array.from(collectionElm.children).filter((child) => isStrapifyTemplateElement(child, collectionElm));
 
-		//loop through collectionElm's children and delete any that themselves have children with the strapi-field attribute
-		Array.from(collectionElm.children).forEach((child) => {
-			(child.querySelectorAll("[strapi-field]").length > 0) && collectionElm.removeChild(child)
-		})
+		//clone the first template elm candidate to use as the template
+		const templateElm = templateElms[0].cloneNode(true)
+
+		//remove the template elm candidates from the DOM
+		templateElms.forEach((templateElm) => templateElm.remove());
 
 		//get the collection item data from strapi
 		const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
 		const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
 
-		//loop through the collection data and add it to a new clone of the template item elm
+		//keep our strapi element data well organized in one place
+		const strapifyElmsData = {
+			strapiField: { attribute: "strapi-field", elements: [], processFunction: processStrapiFieldElms },
+			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: () => { } },
+			strapiClassReplace: { attribute: "strapi-class-replace", elements: [], processFunction: processStrapiClassReplaceElms },
+			strapiConditionalClass: { attribute: "strapi-conditional-class", elements: [], processFunction: () => { } },
+			strapiInto: { attribute: "strapi-into", elements: [], processFunction: () => { } }
+		}
+
+		//find elms in the base template elm using strapify attributes. 
+		for (let strapifyType in strapifyElmsData) {
+			strapifyElmsData[strapifyType].elements = templateElm.querySelectorAll(`[${strapifyElmsData[strapifyType].attribute}]`);
+		}
+
+		//loop through the collection data and process template clone with the strapi data, add to DOM
 		for (let i = 0; i < collectionData.length; i++) {
 			const { id: strapiId, attributes: strapiAttributes } = collectionData[i];
-			const templateElm = templateElmBase.cloneNode(true);
-
-			//find elms using strapify attributes for each type of attribute
-			let strapifyFieldElms = {}
-			for (let fieldAttribute in strapifyFieldAttributesDict) {
-				const fieldAttributeValue = strapifyFieldAttributesDict[fieldAttribute];
-				strapifyFieldElms[fieldAttribute] = templateElm.querySelectorAll(`[${fieldAttributeValue}]`);
-			}
 
 			//process strapi field type elements
-			processStrapiFieldTypeElms(strapifyFieldElms.strapiField, strapiAttributes);
-			processStrapiClassReplaceElms(strapifyFieldElms.strapiClassReplace, strapiAttributes);
+			for (let strapifyType in strapifyElmsData) {
+				strapifyElmsData[strapifyType].processFunction(strapifyElmsData[strapifyType].elements, strapiAttributes);
+			}
 
-			//add the item elm to the collection elm
-			collectionElm.appendChild(templateElm);
+			//clone the base template elm and put it in the dom
+			collectionElm.appendChild(templateElm.cloneNode(true));
 		}
 	})
 }
 
-//find all elements with strapi-single-type attributes modify them with strapi data
+//find all elements with strapi-single-type attributes and process them
 const singleTypeElms = document.querySelectorAll(`[strapi-single-type]`);
 processStrapiSingleTypeElms(singleTypeElms);
 
-//find all the elements with the strapi-collection attribute
+//find all the elements with the strapi-collection attribute and process them
 const collectionElms = document.body.querySelectorAll("[strapi-collection]");
 processStrapiCollectionTypeElms(collectionElms);
 
