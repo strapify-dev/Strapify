@@ -119,10 +119,10 @@ function processStrapiCollectionTypeElms(collectionElms) {
 		//keep our strapi element data well organized in one place
 		const strapifyElmsData = {
 			strapiField: { attribute: "strapi-field", elements: [], processFunction: processStrapiFieldElms },
-			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: () => { } },
+			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: () => { console.warn("not implemented") } },
 			strapiClassReplace: { attribute: "strapi-class-replace", elements: [], processFunction: processStrapiClassReplaceElms },
-			strapiConditionalClass: { attribute: "strapi-conditional-class", elements: [], processFunction: () => { } },
-			strapiInto: { attribute: "strapi-into", elements: [], processFunction: () => { } }
+			strapiConditionalClass: { attribute: "strapi-conditional-class", elements: [], processFunction: () => { console.warn("not implemented") } },
+			strapiInto: { attribute: "strapi-into", elements: [], processFunction: () => { console.warn("not implemented") } }
 		}
 
 		//find elms in the base template elm using strapify attributes. 
