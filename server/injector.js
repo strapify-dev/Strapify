@@ -103,6 +103,18 @@ function processStrapiClassReplaceElms(classReplaceElms, strapiAttributes) {
 	})
 }
 
+function processStrapiIntoElms(intoElms, strapiAttributes) {
+	intoElms.forEach(async (intoElm) => {
+		const intoElmData = intoElm.getAttribute("strapi-into");
+
+		const split = intoElmData.split("->");
+		const intoAttributeName = split[1].trim();
+		const intoAttributeValue = strapiAttributes[split[0].trim()];
+
+		intoElm.setAttribute(intoAttributeName, intoAttributeValue);
+	})
+}
+
 function processStrapiCollectionTypeElms(collectionElms) {
 	collectionElms.forEach(async (collectionElm) => {
 		//determine template elm candidates
@@ -124,7 +136,7 @@ function processStrapiCollectionTypeElms(collectionElms) {
 			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: () => { console.warn("not implemented") } },
 			strapiClassReplace: { attribute: "strapi-class-replace", elements: [], processFunction: processStrapiClassReplaceElms },
 			strapiConditionalClass: { attribute: "strapi-conditional-class", elements: [], processFunction: () => { console.warn("not implemented") } },
-			strapiInto: { attribute: "strapi-into", elements: [], processFunction: () => { console.warn("not implemented") } }
+			strapiInto: { attribute: "strapi-into", elements: [], processFunction: processStrapiIntoElms }
 		}
 
 		//find elms in the base template elm using strapify attributes. 
