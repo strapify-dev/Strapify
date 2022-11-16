@@ -89,6 +89,15 @@ function processStrapiFieldElms(fieldElms, strapiAttributes) {
 	});
 }
 
+function processStrapiClassAddElms(classAddElms, strapiAttributes) {
+	classAddElms.forEach((classAddElm) => {
+		const strapiAttributeName = classAddElm.getAttribute("strapi-class-add");
+		const className = strapiAttributes[strapiAttributeName];
+
+		classAddElm.classList.add(className);
+	})
+}
+
 function processStrapiClassReplaceElms(classReplaceElms, strapiAttributes) {
 	//loop through the class replace elements and replace the class with the value from the collection data
 	classReplaceElms.forEach((classReplaceElm) => {
@@ -133,7 +142,7 @@ function processStrapiCollectionTypeElms(collectionElms) {
 		//keep our strapi element data well organized in one place
 		const strapifyElmsData = {
 			strapiField: { attribute: "strapi-field", elements: [], processFunction: processStrapiFieldElms },
-			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: () => { console.warn("not implemented") } },
+			strapiClassAdd: { attribute: "strapi-class-add", elements: [], processFunction: processStrapiClassAddElms },
 			strapiClassReplace: { attribute: "strapi-class-replace", elements: [], processFunction: processStrapiClassReplaceElms },
 			strapiConditionalClass: { attribute: "strapi-conditional-class", elements: [], processFunction: () => { console.warn("not implemented") } },
 			strapiInto: { attribute: "strapi-into", elements: [], processFunction: processStrapiIntoElms }
