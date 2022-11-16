@@ -44,78 +44,87 @@ function modifyElmWithStrapiData(elm, strapiData) {
 	}
 }
 
+function processStrapiSingleTypeElms(singleTypeElms) {
+	singleTypeElms.forEach(async (singleTypeElm) => {
+		const attributeValue = singleTypeElm.getAttribute("strapi-single-type");
+
+		const split = attributeValue.split(".");
+		const singleTypeName = split[0];
+		const singleTypeFieldName = split[1];
+
+		const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
+		const fieldValue = strapiData.attributes[singleTypeFieldName];
+
+		modifyElmWithStrapiData(singleTypeElm, fieldValue);
+	});
+}
+
+function processStrapiFieldTypeElms(fieldElms, strapiAttributes) {
+	//loop through the field elements and set their content to the field value from the collection data
+	fieldElms.forEach((fieldElm) => {
+		const fieldId = fieldElm.getAttribute("strapi-field");
+		const fieldValue = strapiAttributes[fieldId];
+
+		modifyElmWithStrapiData(fieldElm, fieldValue);
+	});
+}
+
+function processStrapiClassReplaceElms(classReplaceElms, strapiAttributes) {
+	//loop through the class replace elements and replace the class with the value from the collection data
+	classReplaceElms.forEach((classReplaceElm) => {
+		const classReplaceData = classReplaceElm.getAttribute("strapi-class-replace");
+
+		const classToReplace = classReplaceData.split(",")[0].trim();
+		const classReplaceValue = strapiAttributes[classReplaceData.split(",")[1].trim()];
+
+		classReplaceElm.classList.remove(classToReplace);
+		classReplaceElm.classList.add(classReplaceValue);
+	})
+}
+
+function processStrapiCollectionTypeElms(collectionElms) {
+	//for each collection element 
+	collectionElms.forEach(async (collectionElm) => {
+		//clone the template elm
+		const templateElmBase = collectionElm.children[0].cloneNode(true)
+
+		//loop through collectionElm's children and delete any that themselves have children with the strapi-field attribute
+		Array.from(collectionElm.children).forEach((child) => {
+			(child.querySelectorAll("[strapi-field]").length > 0) && collectionElm.removeChild(child)
+		})
+
+		//get the collection item data from strapi
+		const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
+		const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
+
+		//loop through the collection data and add it to a new clone of the template item elm
+		for (let i = 0; i < collectionData.length; i++) {
+			const { id: strapiId, attributes: strapiAttributes } = collectionData[i];
+			const templateElm = templateElmBase.cloneNode(true);
+
+			//find elms using strapify attributes for each type of attribute
+			let strapifyFieldElms = {}
+			for (let fieldAttribute in strapifyFieldAttributesDict) {
+				const fieldAttributeValue = strapifyFieldAttributesDict[fieldAttribute];
+				strapifyFieldElms[fieldAttribute] = templateElm.querySelectorAll(`[${fieldAttributeValue}]`);
+			}
+
+			//process strapi field type elements
+			processStrapiFieldTypeElms(strapifyFieldElms.strapiField, strapiAttributes);
+			processStrapiClassReplaceElms(strapifyFieldElms.strapiClassReplace, strapiAttributes);
+
+			//add the item elm to the collection elm
+			collectionElm.appendChild(templateElm);
+		}
+	})
+}
+
 //find all elements with strapi-single-type attributes modify them with strapi data
 const singleTypeElms = document.querySelectorAll(`[strapi-single-type]`);
-
-singleTypeElms.forEach(async (singleTypeElm) => {
-	const attributeValue = singleTypeElm.getAttribute("strapi-single-type");
-
-	const split = attributeValue.split(".");
-	const singleTypeName = split[0];
-	const singleTypeFieldName = split[1];
-
-	const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
-	const fieldValue = strapiData.attributes[singleTypeFieldName];
-
-	modifyElmWithStrapiData(singleTypeElm, fieldValue);
-});
+processStrapiSingleTypeElms(singleTypeElms);
 
 //find all the elements with the strapi-collection attribute
 const collectionElms = document.body.querySelectorAll("[strapi-collection]");
-
-//for each collection element 
-collectionElms.forEach(async (collectionElm) => {
-	//clone the template elm
-	const templateElmBase = collectionElm.children[0].cloneNode(true)
-
-	//loop through collectionElm's children and delete any that themselves have children with the strapi-field attribute
-	Array.from(collectionElm.children).forEach((child) => {
-		let removeChild = child.querySelectorAll("[strapi-field]").length > 0
-
-		if (removeChild) {
-			collectionElm.removeChild(child)
-		}
-	})
-
-	//get the collection item data from strapi
-	const collectionBaseURL = "/api/" + collectionElm.getAttribute("strapi-collection");
-	const collectionData = await strapiRequest(collectionBaseURL, "?populate=*")
-
-	//loop through the collection data and add it to a new clone of the template item elm
-	for (let i = 0; i < collectionData.length; i++) {
-		const { id, attributes } = collectionData[i];
-		const templateElm = templateElmBase.cloneNode(true);
-
-		//find elms using strapify attributes
-		let strapifyFieldElms = {}
-		for (let fieldAttribute in strapifyFieldAttributesDict) {
-			const fieldAttributeValue = strapifyFieldAttributesDict[fieldAttribute];
-
-			strapifyFieldElms[fieldAttribute] = templateElm.querySelectorAll(`[${fieldAttributeValue}]`);
-		}
-
-		//loop through the field elements and set the inner html to the field value from the collection data
-		strapifyFieldElms.strapiField.forEach((fieldElm) => {
-			const fieldId = fieldElm.getAttribute("strapi-field");
-			const fieldValue = attributes[fieldId];
-
-			modifyElmWithStrapiData(fieldElm, fieldValue);
-		});
-
-		//loop through the class replace elements and replace the class with the value from the collection data
-		strapifyFieldElms.strapiClassReplace.forEach((classReplaceElm) => {
-			const classReplaceData = classReplaceElm.getAttribute("strapi-class-replace");
-
-			const classToReplace = classReplaceData.split(",")[0].trim();
-			const classReplaceValue = attributes[classReplaceData.split(",")[1].trim()];
-
-			classReplaceElm.classList.remove(classToReplace);
-			classReplaceElm.classList.add(classReplaceValue);
-		})
-
-		//add the item elm to the collection elm
-		collectionElm.appendChild(templateElm);
-	}
-})
+processStrapiCollectionTypeElms(collectionElms);
 
 export { strapi_api_url };
