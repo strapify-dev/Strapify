@@ -104,6 +104,10 @@ The Civiconnect strapify application will use these data attributes to inject St
     ```
   - the app will be available on localhost:8080
   
+  you can test it with these links 
+  - webflow: https://strapify-demo.webflow.io/
+  - strapi: http://54.163.229.233:1337
+  
 ## Usage
 Ensure that the Strapi server is running and the desired content has been added. Also ensure that the custom data attributes have been created in the Webflow project.
 
