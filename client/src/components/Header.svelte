@@ -27,9 +27,9 @@
         />
 
         <div class="status-indicators-container">
-            <StatusIndicator text="Strapi status" />
-            <StatusIndicator text="Server status" />
-            <StatusIndicator text="Webflow site status" />
+            <StatusIndicator text="Strapi status" url={strapiURL}/>
+            <StatusIndicator text="Server status" url={"http://localhost:3000"}/>
+            <StatusIndicator text="Webflow site status" url={webflowURL}/>
         </div>
     </div>
 </div>
