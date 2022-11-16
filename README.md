@@ -42,7 +42,7 @@ The Civiconnect strapify application will use these data attributes to inject St
     - Windows: https://github.com/coreybutler/nvm-windows
     - Linux: https://github.com/nvm-sh/nvm
 
-#### Strapi
+#### Strapi (optional; you can just use a remote strapi instance)
 
   - cd into strapi folder and run the following commands
     ```shell
