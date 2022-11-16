@@ -11,7 +11,7 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	strapi_api_url = "http://localhost:1337";
 }
 
-//an element is a strapi collection element under the following conditions:
+//an element is a strapi template element under the following conditions:
 //1. the immediate parent element has a strapi-collection attribute
 //2. it has at least one descendant with a strapify attribute, excluding collection type attributes
 //3. the immediate parent element is the closest strapi-collection for every descendant in condition 2
