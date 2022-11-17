@@ -125,30 +125,42 @@ function processStrapiIntoElms(intoElms, strapiAttributes) {
 }
 
 function processStrapiCollectionTypeElms(collectionElms) {
-	collectionElms.forEach(async (collectionElm) => {
-		//determine template elm candidates
+	collectionElms.forEach(async (collectionElm, index) => {
+		//determine template elm candidates, pick one as the template, remove them all from the dom
 		const templateElms = Array.from(collectionElm.children).filter((child) => isStrapifyTemplateElement(child, collectionElm));
-
-		//clone the first template elm candidate to use as the template
 		const templateElm = templateElms[0].cloneNode(true)
+		templateElms.forEach(templateElm => templateElm.remove());
 
-		//remove the template elm candidates from the DOM
-		templateElms.forEach((templateElm) => templateElm.remove());
+		//look for page control elements
+		const pageControlElms = collectionElm.querySelectorAll("[strapi-page-control]");
+		pageControlElms.forEach(pageControlElm => {
+			const pageControlType = pageControlElm.getAttribute("strapi-page-control");
 
-		//get the collection query string attributes
+			pageControlElm.addEventListener("click", () => {
+				if (pageControlType === "left") {
+
+				} else if (pageControlType === "right") {
+
+				}
+			})
+		})
+
+		//get the collection query string attributes and match them to a query string prefix
 		const collectionName = collectionElm.getAttribute("strapi-collection")
 		const queryStringPairs = {
 			"filters": collectionElm.getAttribute("strapi-collection-filter"),
-			"sort": collectionElm.getAttribute("strapi-collection-sort"),
+			"sort=": collectionElm.getAttribute("strapi-collection-sort"),
 			"pagination[page]=": collectionElm.getAttribute("strapi-collection-page"),
 			"pagination[pageSize]=": collectionElm.getAttribute("strapi-collection-page-size"),
 			"populate=": "*"
 		}
 
-		//generate the query string for the collection data request
-		const queryString = "?" + Object.keys(queryStringPairs).map((key) => {
-			if (queryStringPairs[key]) {
-				return `${key}${queryStringPairs[key]}`
+		//generate the query string for the collection data request. Ridiculous but elegant?
+		const queryString = "?" + Object.keys(queryStringPairs).map((prefix) => {
+			if (queryStringPairs[prefix]) {
+				return queryStringPairs[prefix].split("|").map(arg => {
+					return `${prefix}${arg.trim()}`
+				}).join("&");
 			}
 		}).filter(item => item).join("&")
 
