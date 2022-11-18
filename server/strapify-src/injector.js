@@ -12,6 +12,8 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	strapi_api_url = "http://localhost:1337";
 }
 
+console.log("HELLO")
+
 //find all elements with strapi-single-type attributes and process them
 const singleTypeElms = document.querySelectorAll(`[strapi-single-type]`);
 
