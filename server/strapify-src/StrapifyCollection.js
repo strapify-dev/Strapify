@@ -5,6 +5,7 @@ import strapiRequest from "./util/strapiRequest";
 class StrapifyCollection {
 	#collectionElement;
 	#templateElm;
+	#generatedTemplateElms = [];
 	#collectionData
 	#strapifyFields
 	#mutationObserver;
@@ -80,6 +81,12 @@ class StrapifyCollection {
 		}
 		this.#strapifyFields = [];
 
+		//destroy all existing generated template elements
+		for (let i = 0; i < this.#generatedTemplateElms.length; i++) {
+			this.#generatedTemplateElms[i].remove()
+		}
+		this.#generatedTemplateElms = [];
+
 		//get the strapi data
 		const collectionName = this.#attributes["strapi-collection"];
 		const queryString = this.#getQueryString();
@@ -107,7 +114,10 @@ class StrapifyCollection {
 
 			//put template elm into the dom
 			this.#collectionElement.appendChild(templateClone);
+			this.#generatedTemplateElms.push(templateClone);
 		}
+
+		//console.log(this.#generatedTemplateElms)
 	}
 }
 
