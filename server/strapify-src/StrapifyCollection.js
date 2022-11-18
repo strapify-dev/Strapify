@@ -1,16 +1,9 @@
+import Strapify from "./Strapify.js";
 import StrapifyField from "./StrapifyField";
 import strapiRequest from "./util/strapiRequest";
-import { marked } from "marked";
-import strapi_api_url from "./util/strapi-api-url";
 
 class StrapifyCollection {
-	static validAttributes = [
-		"strapi-collection", "strapi-collection-filter", "strapi-collection-sort",
-		"strapi-collection-page", "strapi-collection-page-size"
-	];
-
 	#collectionElement;
-	#strapi_api_url = "http://localhost:1337";
 	#templateElm;
 	#collectionData
 	#strapifyFields
@@ -26,8 +19,21 @@ class StrapifyCollection {
 
 	constructor(collectionElement) {
 		this.#collectionElement = collectionElement;
-		this.#strapi_api_url = strapi_api_url;
 		this.#updateAttributes();
+
+		this.#mutationObserver = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				if (mutation.type === "attributes") {
+					this.#updateAttributes();
+					this.process();
+				}
+			});
+		});
+
+		this.#mutationObserver.observe(this.#collectionElement, {
+			attributes: true,
+			attributeFilter: Strapify.validStrapifyCollectionAttributes
+		});
 
 		//use the first strapi-template element as the template and remove all others
 		const templateElms = this.#findTemplateElms();
@@ -68,7 +74,11 @@ class StrapifyCollection {
 	}
 
 	async process() {
-		this.#strapifyFields=[];
+		//destroy all existing strapify fields
+		if (this.#strapifyFields) {
+			this.#strapifyFields.forEach(strapifyField => strapifyField.destroy());
+		}
+		this.#strapifyFields = [];
 
 		//get the strapi data
 		const collectionName = this.#attributes["strapi-collection"];
@@ -77,7 +87,7 @@ class StrapifyCollection {
 		this.#collectionData = collectionData
 
 		//query string to find strapify field elements
-		const querySelectorString = StrapifyField.validAttributes.map(attribute => `[${attribute}]`).join(",");
+		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
 
 		//loop through the collection data and process template clone with the strapi data, add to DOM
 		for (let i = 0; i < collectionData.length; i++) {
