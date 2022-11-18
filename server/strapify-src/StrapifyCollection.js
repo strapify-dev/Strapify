@@ -1,6 +1,7 @@
 import StrapifyField from "./StrapifyField";
 import strapiRequest from "./util/strapiRequest";
 import { marked } from "marked";
+import strapi_api_url from "./util/strapi-api-url";
 
 class StrapifyCollection {
 	static validAttributes = [
@@ -23,7 +24,7 @@ class StrapifyCollection {
 		"strapi-collection-page-size": undefined,
 	}
 
-	constructor(collectionElement, strapi_api_url) {
+	constructor(collectionElement) {
 		this.#collectionElement = collectionElement;
 		this.#strapi_api_url = strapi_api_url;
 		this.#updateAttributes();

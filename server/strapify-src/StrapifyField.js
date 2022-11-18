@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import strapi_api_url from "./util/strapi-api-url";
 
 class StrapifyField {
 	static validAttributes = [
@@ -16,7 +17,7 @@ class StrapifyField {
 		"strapi-into": undefined,
 	}
 
-	constructor(fieldElement, strapi_api_url) {
+	constructor(fieldElement) {
 		this.#fieldElement = fieldElement;
 		this.#strapi_api_url = strapi_api_url;
 		this.#updateAttributes();
