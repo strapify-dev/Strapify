@@ -8,6 +8,7 @@ class StrapifyField {
 
 	#fieldElement;
 	#strapi_api_url = "http://localhost:1337";
+	#strapiDataAttributes
 	#mutationObserver;
 
 	#attributes = {
@@ -21,6 +22,18 @@ class StrapifyField {
 		this.#fieldElement = fieldElement;
 		this.#strapi_api_url = strapi_api_url;
 		this.#updateAttributes();
+
+		this.#mutationObserver = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				this.#updateAttributes();
+				this.process(this.#strapiDataAttributes);
+			});
+		});
+
+		this.#mutationObserver.observe(this.#fieldElement, {
+			attributes: true,
+			attributeFilter: StrapifyField.validAttributes
+		});
 	}
 
 	#updateAttributes() {
@@ -92,6 +105,8 @@ class StrapifyField {
 	}
 
 	process(strapiDataAttributes) {
+		this.#strapiDataAttributes = strapiDataAttributes;
+
 		if (this.#attributes["strapi-field"]) {
 			this.#processStrapiFieldElms(strapiDataAttributes);
 		}

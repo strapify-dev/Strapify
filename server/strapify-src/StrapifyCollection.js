@@ -68,30 +68,35 @@ class StrapifyCollection {
 	}
 
 	async process() {
+		this.#strapifyFields=[];
+
 		//get the strapi data
 		const collectionName = this.#attributes["strapi-collection"];
 		const queryString = this.#getQueryString();
 		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 		this.#collectionData = collectionData
 
-		//find strapify field elements
+		//query string to find strapify field elements
 		const querySelectorString = StrapifyField.validAttributes.map(attribute => `[${attribute}]`).join(",");
-		const strapifyFieldElements = Array.from(this.#templateElm.querySelectorAll(querySelectorString));
-
-		//create strapifyField objects
-		this.#strapifyFields = strapifyFieldElements.map(fieldElement => new StrapifyField(fieldElement, this.#strapi_api_url));
 
 		//loop through the collection data and process template clone with the strapi data, add to DOM
 		for (let i = 0; i < collectionData.length; i++) {
 			const { id: strapiDataId, attributes: strapiDataAttributes } = collectionData[i];
 
-			//process strapi field type elements
-			this.#strapifyFields.forEach(strapifyField => {
+			//clone the template 
+			let templateClone = this.#templateElm.cloneNode(true);
+
+			//find strapify field elements on the clone 
+			const strapifyFieldElements = Array.from(templateClone.querySelectorAll(querySelectorString));
+			strapifyFieldElements.forEach(fieldElement => {
+				const strapifyField = new StrapifyField(fieldElement)
+				this.#strapifyFields.push(strapifyField);
+
 				strapifyField.process(strapiDataAttributes)
 			});
 
-			//clone the base template elm and put it in the dom
-			this.#collectionElement.appendChild(this.#templateElm.cloneNode(true));
+			//put template elm into the dom
+			this.#collectionElement.appendChild(templateClone);
 		}
 	}
 }
