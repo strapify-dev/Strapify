@@ -46,7 +46,7 @@ class StrapifySingleType {
 		const singleTypeFieldName = split[1];
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
-		const fieldValue = strapiData.attributes[singleTypeFieldName];
+		const fieldValue = strapiData.data.attributes[singleTypeFieldName];
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);
 	}

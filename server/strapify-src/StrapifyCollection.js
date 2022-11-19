@@ -97,8 +97,8 @@ class StrapifyCollection {
 		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
 
 		//loop through the collection data and process template clone with the strapi data, add to DOM
-		for (let i = 0; i < collectionData.length; i++) {
-			const { id: strapiDataId, attributes: strapiDataAttributes } = collectionData[i];
+		for (let i = 0; i < collectionData.data.length; i++) {
+			const { id: strapiDataId, attributes: strapiDataAttributes } = collectionData.data[i];
 
 			//clone the template 
 			let templateClone = this.#templateElm.cloneNode(true);

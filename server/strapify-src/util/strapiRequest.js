@@ -6,7 +6,7 @@ const strapiRequest = async (slug, queryString) => {
 		const response = await axios.get(
 			`${Strapify.apiURL}${slug}${queryString ? queryString : ""}`
 		);
-		return response.data.data;
+		return response.data;
 	} catch (err) {
 		throw new Error(`Strapi Request Failed: ${err}`);
 	}
