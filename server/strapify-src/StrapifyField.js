@@ -49,31 +49,40 @@ class StrapifyField {
 	}
 
 	#processStrapiClassAddElms(strapiAttributes) {
-		const strapiAttributeName = this.#fieldElement.getAttribute("strapi-class-add");
-		const className = strapiAttributes[strapiAttributeName];
+		const attributeValue = this.#fieldElement.getAttribute("strapi-class-add");
+		const strapiFieldNames = attributeValue.split("|");
 
-		this.#fieldElement.classList.add(className);
+		strapiFieldNames.forEach((strapiFieldName) => {
+			const className = strapiAttributes[strapiFieldName.trim()];
+			this.#fieldElement.classList.add(className);
+		})
 	}
 
 	#processStrapiClassReplace(strapiAttributes) {
-		const classReplaceData = this.#fieldElement.getAttribute("strapi-class-replace");
+		const attributeValue = this.#fieldElement.getAttribute("strapi-class-replace");
+		const args = attributeValue.split("|");
 
-		const split = classReplaceData.split(",");
-		const classToReplace = split[0].trim();
-		const classReplaceValue = strapiAttributes[split[1].trim()];
+		args.forEach((arg) => {
+			const split = arg.split(",");
+			const classToReplace = split[0].trim();
+			const classReplaceValue = strapiAttributes[split[1].trim()];
 
-		this.#fieldElement.classList.remove(classToReplace);
-		this.#fieldElement.classList.add(classReplaceValue);
+			this.#fieldElement.classList.remove(classToReplace);
+			this.#fieldElement.classList.add(classReplaceValue);
+		})
 	}
 
 	#processStrapiInto(strapiAttributes) {
-		const intoElmData = this.#fieldElement.getAttribute("strapi-into");
+		const attributeValue = this.#fieldElement.getAttribute("strapi-into");
+		const args = attributeValue.split("|");
 
-		const split = intoElmData.split("->");
-		const intoAttributeName = split[1].trim();
-		const intoAttributeValue = strapiAttributes[split[0].trim()];
+		args.forEach((arg) => {
+			const split = arg.split("->");
+			const intoDataValue = strapiAttributes[split[0].trim()];
+			const intoAttributeName = split[1].trim();
 
-		this.#fieldElement.setAttribute(intoAttributeName, intoAttributeValue);
+			this.#fieldElement.setAttribute(intoAttributeName, intoDataValue);
+		})
 	}
 
 	process(strapiDataAttributes) {
