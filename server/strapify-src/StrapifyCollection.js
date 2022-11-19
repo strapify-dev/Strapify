@@ -4,6 +4,7 @@ import strapiRequest from "./util/strapiRequest";
 
 class StrapifyCollection {
 	#collectionElement;
+	#insertionElm
 	#templateElm;
 	#generatedTemplateElms = [];
 	#collectionData
@@ -19,9 +20,11 @@ class StrapifyCollection {
 	}
 
 	constructor(collectionElement) {
+		//set the collection element and update the attributes
 		this.#collectionElement = collectionElement;
 		this.#updateAttributes();
 
+		//create mutation observer to watch for attribute changes
 		this.#mutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 				if (mutation.type === "attributes") {
@@ -31,6 +34,7 @@ class StrapifyCollection {
 			});
 		});
 
+		//observe the collection element for attribute changes
 		this.#mutationObserver.observe(this.#collectionElement, {
 			attributes: true,
 			attributeFilter: Strapify.validStrapifyCollectionAttributes
@@ -38,8 +42,15 @@ class StrapifyCollection {
 
 		//use the first strapi-template element as the template and remove all others
 		const templateElms = this.#findTemplateElms();
+		this.#insertionElm = templateElms[0].parentElement;
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
+
+		//get page control elements and add event listeners to page control elements
+		const pageControlElms = this.#collectionElement.querySelectorAll("[strapi-page-control]");
+		for (let pageControlElm of pageControlElms) {
+			pageControlElm.addEventListener("click", this.#onPageControlClick.bind(this));
+		}
 	}
 
 	#updateAttributes() {
@@ -50,7 +61,29 @@ class StrapifyCollection {
 
 	#findTemplateElms() {
 		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
-		return templateElms.filter(child => child.parentElement === this.#collectionElement);
+		return templateElms.filter(child => child.closest("[strapi-collection]") === this.#collectionElement);
+	}
+
+	#onPageControlClick(e) {
+		const pageControlElm = e.target;
+		const type = pageControlElm.getAttribute("strapi-page-control");
+
+		const page = this.#collectionData.meta.pagination.page;
+		const pageCount = this.#collectionData.meta.pagination.pageCount;
+
+		if (type === "right") {
+			const newPageIndex = Math.min(page + 1, pageCount);
+			if (newPageIndex !== page) {
+				this.#collectionElement.setAttribute("strapi-collection-page", newPageIndex);
+			}
+
+		}
+		else if (type === "left") {
+			const newPageIndex = Math.max(page - 1, 1);
+			if (newPageIndex !== page) {
+				this.#collectionElement.setAttribute("strapi-collection-page", newPageIndex);
+			}
+		}
 	}
 
 	#getQueryString() {
@@ -113,7 +146,7 @@ class StrapifyCollection {
 			});
 
 			//put template elm into the dom
-			this.#collectionElement.appendChild(templateClone);
+			this.#insertionElm.appendChild(templateClone);
 			this.#generatedTemplateElms.push(templateClone);
 		}
 
