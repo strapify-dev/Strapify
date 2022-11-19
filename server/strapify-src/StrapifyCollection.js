@@ -9,10 +9,12 @@ class StrapifyCollection {
 	#generatedTemplateElms = [];
 	#collectionData
 	#strapifyFields
+	#strapifyRelations = []
 	#mutationObserver;
 
 	#attributes = {
 		"strapi-collection": undefined,
+		"strapi-relation": undefined,
 		"strapi-collection-filter": undefined,
 		"strapi-collection-sort": undefined,
 		"strapi-collection-page": undefined,
@@ -23,6 +25,12 @@ class StrapifyCollection {
 		//set the collection element and update the attributes
 		this.#collectionElement = collectionElement;
 		this.#updateAttributes();
+
+		//console.log(this.#attributes)
+
+		//	if(this.#attributes["strapi-relation"]) {
+		//		console.log(this.#collectionElement)
+		//	}	
 
 		//create mutation observer to watch for attribute changes
 		this.#mutationObserver = new MutationObserver((mutations) => {
@@ -46,11 +54,18 @@ class StrapifyCollection {
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
 
+
 		//get page control elements and add event listeners to page control elements
 		const pageControlElms = this.#collectionElement.querySelectorAll("[strapi-page-control]");
 		for (let pageControlElm of pageControlElms) {
 			pageControlElm.addEventListener("click", this.#onPageControlClick.bind(this));
 		}
+	}
+
+	destroy() {
+		this.#mutationObserver.disconnect();
+		this.#strapifyFields.forEach(field => field.destroy());
+		this.#strapifyRelations.forEach(relation => relation.destroy());
 	}
 
 	#updateAttributes() {
@@ -61,7 +76,19 @@ class StrapifyCollection {
 
 	#findTemplateElms() {
 		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
-		return templateElms.filter(child => child.closest("[strapi-collection]") === this.#collectionElement);
+		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation]") === this.#collectionElement);
+	}
+
+	#findRelationElms(templateElm) {
+		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
+		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	}
+
+	#findFieldElms(templateElm) {
+		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
+
+		const fieldElms = Array.from(templateElm.querySelectorAll(querySelectorString));
+		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
 	#onPageControlClick(e) {
@@ -88,11 +115,11 @@ class StrapifyCollection {
 
 	#getQueryString() {
 		const queryStringPairs = {
+			"populate=": "*",
 			"filters": this.#collectionElement.getAttribute("strapi-collection-filter"),
 			"sort=": this.#collectionElement.getAttribute("strapi-collection-sort"),
 			"pagination[page]=": this.#collectionElement.getAttribute("strapi-collection-page"),
 			"pagination[pageSize]=": this.#collectionElement.getAttribute("strapi-collection-page-size"),
-			"populate=": "*"
 		}
 
 		//Ridiculous but elegant?
@@ -120,8 +147,13 @@ class StrapifyCollection {
 		}
 		this.#generatedTemplateElms = [];
 
+		//destroy all existing strapify relations
+		if (this.#strapifyRelations) {
+			this.#strapifyRelations.forEach(strapifyRelation => strapifyRelation.destroy());
+		}
+
 		//get the strapi data
-		const collectionName = this.#attributes["strapi-collection"];
+		const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"];
 		const queryString = this.#getQueryString();
 		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 		this.#collectionData = collectionData
@@ -137,7 +169,7 @@ class StrapifyCollection {
 			let templateClone = this.#templateElm.cloneNode(true);
 
 			//find strapify field elements on the clone 
-			const strapifyFieldElements = Array.from(templateClone.querySelectorAll(querySelectorString));
+			const strapifyFieldElements = this.#findFieldElms(templateClone);
 			strapifyFieldElements.forEach(fieldElement => {
 				const strapifyField = new StrapifyField(fieldElement)
 				this.#strapifyFields.push(strapifyField);
@@ -145,12 +177,29 @@ class StrapifyCollection {
 				strapifyField.process(strapiDataAttributes)
 			});
 
+			//find strapify relation elements on the clone and create a strapify collection for each relation element
+			const strapifyRelationElements = this.#findRelationElms(templateClone);
+			strapifyRelationElements.forEach(relationElement => {
+				//use the relation ids to generate a filter string
+				const relationData = strapiDataAttributes[relationElement.getAttribute("strapi-relation")].data;
+				const filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
+
+				//add the filter string to the relation element
+				relationElement.setAttribute("strapi-collection-filter", filterString);
+
+				//create a strapify collection with the relation data
+				const strapifyRelation = new StrapifyCollection(relationElement);
+				this.#strapifyRelations.push(strapifyRelation);
+
+				strapifyRelation.process();
+			})
+
 			//put template elm into the dom
 			this.#insertionElm.appendChild(templateClone);
 			this.#generatedTemplateElms.push(templateClone);
-		}
 
-		//console.log(this.#generatedTemplateElms)
+
+		}
 	}
 }
 
