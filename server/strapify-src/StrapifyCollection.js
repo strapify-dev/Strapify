@@ -11,6 +11,7 @@ class StrapifyCollection {
 	#strapifyFields
 	#strapifyRelations = []
 	#mutationObserver;
+	#minHeightCache
 
 	#attributes = {
 		"strapi-collection": undefined,
@@ -85,6 +86,15 @@ class StrapifyCollection {
 		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
+	#holdHeight() {
+		this.#minHeightCache = this.#collectionElement.style.minHeight;
+		this.#collectionElement.style.minHeight = `${this.#collectionElement.offsetHeight}px`;
+	}
+
+	#releaseHeight() {
+		this.#collectionElement.style.minHeight = this.#minHeightCache;
+	}
+
 	#onPageControlClick(e) {
 		const pageControlElm = e.target;
 		const type = pageControlElm.getAttribute("strapi-page-control");
@@ -129,6 +139,9 @@ class StrapifyCollection {
 	}
 
 	async process() {
+		//hold the height of the collection element to prevent page from jumping
+		this.#holdHeight();
+
 		//destroy all existing strapify fields
 		if (this.#strapifyFields) {
 			this.#strapifyFields.forEach(strapifyField => strapifyField.destroy());
@@ -136,8 +149,8 @@ class StrapifyCollection {
 		this.#strapifyFields = [];
 
 		//destroy all existing generated template elements
-		for (let i = 0; i < this.#generatedTemplateElms.length; i++) {
-			this.#generatedTemplateElms[i].remove()
+		if(this.#generatedTemplateElms) {
+			this.#generatedTemplateElms.forEach(generatedTemplateElm => generatedTemplateElm.remove());
 		}
 		this.#generatedTemplateElms = [];
 
@@ -145,6 +158,7 @@ class StrapifyCollection {
 		if (this.#strapifyRelations) {
 			this.#strapifyRelations.forEach(strapifyRelation => strapifyRelation.destroy());
 		}
+		this.#strapifyRelations = [];
 
 		//get the strapi data
 		const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"];
@@ -188,9 +202,10 @@ class StrapifyCollection {
 			//put template elm into the dom
 			this.#insertionElm.appendChild(templateClone);
 			this.#generatedTemplateElms.push(templateClone);
-
-
 		}
+
+		//release the height of the collection element
+		this.#releaseHeight();
 	}
 }
 
