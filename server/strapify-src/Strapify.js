@@ -11,6 +11,8 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	apiURL = "http://localhost:1337";
 }
 
+const validStrapifySingleTypeAttributes = ["strapi-single-type", "strapi-single-type-into"];
+
 const validStrapifyCollectionAttributes = [
 	"strapi-collection", "strapi-collection-filter", "strapi-collection-sort",
 	"strapi-collection-page", "strapi-collection-page-size"
@@ -21,6 +23,9 @@ const validStrapifyFieldAttributes = [
 ];
 
 function modifyElmWithStrapiData(strapiData, elm) {
+	//look for iframe element with embedly-embed class
+	const iFrameElm = elm.querySelector("iframe");
+
 	switch (true) {
 		case elm instanceof HTMLParagraphElement:
 			elm.innerHTML = strapiData;
@@ -37,8 +42,56 @@ function modifyElmWithStrapiData(strapiData, elm) {
 			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
 			elm.alt = strapiData.data.attributes.alternativeText;
 			break;
-		case elm instanceof HTMLDivElement: //IMPORTANT! this is a hack for rich text. Need something more robust. Also need to sanitize
-			elm.innerHTML = marked.parse(`${strapiData}`);
+		case elm instanceof HTMLDivElement: //for a div, we could have video or rich text
+			//video
+			if (strapiData.data?.attributes.mime && strapiData?.data?.attributes?.mime.includes("video")) {
+				//create a video element to replace the div
+				const videoElement = document.createElement("video");
+				videoElement.controls = true;
+				videoElement.src = `${apiURL}${strapiData.data.attributes.url}`;
+				videoElement.type = strapiData.data.attributes.mime;
+
+				//move div attributes and classes to video element
+				elm.getAttributeNames().forEach(atribName => videoElement.setAttribute(atribName, elm.getAttribute(atribName)));
+				elm.classList.forEach(className => videoElement.classList.add(className));
+
+				//replace the div with the video element
+				elm.parentElement.replaceChild(videoElement, elm);
+			}
+			//embedded video
+			else if (iFrameElm) {
+				//remove the iframe element
+				iFrameElm.remove();
+
+				let embedUrl = strapiData
+
+				/* 
+					this step allows  a youtube link to be given without the embedded url 
+					check if strapiData is a youtube url but not a youtube embed url 
+					(copilot created these regex expressions, should test more thoroughly)
+				*/
+				const youtubeUrl = strapiData.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/);
+				if (youtubeUrl && !youtubeUrl[0].includes("embed")) {
+					const youtubeUrl = new URL(strapiData);
+					const youtubeId = youtubeUrl.searchParams.get("v");
+					embedUrl = `https://www.youtube.com/embed/${youtubeId}`;
+					console.log(embedUrl);
+				}
+
+				//replace the iframe src with the strapi data
+				iFrameElm.setAttribute("src", embedUrl);
+				iFrameElm.setAttribute("title", "")
+
+				//add the iframe element back to the div
+				elm.appendChild(iFrameElm);
+
+				console.log(iFrameElm)
+			}
+			//rich text
+			else {
+				elm.innerHTML = marked.parse(`${strapiData}`);
+			}
+
 			break;
 		default:
 			throw new Error("Strapify Error: Attempted to use an unsupported element type - " + elm.tagName);

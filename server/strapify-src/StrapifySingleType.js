@@ -7,6 +7,7 @@ class StrapifySingleType {
 
 	#attributes = {
 		"strapi-single-type": undefined,
+		"strapi-single-type-into": undefined
 	}
 
 	constructor(singleTypeElement) {
@@ -38,7 +39,7 @@ class StrapifySingleType {
 		})
 	}
 
-	async process() {
+	async #processStrapiSingleType() {
 		const attributeValue = this.#attributes["strapi-single-type"]
 
 		const split = attributeValue.split(".");
@@ -49,6 +50,39 @@ class StrapifySingleType {
 		const fieldValue = strapiData.data.attributes[singleTypeFieldName];
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);
+	}
+
+	async #processStrapiSingleTypeInto() {
+		const attributeValue = this.#attributes["strapi-single-type-into"]
+		const args = attributeValue.split("|");
+
+		let strapiData = null;
+
+		await args.forEach(async (arg) => {
+			const splitInto = arg.split("->").map((arg) => arg.trim());
+			const singleTypeArg = splitInto[0];
+			const intoAttribute = splitInto[1];
+
+			const splitSingleTypeArg = singleTypeArg.split(".");
+			const _singleTypeName = splitSingleTypeArg[0];
+			const singleTypeFieldName = splitSingleTypeArg[1];
+
+			if (!strapiData) {
+				strapiData = await strapiRequest("/api/" + _singleTypeName, "?populate=*")
+			}
+
+			this.#singleTypeElement.setAttribute(intoAttribute, strapiData.data.attributes[singleTypeFieldName]);
+		})
+	}
+
+	async process() {
+		if (this.#attributes["strapi-single-type"]) {
+			await this.#processStrapiSingleType();
+		}
+
+		if (this.#attributes["strapi-single-type-into"]) {
+			await this.#processStrapiSingleTypeInto();
+		}
 	}
 }
 
