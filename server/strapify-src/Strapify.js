@@ -22,6 +22,42 @@ const validStrapifyFieldAttributes = [
 	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-into"
 ];
 
+const queryStringVariables = getQueryStringVariables();
+
+function getQueryStringVariables() {
+	//get the query strings variables
+	const queryString = window.location.search.substring(1);
+	const vars = queryString.split("&").filter(v => v);
+
+	//split the query string variables into key value pairs
+	const queryStringVariables = {};
+	for (let i = 0; i < vars.length; i++) {
+		const pair = vars[i].split("=");
+		queryStringVariables[pair[0]] = pair[1];
+	}
+
+	return queryStringVariables;
+}
+
+function substitueQueryStringVariables(argument) {
+	if (!argument) return argument;
+
+	const regex = /qs\.([\w\-2]+)/gm
+	const matches = argument.match(regex);
+
+	if (!matches) {
+		return argument;
+	}
+
+	//replace first instance of match with the value of the query string variable for each match
+	const reduced = matches.reduce((acc, match) => {
+		const queryStringVariableValue = queryStringVariables[match.split("qs.")[1]]
+		return acc.replace(new RegExp(`${match}`, "m"), queryStringVariableValue)
+	}, argument)
+
+	return reduced
+}
+
 function modifyElmWithStrapiData(strapiData, elm) {
 	//look for iframe element with embedly-embed class
 	const iFrameElm = elm.querySelector("iframe");
@@ -98,8 +134,12 @@ function modifyElmWithStrapiData(strapiData, elm) {
 
 const Strapify = {
 	apiURL: apiURL,
+	validStrapifySingleTypeAttributes: validStrapifySingleTypeAttributes,
 	validStrapifyCollectionAttributes: validStrapifyCollectionAttributes,
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
+	queryStringVariables: queryStringVariables,
+	getQueryStringVariables: getQueryStringVariables,
+	substitueQueryStringVariables: substitueQueryStringVariables,
 	modifyElmWithStrapiData: modifyElmWithStrapiData
 }
 

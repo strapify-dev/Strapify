@@ -132,12 +132,14 @@ class StrapifyCollection {
 	}
 
 	#getQueryString() {
+		let qs = Strapify.substitueQueryStringVariables;
+
 		const queryStringPairs = {
 			"populate=": "*",
-			"filters": this.#collectionElement.getAttribute("strapi-collection-filter"),
-			"sort=": this.#collectionElement.getAttribute("strapi-collection-sort"),
-			"pagination[page]=": this.#collectionElement.getAttribute("strapi-collection-page"),
-			"pagination[pageSize]=": this.#collectionElement.getAttribute("strapi-collection-page-size"),
+			"filters": qs(this.#collectionElement.getAttribute("strapi-collection-filter")),
+			"sort=": qs(this.#collectionElement.getAttribute("strapi-collection-sort")),
+			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-collection-page")),
+			"pagination[pageSize]=": qs(this.#collectionElement.getAttribute("strapi-collection-page-size")),
 		}
 
 		//Ridiculous but elegant?
