@@ -57,7 +57,6 @@ class StrapifySingleType {
 		const singleTypeName = split[0];
 		const singleTypeFieldArg = split.slice(1).join(".")
 
-		console.log(`?populate=*&${singleTypeFieldArg}`)
 		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
 
 		const fieldValue = this.#getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)

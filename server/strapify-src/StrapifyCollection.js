@@ -134,8 +134,31 @@ class StrapifyCollection {
 	#getQueryString() {
 		let qs = Strapify.substituteQueryStringVariables;
 
+		//search the template element for any descendants that are strapify fields with components to generate the populate string
+		let populateComponents = ""
+		let componentFieldElms = this.#findFieldElms(this.#templateElm);
+		componentFieldElms.forEach(fieldElm => {
+			for (let attribute of Strapify.validStrapifyFieldAttributes) {
+				let attributeValue = fieldElm.getAttribute(attribute);
+
+				if (attributeValue) {
+					const args = attributeValue.split("|").map(arg => arg.trim());
+
+					for (let arg of args) {
+						if (arg) {
+							const _arg = Strapify.substituteQueryStringVariablesWithNothing(arg);
+							if (_arg.includes(".")) {
+								populateComponents += `&populate=${_arg}`;
+							}
+						}
+					}
+				}
+
+			}
+		});
+
 		const queryStringPairs = {
-			"populate=": "*",
+			"populate=": "*" + (populateComponents !== "" ? populateComponents : ""),
 			"filters": qs(this.#collectionElement.getAttribute("strapi-collection-filter")),
 			"sort=": qs(this.#collectionElement.getAttribute("strapi-collection-sort")),
 			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-collection-page")),
@@ -149,7 +172,7 @@ class StrapifyCollection {
 					return `${prefix}${arg.trim()}`
 				}).join("&");
 			}
-		}).filter(item => item).join("&")
+		}).filter(item => item).join("&");
 
 		return queryString;
 	}

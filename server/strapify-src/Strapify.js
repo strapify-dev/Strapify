@@ -58,6 +58,24 @@ function substituteQueryStringVariables(argument) {
 	return reduced
 }
 
+function substituteQueryStringVariablesWithNothing(argument) {
+	if (!argument) return argument;
+
+	const regex = /qs\.([\w\-2]+)/gm
+	const matches = argument.match(regex);
+
+	if (!matches) {
+		return argument;
+	}
+
+	//replace first instance of match with the value of the query string variable for each match
+	const reduced = matches.reduce((acc, match) => {
+		return acc.replace(new RegExp(`${match}`, "m"), "")
+	}, argument)
+
+	return reduced
+}
+
 function modifyElmWithStrapiData(strapiData, elm) {
 	//look for iframe element with embedly-embed class
 	const iFrameElm = elm.querySelector("iframe");
@@ -140,6 +158,7 @@ const Strapify = {
 	queryStringVariables: queryStringVariables,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
+	substituteQueryStringVariablesWithNothing: substituteQueryStringVariablesWithNothing,
 	modifyElmWithStrapiData: modifyElmWithStrapiData
 }
 
