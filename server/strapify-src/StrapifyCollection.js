@@ -4,14 +4,15 @@ import strapiRequest from "./util/strapiRequest";
 
 class StrapifyCollection {
 	#collectionElement;
-	#insertionElm
+	#insertionElm;
+	#insertBeforeElm;
 	#templateElm;
 	#generatedTemplateElms = [];
-	#collectionData
-	#strapifyFields
-	#strapifyRelations = []
+	#collectionData;
+	#strapifyFields;
+	#strapifyRelations = [];
 	#mutationObserver;
-	#minHeightCache
+	#minHeightCache;
 
 	#attributes = {
 		"strapi-collection": undefined,
@@ -46,9 +47,9 @@ class StrapifyCollection {
 		//use the first strapi-template element as the template and remove all others
 		const templateElms = this.#findTemplateElms();
 		this.#insertionElm = templateElms[0].parentElement;
+		this.#insertBeforeElm = this.#findInsertBeforeElm(templateElms[0]);
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
-
 
 		//get page control elements and add event listeners to page control elements
 		const pageControlElms = this.#collectionElement.querySelectorAll("[strapi-page-control]");
@@ -72,6 +73,19 @@ class StrapifyCollection {
 	#findTemplateElms() {
 		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
 		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation]") === this.#collectionElement);
+	}
+
+	#findInsertBeforeElm(templateElm) {
+		let curElm = templateElm.nextElementSibling;
+		while (curElm) {
+			if (!curElm.hasAttribute("strapi-template")) {
+				return curElm;
+			}
+
+			curElm = curElm.nextElementSibling;
+		}
+
+		return null;
 	}
 
 	#findRelationElms(templateElm) {
@@ -149,7 +163,7 @@ class StrapifyCollection {
 		this.#strapifyFields = [];
 
 		//destroy all existing generated template elements
-		if(this.#generatedTemplateElms) {
+		if (this.#generatedTemplateElms) {
 			this.#generatedTemplateElms.forEach(generatedTemplateElm => generatedTemplateElm.remove());
 		}
 		this.#generatedTemplateElms = [];
@@ -200,7 +214,11 @@ class StrapifyCollection {
 			})
 
 			//put template elm into the dom
-			this.#insertionElm.appendChild(templateClone);
+			if (this.#findInsertBeforeElm !== null) {
+				this.#insertionElm.insertBefore(templateClone, this.#insertBeforeElm);
+			} else {
+				this.#insertionElm.appendChild(templateClone);
+			}
 			this.#generatedTemplateElms.push(templateClone);
 		}
 
