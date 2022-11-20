@@ -39,15 +39,26 @@ class StrapifySingleType {
 		})
 	}
 
+	#getStrapiComponentValue(argument, strapiAttributes) {
+		const strapiAttributesNames = argument.split(".");
+
+		let strapiDataValue = strapiAttributesNames.reduce((accumulator, currentValue) => {
+			return accumulator[currentValue];
+		}, strapiAttributes);
+
+		return strapiDataValue;
+	}
+
 	async #processStrapiSingleType() {
 		const attributeValue = this.#attributes["strapi-single-type"]
 
 		const split = attributeValue.split(".");
 		const singleTypeName = split[0];
-		const singleTypeFieldName = split[1];
+		const singleTypeFieldArg = split.slice(1).join(".")
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
-		const fieldValue = strapiData.data.attributes[singleTypeFieldName];
+
+		const fieldValue = this.#getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);
 	}
