@@ -50,7 +50,8 @@ class StrapifySingleType {
 	}
 
 	async #processStrapiSingleType() {
-		const attributeValue = this.#attributes["strapi-single-type"]
+		let attributeValue = this.#attributes["strapi-single-type"]
+		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
 
 		const split = attributeValue.split(".");
 		const singleTypeName = split[0];

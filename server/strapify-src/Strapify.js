@@ -39,7 +39,7 @@ function getQueryStringVariables() {
 	return queryStringVariables;
 }
 
-function substitueQueryStringVariables(argument) {
+function substituteQueryStringVariables(argument) {
 	if (!argument) return argument;
 
 	const regex = /qs\.([\w\-2]+)/gm
@@ -139,7 +139,7 @@ const Strapify = {
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
 	queryStringVariables: queryStringVariables,
 	getQueryStringVariables: getQueryStringVariables,
-	substitueQueryStringVariables: substitueQueryStringVariables,
+	substituteQueryStringVariables: substituteQueryStringVariables,
 	modifyElmWithStrapiData: modifyElmWithStrapiData
 }
 

@@ -132,7 +132,7 @@ class StrapifyCollection {
 	}
 
 	#getQueryString() {
-		let qs = Strapify.substitueQueryStringVariables;
+		let qs = Strapify.substituteQueryStringVariables;
 
 		const queryStringPairs = {
 			"populate=": "*",

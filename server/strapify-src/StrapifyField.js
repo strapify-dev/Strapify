@@ -53,7 +53,7 @@ class StrapifyField {
 
 	#processStrapiFieldElms(strapiAttributes) {
 		let attributeValue = this.#fieldElement.getAttribute("strapi-field");
-		attributeValue = Strapify.substitueQueryStringVariables(attributeValue)
+		attributeValue = Strapify.substituteQueryStringVariables(attributeValue)
 
 		const strapiDataValue = this.#getStrapiComponentValue(attributeValue, strapiAttributes);
 
@@ -65,7 +65,7 @@ class StrapifyField {
 		const strapiFieldNames = attributeValue.split("|");
 
 		strapiFieldNames.forEach((strapiFieldName) => {
-			const _strapiFieldName = Strapify.substitueQueryStringVariables(strapiFieldName.trim());
+			const _strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName.trim());
 			const className = this.#getStrapiComponentValue(_strapiFieldName, strapiAttributes);
 			this.#fieldElement.classList.add(className);
 		})
@@ -79,7 +79,7 @@ class StrapifyField {
 			const split = arg.split(",");
 			const classToReplace = split[0].trim();
 			let classReplaceStrapiFieldName = split[1].trim();
-			classReplaceStrapiFieldName = Strapify.substitueQueryStringVariables(classReplaceStrapiFieldName);
+			classReplaceStrapiFieldName = Strapify.substituteQueryStringVariables(classReplaceStrapiFieldName);
 			const classReplaceValue = this.#getStrapiComponentValue(classReplaceStrapiFieldName, strapiAttributes);
 
 			this.#fieldElement.classList.remove(classToReplace);
@@ -94,7 +94,7 @@ class StrapifyField {
 		args.forEach((arg) => {
 			const split = arg.split("->");
 			let strapiFieldName = split[0].trim();
-			strapiFieldName = Strapify.substitueQueryStringVariables(strapiFieldName);
+			strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName);
 			const intoDataValue = this.#getStrapiComponentValue(strapiFieldName, strapiAttributes);
 			const intoAttributeName = split[1].trim();
 
