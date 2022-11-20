@@ -26,12 +26,6 @@ class StrapifyCollection {
 		this.#collectionElement = collectionElement;
 		this.#updateAttributes();
 
-		//console.log(this.#attributes)
-
-		//	if(this.#attributes["strapi-relation"]) {
-		//		console.log(this.#collectionElement)
-		//	}	
-
 		//create mutation observer to watch for attribute changes
 		this.#mutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
@@ -157,9 +151,6 @@ class StrapifyCollection {
 		const queryString = this.#getQueryString();
 		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 		this.#collectionData = collectionData
-
-		//query string to find strapify field elements
-		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
 
 		//loop through the collection data and process template clone with the strapi data, add to DOM
 		for (let i = 0; i < collectionData.data.length; i++) {
