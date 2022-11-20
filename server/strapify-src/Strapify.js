@@ -84,8 +84,6 @@ function modifyElmWithStrapiData(strapiData, elm) {
 
 				//add the iframe element back to the div
 				elm.appendChild(iFrameElm);
-
-				console.log(iFrameElm)
 			}
 			//rich text
 			else {
