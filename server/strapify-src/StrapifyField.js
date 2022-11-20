@@ -55,7 +55,6 @@ class StrapifyField {
 		let attributeValue = this.#fieldElement.getAttribute("strapi-field");
 		attributeValue = Strapify.substitueQueryStringVariables(attributeValue)
 
-		const strapiAttributesNames = attributeValue.split(".");
 		const strapiDataValue = this.#getStrapiComponentValue(attributeValue, strapiAttributes);
 
 		Strapify.modifyElmWithStrapiData(strapiDataValue, this.#fieldElement);
