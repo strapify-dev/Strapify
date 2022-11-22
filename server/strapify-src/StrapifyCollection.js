@@ -226,7 +226,12 @@ class StrapifyCollection {
 			strapifyRelationElements.forEach(relationElement => {
 				//use the relation ids to generate a filter string
 				const relationData = strapiDataAttributes[relationElement.getAttribute("strapi-relation")].data;
-				const filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
+				let filterString
+				if (Array.isArray(relationData)) {
+					filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
+				} else {
+					filterString = `[id]=${relationData.id}`;
+				}
 
 				//add the filter string to the relation element
 				relationElement.setAttribute("strapi-collection-filter", filterString);
