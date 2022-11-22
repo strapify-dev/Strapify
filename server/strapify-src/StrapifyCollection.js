@@ -146,7 +146,7 @@ class StrapifyCollection {
 
 					for (let arg of args) {
 						if (arg) {
-							const _arg = Strapify.substituteQueryStringVariablesWithNothing(arg);
+							const _arg = Strapify.removeQueryStringVariableReferences(arg);
 							if (_arg.includes(".")) {
 								populateComponents += `&populate=${_arg}`;
 							}

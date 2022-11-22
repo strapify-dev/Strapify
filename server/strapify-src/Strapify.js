@@ -58,7 +58,7 @@ function substituteQueryStringVariables(argument) {
 	return reduced
 }
 
-function substituteQueryStringVariablesWithNothing(argument) {
+function removeQueryStringVariableReferences(argument) {
 	if (!argument) return argument;
 
 	const regex = /qs\.([\w\-2]+)/gm
@@ -74,6 +74,25 @@ function substituteQueryStringVariablesWithNothing(argument) {
 	}, argument)
 
 	return reduced
+}
+
+function getArguments(attributeValue) {
+	return attributeValue.split("|").map(arg => arg.trim());
+}
+
+function getProcessedArguments(attributeValue) {
+	attributeValue = substituteQueryStringVariables(attributeValue);
+	return attributeValue.split("|").map(arg => arg.trim());
+}
+
+function getStrapiComponentValue(argument, strapiAttributes) {
+	const strapiAttributesNames = argument.split(".");
+
+	let strapiDataValue = strapiAttributesNames.reduce((accumulator, currentValue) => {
+		return accumulator[currentValue];
+	}, strapiAttributes);
+
+	return strapiDataValue;
 }
 
 function modifyElmWithStrapiData(strapiData, elm) {
@@ -158,7 +177,10 @@ const Strapify = {
 	queryStringVariables: queryStringVariables,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
-	substituteQueryStringVariablesWithNothing: substituteQueryStringVariablesWithNothing,
+	removeQueryStringVariableReferences: removeQueryStringVariableReferences,
+	getArguments: getArguments,
+	getProcessedArguments: getProcessedArguments,
+	getStrapiComponentValue: getStrapiComponentValue,
 	modifyElmWithStrapiData: modifyElmWithStrapiData
 }
 
