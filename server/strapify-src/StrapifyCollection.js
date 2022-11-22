@@ -200,7 +200,7 @@ class StrapifyCollection {
 		this.#strapifyRelations = [];
 
 		//get the strapi data
-		const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"];
+		const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"].split(",")[1].trim();
 		const queryString = this.#getQueryString();
 		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 		this.#collectionData = collectionData
@@ -225,7 +225,11 @@ class StrapifyCollection {
 			const strapifyRelationElements = this.#findRelationElms(templateClone);
 			strapifyRelationElements.forEach(relationElement => {
 				//use the relation ids to generate a filter string
-				const relationData = strapiDataAttributes[relationElement.getAttribute("strapi-relation")].data;
+				const relationArgs = relationElement.getAttribute("strapi-relation").split(",").map(arg => arg.trim());
+				const relationFieldName = relationArgs[0];
+				const relationCollectionName = relationArgs[1];
+
+				const relationData = strapiDataAttributes[relationFieldName].data;
 				let filterString
 				if (Array.isArray(relationData)) {
 					filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
