@@ -95,9 +95,13 @@ class StrapifyCollection {
 
 	#findFieldElms(templateElm) {
 		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
-
 		const fieldElms = Array.from(templateElm.querySelectorAll(querySelectorString));
 		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	}
+
+	#findRepeatableElms(templateElm) {
+		const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
+		return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
 	#holdHeight() {
@@ -219,6 +223,49 @@ class StrapifyCollection {
 				this.#strapifyFields.push(strapifyField);
 
 				strapifyField.process(strapiDataAttributes)
+			});
+
+			//find strapify repeatable elements on the clone
+			const strapifyRepeatableElements = this.#findRepeatableElms(templateClone);
+			strapifyRepeatableElements.forEach(repeatableElement => {
+				//find all strapify template elements in the repeatable element
+				let repeatableTemplateElements = Array.from(repeatableElement.querySelectorAll("[strapi-template]"))
+					.filter(elm => elm.closest("[strapi-collection], [strapi-relation], [strapi-repeatable]") === repeatableElement);
+
+				//remove the template element from the repeatable element
+				repeatableTemplateElements.forEach(repeatableTemplateElement => repeatableTemplateElement.remove());
+
+				strapiDataAttributes[repeatableElement.getAttribute("strapi-repeatable")].data.forEach((repeatableData, index) => {
+					let repeatableTemplateClone = repeatableTemplateElements[0].cloneNode(true);
+					let repeatableInsertBeforeElm = this.#findInsertBeforeElm(repeatableTemplateClone);
+
+					//find strapify field elements on the clone 
+					let repeatableFieldElements = this.#findFieldElms(repeatableTemplateClone);
+
+					repeatableFieldElements.forEach(fieldElement => {
+						//	console.log(fieldElement, repeatableData)
+						const strapifyField = new StrapifyField(fieldElement)
+						this.#strapifyFields.push(strapifyField);
+
+						const attribName = `${repeatableElement.getAttribute("strapi-repeatable")}`
+						const data = {};
+						data[attribName] = {}
+						data[attribName].data = {attributes: repeatableData.attributes}
+						strapifyField.process(data)
+
+						//console.log(fieldElement.attributes)
+
+						//strapifyField.process(strapiDataAttributes)
+					});
+
+					//put template elm into the dom
+					if (repeatableInsertBeforeElm !== null) {
+						repeatableElement.insertBefore(repeatableTemplateClone, repeatableInsertBeforeElm);
+					} else {
+						repeatableElement.appendChild(repeatableTemplateClone);
+					}
+					this.#generatedTemplateElms.push(repeatableTemplateClone);
+				})
 			});
 
 			//find strapify relation elements on the clone and create a strapify collection for each relation element

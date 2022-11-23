@@ -54,8 +54,8 @@ class StrapifyField {
 	#processStrapiFieldElms(strapiAttributes) {
 		let attributeValue = this.#fieldElement.getAttribute("strapi-field");
 		attributeValue = Strapify.substituteQueryStringVariables(attributeValue)
-
 		const strapiDataValue = this.#getStrapiComponentValue(attributeValue, strapiAttributes);
+		//console.log(strapiDataValue)
 
 		Strapify.modifyElmWithStrapiData(strapiDataValue, this.#fieldElement);
 	}
@@ -105,7 +105,7 @@ class StrapifyField {
 	process(strapiDataAttributes) {
 		this.#strapiDataAttributes = strapiDataAttributes;
 
-		if (this.#attributes["strapi-field"]) {
+		if (this.#attributes["strapi-field"] !== null && this.#attributes["strapi-field"] !== undefined) {
 			this.#processStrapiFieldElms(strapiDataAttributes);
 		}
 
