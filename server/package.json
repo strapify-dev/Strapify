@@ -1,13 +1,14 @@
 {
-  "name": "goodman-react-template-server",
+  "name": "strapify",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index",
     "starthot": "npx nodemon index",
-    "bundle": "webpack",
-    "bundlehot": "webpack --watch"
+    "bundle": "webpack --mode development",
+    "bundlehot": "webpack --watch --mode development",
+	"bundleprod": "webpack --mode production"
   },
   "author": "Austin Goodman",
   "license": "UNLICENSED",
