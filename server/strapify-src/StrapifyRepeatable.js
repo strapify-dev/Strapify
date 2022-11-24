@@ -51,12 +51,13 @@ class StrapifyRepeatable {
 	}
 
 	async process() {
+		const fieldName = this.#attributes["strapi-repeatable"];
 		const repeatableElement = this.#repeatableElement;
 
 		//create a fake collection to pass to a new StrapifyCollection
 		const overrideData = {
-			data: this.#strapiDataAttributes.images.data.map((image) => {
-				return { attributes: { images: { data: image } } }
+			data: this.#strapiDataAttributes[fieldName].data.map((fieldData) => {
+				return { attributes: { [fieldName]: { data: fieldData } } }
 			}),
 			meta: {}
 		}
