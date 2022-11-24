@@ -54,18 +54,31 @@ class StrapifyRepeatable {
 		const fieldName = this.#attributes["strapi-repeatable"];
 		const repeatableElement = this.#repeatableElement;
 
-		//create a fake collection to pass to a new StrapifyCollection
-		const overrideData = {
-			data: this.#strapiDataAttributes[fieldName].data.map((fieldData) => {
-				return { attributes: { [fieldName]: { data: fieldData } } }
-			}),
-			meta: {}
+		//if media
+		let overrideData
+		if (this.#strapiDataAttributes[fieldName].data) {
+			overrideData = {
+				data: this.#strapiDataAttributes[fieldName].data.map((fieldData) => {
+					return { attributes: { [fieldName]: { data: fieldData } } }
+				}),
+				meta: {}
+			}
+		} 
+		//if component
+		else {
+			overrideData = {
+				data: this.#strapiDataAttributes[fieldName].map((fieldData) => {
+					return { attributes: { [fieldName]: fieldData } }
+				}),
+				meta: {}
+			}
 		}
 
 		const strapifyCollection = new StrapifyCollection(repeatableElement, overrideData);
 		this.#strapifyCollection = strapifyCollection;
 
 		await strapifyCollection.process()
+
 	}
 }
 
