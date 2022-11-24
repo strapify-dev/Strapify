@@ -1,16 +1,17 @@
 import Strapify from "./Strapify.js";
-import StrapifyField from "./StrapifyField";
+import StrapifyTemplate from "./StrapifyTemplate"
 import strapiRequest from "./util/strapiRequest";
 
 class StrapifyCollection {
 	#collectionElement;
+	#collectionData;
+	#overrideCollectionData;
+	#strapifyTemplates = [];
+
 	#insertionElm;
 	#insertBeforeElm;
 	#templateElm;
-	#generatedTemplateElms = [];
-	#collectionData;
-	#strapifyFields;
-	#strapifyRelations = [];
+
 	#mutationObserver;
 	#minHeightCache;
 
@@ -23,9 +24,10 @@ class StrapifyCollection {
 		"strapi-collection-page-size": undefined,
 	}
 
-	constructor(collectionElement) {
+	constructor(collectionElement, overrideCollectionData) {
 		//set the collection element and update the attributes
 		this.#collectionElement = collectionElement;
+		this.#overrideCollectionData = overrideCollectionData;
 		this.#updateAttributes();
 
 		//create mutation observer to watch for attribute changes
@@ -60,8 +62,7 @@ class StrapifyCollection {
 
 	destroy() {
 		this.#mutationObserver.disconnect();
-		this.#strapifyFields.forEach(field => field.destroy());
-		this.#strapifyRelations.forEach(relation => relation.destroy());
+		this.#strapifyTemplates.forEach(template => template.destroy());
 	}
 
 	#updateAttributes() {
@@ -72,7 +73,7 @@ class StrapifyCollection {
 
 	#findTemplateElms() {
 		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
-		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation]") === this.#collectionElement);
+		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable") === this.#collectionElement);
 	}
 
 	#findInsertBeforeElm(templateElm) {
@@ -88,20 +89,10 @@ class StrapifyCollection {
 		return null;
 	}
 
-	#findRelationElms(templateElm) {
-		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
-		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
 	#findFieldElms(templateElm) {
 		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
 		const fieldElms = Array.from(templateElm.querySelectorAll(querySelectorString));
 		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-	#findRepeatableElms(templateElm) {
-		const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
-		return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
 	#holdHeight() {
@@ -185,122 +176,39 @@ class StrapifyCollection {
 		//hold the height of the collection element to prevent page from jumping
 		this.#holdHeight();
 
-		//destroy all existing strapify fields
-		if (this.#strapifyFields) {
-			this.#strapifyFields.forEach(strapifyField => strapifyField.destroy());
-		}
-		this.#strapifyFields = [];
-
-		//destroy all existing generated template elements
-		if (this.#generatedTemplateElms) {
-			this.#generatedTemplateElms.forEach(generatedTemplateElm => generatedTemplateElm.remove());
-		}
-		this.#generatedTemplateElms = [];
-
-		//destroy all existing strapify relations
-		if (this.#strapifyRelations) {
-			this.#strapifyRelations.forEach(strapifyRelation => strapifyRelation.destroy());
-		}
-		this.#strapifyRelations = [];
+		//destroy all strapify templates
+		this.#strapifyTemplates.forEach(template => template.destroy());
+		this.#strapifyTemplates = [];
 
 		//get the strapi data
-		const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"].split(",")[1].trim();
-		const queryString = this.#getQueryString();
-		const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
-		this.#collectionData = collectionData
+		if (this.#overrideCollectionData === undefined) {
+			const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"].split(",")[1].trim();
+			const queryString = this.#getQueryString();
+			const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
+			this.#collectionData = collectionData
+		} else {
+			this.#collectionData = this.#overrideCollectionData;
+			//console.log("!!!!", this.#collectionData);
+		}
 
-		//loop through the collection data and process template clone with the strapi data, add to DOM
-		for (let i = 0; i < collectionData.data.length; i++) {
-			const { id: strapiDataId, attributes: strapiDataAttributes } = collectionData.data[i];
+		//loop through the collection data and create a strapify template for each item
+		for (let i = 0; i < this.#collectionData.data.length; i++) {
+			const { id: strapiDataId, attributes: strapiDataAttributes } = this.#collectionData.data[i];
 
-			//clone the template 
+			//clone the template and put it into the DOM
 			let templateClone = this.#templateElm.cloneNode(true);
-
-			//find strapify field elements on the clone 
-			const strapifyFieldElements = this.#findFieldElms(templateClone);
-			strapifyFieldElements.forEach(fieldElement => {
-				const strapifyField = new StrapifyField(fieldElement)
-				this.#strapifyFields.push(strapifyField);
-
-				strapifyField.process(strapiDataAttributes)
-			});
-
-			//find strapify repeatable elements on the clone
-			const strapifyRepeatableElements = this.#findRepeatableElms(templateClone);
-			strapifyRepeatableElements.forEach(repeatableElement => {
-				//find all strapify template elements in the repeatable element
-				let repeatableTemplateElements = Array.from(repeatableElement.querySelectorAll("[strapi-template]"))
-					.filter(elm => elm.closest("[strapi-collection], [strapi-relation], [strapi-repeatable]") === repeatableElement);
-
-				//remove the template element from the repeatable element
-				repeatableTemplateElements.forEach(repeatableTemplateElement => repeatableTemplateElement.remove());
-
-				strapiDataAttributes[repeatableElement.getAttribute("strapi-repeatable")].data.forEach((repeatableData, index) => {
-					let repeatableTemplateClone = repeatableTemplateElements[0].cloneNode(true);
-					let repeatableInsertBeforeElm = this.#findInsertBeforeElm(repeatableTemplateClone);
-
-					//find strapify field elements on the clone 
-					let repeatableFieldElements = this.#findFieldElms(repeatableTemplateClone);
-
-					repeatableFieldElements.forEach(fieldElement => {
-						//	console.log(fieldElement, repeatableData)
-						const strapifyField = new StrapifyField(fieldElement)
-						this.#strapifyFields.push(strapifyField);
-
-						const attribName = `${repeatableElement.getAttribute("strapi-repeatable")}`
-						const data = {};
-						data[attribName] = {}
-						data[attribName].data = {attributes: repeatableData.attributes}
-						strapifyField.process(data)
-
-						//console.log(fieldElement.attributes)
-
-						//strapifyField.process(strapiDataAttributes)
-					});
-
-					//put template elm into the dom
-					if (repeatableInsertBeforeElm !== null) {
-						repeatableElement.insertBefore(repeatableTemplateClone, repeatableInsertBeforeElm);
-					} else {
-						repeatableElement.appendChild(repeatableTemplateClone);
-					}
-					this.#generatedTemplateElms.push(repeatableTemplateClone);
-				})
-			});
-
-			//find strapify relation elements on the clone and create a strapify collection for each relation element
-			const strapifyRelationElements = this.#findRelationElms(templateClone);
-			strapifyRelationElements.forEach(relationElement => {
-				//use the relation ids to generate a filter string
-				const relationArgs = relationElement.getAttribute("strapi-relation").split(",").map(arg => arg.trim());
-				const relationFieldName = relationArgs[0];
-				const relationCollectionName = relationArgs[1];
-
-				const relationData = strapiDataAttributes[relationFieldName].data;
-				let filterString
-				if (Array.isArray(relationData)) {
-					filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
-				} else {
-					filterString = `[id]=${relationData.id}`;
-				}
-
-				//add the filter string to the relation element
-				relationElement.setAttribute("strapi-collection-filter", filterString);
-
-				//create a strapify collection with the relation data
-				const strapifyRelation = new StrapifyCollection(relationElement);
-				this.#strapifyRelations.push(strapifyRelation);
-
-				strapifyRelation.process();
-			})
-
-			//put template elm into the dom
-			if (this.#findInsertBeforeElm !== null) {
+			if (this.#insertBeforeElm !== null) {
 				this.#insertionElm.insertBefore(templateClone, this.#insertBeforeElm);
 			} else {
 				this.#insertionElm.appendChild(templateClone);
 			}
-			this.#generatedTemplateElms.push(templateClone);
+
+			//create a strapify template for the template clone
+			const strapifyTemplate = new StrapifyTemplate(templateClone, strapiDataId, strapiDataAttributes);
+			this.#strapifyTemplates.push(strapifyTemplate);
+
+			//process the strapify template
+			strapifyTemplate.process();
 		}
 
 		//release the height of the collection element
