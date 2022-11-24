@@ -3,7 +3,7 @@ import StrapifySingleType from "./StrapifySingleType";
 import Strapify from "./Strapify";
 
 //find all elements with strapi-single-type attributes 
-const singleTypeElms = document.querySelectorAll(`[strapi-single-type], [strapi-single-type-into]`);
+const singleTypeElms = document.querySelectorAll(Strapify.validStrapifySingleTypeAttributes.map((attr) => `[${attr}]`).join(", "));
 
 //find all the elements with the strapi-collection attribute 
 const collectionElms = document.body.querySelectorAll("[strapi-collection]");

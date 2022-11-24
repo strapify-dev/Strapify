@@ -73,7 +73,7 @@ class StrapifyCollection {
 
 	#findTemplateElms() {
 		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
-		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable") === this.#collectionElement);
+		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === this.#collectionElement);
 	}
 
 	#findInsertBeforeElm(templateElm) {
@@ -182,7 +182,17 @@ class StrapifyCollection {
 
 		//get the strapi data
 		if (this.#overrideCollectionData === undefined) {
-			const collectionName = this.#attributes["strapi-collection"] ? this.#attributes["strapi-collection"] : this.#attributes["strapi-relation"].split(",")[1].trim();
+			let collectionName
+			if (this.#attributes["strapi-collection"]) {
+				collectionName = this.#attributes["strapi-collection"]
+			}
+			else if (this.#attributes["strapi-relation"]) {
+				collectionName = this.#attributes["strapi-relation"].split(",")[1].trim();
+			}
+			else if (this.#attributes["strapi-single-type-relation"]) {
+				collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
+			}
+
 			const queryString = this.#getQueryString();
 			const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 			this.#collectionData = collectionData

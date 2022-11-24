@@ -1,13 +1,16 @@
 import Strapify from "./Strapify"
+import StrapifyRepeatable from "./StrapifyRepeatable";
 import strapiRequest from "./util/strapiRequest";
 
 class StrapifySingleType {
 	#singleTypeElement;
+	#strapifyRepeatables = [];
 	#mutationObserver;
 
 	#attributes = {
 		"strapi-single-type": undefined,
-		"strapi-single-type-into": undefined
+		"strapi-single-type-into": undefined,
+		"strapi-single-type-repeatable": undefined
 	}
 
 	constructor(singleTypeElement) {
@@ -48,6 +51,18 @@ class StrapifySingleType {
 
 		return strapiDataValue;
 	}
+
+
+	#findRelationElms(templateElm) {
+		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
+		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	}
+
+	#findRepeatableElms(templateElm) {
+		const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-single-type-repeatable]"))
+		return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	}
+
 
 	async #processStrapiSingleType() {
 		let attributeValue = this.#attributes["strapi-single-type"]
@@ -94,6 +109,18 @@ class StrapifySingleType {
 
 		if (this.#attributes["strapi-single-type-into"]) {
 			await this.#processStrapiSingleTypeInto();
+		}
+
+		if (this.#attributes["strapi-single-type-repeatable"]) {
+
+			const splitSingleTypeArg = this.#attributes["strapi-single-type-repeatable"].split(".");
+			const _singleTypeName = splitSingleTypeArg[0];
+			const strapiData = await strapiRequest("/api/" + _singleTypeName, "?populate=*")
+
+			const strapifyRepeatable = new StrapifyRepeatable(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
+
+			strapifyRepeatable.process()
+
 		}
 	}
 }

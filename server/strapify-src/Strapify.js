@@ -11,7 +11,10 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	apiURL = "http://localhost:1337";
 }
 
-const validStrapifySingleTypeAttributes = ["strapi-single-type", "strapi-single-type-into"];
+const validStrapifySingleTypeAttributes = [
+	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-relation",
+	"strapi-single-type-repeatable"
+];
 
 const validStrapifyCollectionAttributes = [
 	"strapi-collection", "strapi-collection-filter", "strapi-collection-sort",

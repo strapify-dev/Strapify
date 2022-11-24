@@ -12,6 +12,7 @@ class StrapifyRepeatable {
 
 	#attributes = {
 		"strapi-repeatable": undefined,
+		"strapi-single-type-repeatable": undefined,
 	}
 
 	constructor(repeatableElement, strapiDataId, strapiDataAttributes) {
@@ -51,7 +52,7 @@ class StrapifyRepeatable {
 	}
 
 	async process() {
-		const fieldName = this.#attributes["strapi-repeatable"];
+		const fieldName = this.#attributes["strapi-repeatable"] ? this.#attributes["strapi-repeatable"] : this.#attributes["strapi-single-type-repeatable"].split(".")[1];
 		const repeatableElement = this.#repeatableElement;
 
 		//if media
