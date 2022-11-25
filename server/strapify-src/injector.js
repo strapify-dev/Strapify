@@ -8,6 +8,12 @@ const singleTypeElms = document.querySelectorAll(Strapify.validStrapifySingleTyp
 //find all the elements with the strapi-collection attribute 
 const collectionElms = document.body.querySelectorAll("[strapi-collection]");
 
+//find all elements with the strapi-delete attribute
+const deleteElms = document.body.querySelectorAll("[strapi-delete]");
+
+//remove all delete elements
+deleteElms.forEach(deleteElm => deleteElm.remove());
+
 //create a StrapifySingleType object for each single type element
 singleTypeElms.forEach(singleTypeElm => {
 	const strapifySingleType = new StrapifySingleType(singleTypeElm);
@@ -19,3 +25,5 @@ collectionElms.forEach((collectionElm) => {
 	const strapifyCollection = new StrapifyCollection(collectionElm);
 	strapifyCollection.process();
 });
+
+
