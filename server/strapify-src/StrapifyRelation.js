@@ -10,6 +10,7 @@ class StrapifyTemplate {
 
 	#attributes = {
 		"strapi-relation": undefined,
+		"strapi-single-type-relation": undefined,
 	}
 
 	constructor(relationElement) {
@@ -30,7 +31,7 @@ class StrapifyTemplate {
 		//observe the collection element for attribute changes
 		this.#mutationObserver.observe(this.#relationElement, {
 			attributes: true,
-			attributeFilter: ["strapi-relation", ...Strapify.validStrapifyCollectionAttributes]
+			attributeFilter: ["strapi-relation", "strapi-single-type-relation", ...Strapify.validStrapifyCollectionAttributes]
 		});
 	}
 
@@ -50,9 +51,21 @@ class StrapifyTemplate {
 		const relationElement = this.#relationElement;
 
 		//use the relation ids to generate a filter string
-		const relationArgs = this.#attributes["strapi-relation"].split(",").map(arg => arg.trim());
-		const relationFieldName = relationArgs[0];
-		const relationCollectionName = relationArgs[1];
+		let relationArgs
+		let relationFieldName
+		let relationCollectionName
+		if (this.#attributes["strapi-relation"]) {
+			relationArgs = this.#attributes["strapi-relation"].split(",").map(arg => arg.trim());
+			relationFieldName = relationArgs[0];
+			relationCollectionName = relationArgs[1];
+		}
+		else if (this.#attributes["strapi-single-type-relation"]) {
+			relationArgs = this.#attributes["strapi-single-type-relation"].split(",").map(arg => arg.trim());
+			console.log(relationArgs[0].split(".")[1])
+			relationFieldName = relationArgs[0].split(".")[1];
+			relationCollectionName = relationArgs[1];
+			//relationCollectionName = relationArgs[1];
+		}
 
 		const relationData = strapiDataAttributes[relationFieldName].data;
 		let filterString

@@ -18,6 +18,7 @@ class StrapifyCollection {
 	#attributes = {
 		"strapi-collection": undefined,
 		"strapi-relation": undefined,
+		"strapi-single-type-relation": undefined,
 		"strapi-collection-filter": undefined,
 		"strapi-collection-sort": undefined,
 		"strapi-collection-page": undefined,
@@ -188,6 +189,9 @@ class StrapifyCollection {
 			}
 			else if (this.#attributes["strapi-relation"]) {
 				collectionName = this.#attributes["strapi-relation"].split(",")[1].trim();
+			}
+			else if (this.#attributes["strapi-single-type-relation"]) {
+				collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
 			}
 			else if (this.#attributes["strapi-single-type-relation"]) {
 				collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
