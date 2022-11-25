@@ -43,28 +43,6 @@ class StrapifySingleType {
 		})
 	}
 
-	#getStrapiComponentValue(argument, strapiAttributes) {
-		const strapiAttributesNames = argument.split(".");
-
-		let strapiDataValue = strapiAttributesNames.reduce((accumulator, currentValue) => {
-			return accumulator[currentValue];
-		}, strapiAttributes);
-
-		return strapiDataValue;
-	}
-
-
-	#findRelationElms(templateElm) {
-		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
-		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-	#findRepeatableElms(templateElm) {
-		const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-single-type-repeatable]"))
-		return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-
 	async #processStrapiSingleType() {
 		let attributeValue = this.#attributes["strapi-single-type"]
 		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
@@ -75,7 +53,7 @@ class StrapifySingleType {
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
 
-		const fieldValue = this.#getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)
+		const fieldValue = Strapify.getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);
 	}

@@ -27,6 +27,40 @@ const validStrapifyFieldAttributes = [
 
 const queryStringVariables = getQueryStringVariables();
 
+function findTemplateElms(containerElement) {
+	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template]"))
+	return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElement);
+}
+
+function findFieldElms(containerElm) {
+	const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
+	const fieldElms = Array.from(containerElm.querySelectorAll(querySelectorString));
+	return fieldElms.filter(child => child.closest("[strapi-template]") === containerElm);
+}
+
+function findRelationElms(containerElm) {
+	const relationElms = Array.from(containerElm.querySelectorAll("[strapi-relation]"))
+	return relationElms.filter(child => child.closest("[strapi-template]") === containerElm);
+}
+
+function findRepeatableElms(templateElm) {
+	const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
+	return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
+}
+
+function findInsertBeforeElm(templateElm) {
+	let curElm = templateElm.nextElementSibling;
+	while (curElm) {
+		if (!curElm.hasAttribute("strapi-template")) {
+			return curElm;
+		}
+
+		curElm = curElm.nextElementSibling;
+	}
+
+	return null;
+}
+
 function getQueryStringVariables() {
 	//get the query strings variables
 	const queryString = window.location.search.substring(1);
@@ -178,6 +212,11 @@ const Strapify = {
 	validStrapifyCollectionAttributes: validStrapifyCollectionAttributes,
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
 	queryStringVariables: queryStringVariables,
+	findTemplateElms: findTemplateElms,
+	findRelationElms: findRelationElms,
+	findRepeatableElms: findRepeatableElms,
+	findFieldElms: findFieldElms,
+	findInsertBeforeElm: findInsertBeforeElm,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
 	removeQueryStringVariableReferences: removeQueryStringVariableReferences,

@@ -48,9 +48,9 @@ class StrapifyCollection {
 		});
 
 		//use the first strapi-template element as the template and remove all others
-		const templateElms = this.#findTemplateElms();
+		const templateElms = Strapify.findTemplateElms(this.#collectionElement);
 		this.#insertionElm = templateElms[0].parentElement;
-		this.#insertBeforeElm = this.#findInsertBeforeElm(templateElms[0]);
+		this.#insertBeforeElm = Strapify.findInsertBeforeElm(templateElms[0]);
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
 
@@ -70,35 +70,6 @@ class StrapifyCollection {
 		Object.keys(this.#attributes).forEach((attribute) => {
 			this.#attributes[attribute] = this.#collectionElement.getAttribute(attribute);
 		})
-	}
-
-	#findTemplateElms() {
-		const templateElms = Array.from(this.#collectionElement.querySelectorAll("[strapi-template]"))
-		return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === this.#collectionElement);
-	}
-
-	#findInsertBeforeElm(templateElm) {
-		let curElm = templateElm.nextElementSibling;
-		while (curElm) {
-			if (!curElm.hasAttribute("strapi-template")) {
-				return curElm;
-			}
-
-			curElm = curElm.nextElementSibling;
-		}
-
-		return null;
-	}
-
-	#findFieldElms(templateElm) {
-		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
-		const fieldElms = Array.from(templateElm.querySelectorAll(querySelectorString));
-		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-	#findRelationElms(templateElm) {
-		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
-		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
 	#holdHeight() {
@@ -137,14 +108,14 @@ class StrapifyCollection {
 
 		//search the template element for any descendants that are strapify fields with components to generate the populate string
 		let populateComponents = ""
-		let componentFieldElms = this.#findFieldElms(this.#templateElm);
-		let componentRelationElms = this.#findRelationElms(this.#templateElm);
+		let componentFieldElms = Strapify.findFieldElms(this.#templateElm);
+		let componentRelationElms = Strapify.findRelationElms(this.#templateElm);
 		let componentElms = componentFieldElms.concat(componentRelationElms);
 
 		componentElms.forEach(componentElm => {
 			for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation"]) {
 				let attributeValue = componentElm.getAttribute(attribute);
-		
+
 				if (attributeValue) {
 
 					const args = attributeValue.split("|").map(arg => arg.split(",")[0].trim());

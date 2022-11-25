@@ -55,28 +55,12 @@ class StrapifyTemplate {
 		})
 	}
 
-	#findRelationElms(templateElm) {
-		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
-		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-	#findFieldElms(templateElm) {
-		const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
-		const fieldElms = Array.from(templateElm.querySelectorAll(querySelectorString));
-		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
-	#findRepeatableElms(templateElm) {
-		const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
-		return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
-	}
-
 	process() {
 		const strapiDataId = this.#strapiDataId;
 		const strapiDataAttributes = this.#strapiDataAttributes;
 
 		//find strapify field elements 
-		const strapifyFieldElements = this.#findFieldElms(this.#templateElement);
+		const strapifyFieldElements = Strapify.findFieldElms(this.#templateElement);
 		strapifyFieldElements.forEach(fieldElement => {
 			const strapifyField = new StrapifyField(fieldElement)
 			this.#strapifyFields.push(strapifyField);
@@ -85,7 +69,7 @@ class StrapifyTemplate {
 		});
 
 		//find strapify repeatable elements and process them
-		const strapifyRepeatableElements = this.#findRepeatableElms(this.#templateElement);
+		const strapifyRepeatableElements = Strapify.findRepeatableElms(this.#templateElement);
 		strapifyRepeatableElements.forEach(repeatableElement => {
 			const strapifyRepeatable = new StrapifyRepeatable(repeatableElement, strapiDataId, strapiDataAttributes)
 			this.#strapifyRepeatables.push(strapifyRepeatable);
@@ -94,7 +78,7 @@ class StrapifyTemplate {
 		});
 
 		//find strapify relation elements and process them
-		const strapifyRelationElements = this.#findRelationElms(this.#templateElement);
+		const strapifyRelationElements = Strapify.findRelationElms(this.#templateElement);
 		strapifyRelationElements.forEach(relationElement => {
 			const strapifyRelation = new StrapifyRelation(relationElement)
 			this.#strapifyRelations.push(strapifyRelation);
