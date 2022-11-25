@@ -19,10 +19,10 @@ class StrapifyCollection {
 		"strapi-collection": undefined,
 		"strapi-relation": undefined,
 		"strapi-single-type-relation": undefined,
-		"strapi-collection-filter": undefined,
-		"strapi-collection-sort": undefined,
-		"strapi-collection-page": undefined,
-		"strapi-collection-page-size": undefined,
+		"strapi-filter": undefined,
+		"strapi-sort": undefined,
+		"strapi-page": undefined,
+		"strapi-page-size": undefined,
 	}
 
 	constructor(collectionElement, overrideCollectionData) {
@@ -91,14 +91,14 @@ class StrapifyCollection {
 		if (type === "right") {
 			const newPageIndex = Math.min(page + 1, pageCount);
 			if (newPageIndex !== page) {
-				this.#collectionElement.setAttribute("strapi-collection-page", newPageIndex);
+				this.#collectionElement.setAttribute("strapi-page", newPageIndex);
 			}
 
 		}
 		else if (type === "left") {
 			const newPageIndex = Math.max(page - 1, 1);
 			if (newPageIndex !== page) {
-				this.#collectionElement.setAttribute("strapi-collection-page", newPageIndex);
+				this.#collectionElement.setAttribute("strapi-page", newPageIndex);
 			}
 		}
 	}
@@ -135,10 +135,10 @@ class StrapifyCollection {
 
 		const queryStringPairs = {
 			"populate=": "*" + (populateComponents !== "" ? populateComponents : ""),
-			"filters": qs(this.#collectionElement.getAttribute("strapi-collection-filter")),
-			"sort=": qs(this.#collectionElement.getAttribute("strapi-collection-sort")),
-			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-collection-page")),
-			"pagination[pageSize]=": qs(this.#collectionElement.getAttribute("strapi-collection-page-size")),
+			"filters": qs(this.#collectionElement.getAttribute("strapi-filter")),
+			"sort=": qs(this.#collectionElement.getAttribute("strapi-sort")),
+			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-page")),
+			"pagination[pageSize]=": qs(this.#collectionElement.getAttribute("strapi-page-size")),
 		}
 
 		//Ridiculous but elegant?

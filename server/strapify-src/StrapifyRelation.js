@@ -79,7 +79,7 @@ class StrapifyTemplate {
 		}
 
 		//add the filter string to the relation element
-		relationElement.setAttribute("strapi-collection-filter", filterString);
+		relationElement.setAttribute("strapi-filter", filterString);
 
 		//create a strapify collection with the relationelement
 		this.#strapifyCollection = new StrapifyCollection(relationElement);

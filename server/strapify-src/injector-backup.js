@@ -149,10 +149,10 @@ function processStrapiCollectionTypeElms(collectionElms) {
 		//get the collection query string attributes and match them to a query string prefix
 		const collectionName = collectionElm.getAttribute("strapi-collection")
 		const queryStringPairs = {
-			"filters": collectionElm.getAttribute("strapi-collection-filter"),
-			"sort=": collectionElm.getAttribute("strapi-collection-sort"),
-			"pagination[page]=": collectionElm.getAttribute("strapi-collection-page"),
-			"pagination[pageSize]=": collectionElm.getAttribute("strapi-collection-page-size"),
+			"filters": collectionElm.getAttribute("strapi-filter"),
+			"sort=": collectionElm.getAttribute("strapi-sort"),
+			"pagination[page]=": collectionElm.getAttribute("strapi-page"),
+			"pagination[pageSize]=": collectionElm.getAttribute("strapi-page-size"),
 			"populate=": "*"
 		}
 
