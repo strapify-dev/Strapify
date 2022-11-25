@@ -9,6 +9,7 @@ class StrapifyField {
 		"strapi-field": undefined,
 		"strapi-class-add": undefined,
 		"strapi-class-replace": undefined,
+		"strapi-class-conditional": undefined,
 		"strapi-into": undefined,
 	}
 
@@ -76,6 +77,31 @@ class StrapifyField {
 		})
 	}
 
+	#processStrapiConditionalClass(strapiDataAttributes) {
+		const attributeValue = this.#attributes["strapi-class-conditional"];
+		const args = attributeValue.split("|").map(arg => arg.trim());
+
+		args.forEach(arg => {
+			const argSplit = arg.split(",");
+			const conditionString = argSplit[0].trim();
+			const className = argSplit[1].trim();
+
+			const equalityReg = /([\w]+)\s*\[\$eq\]=([\w]+)/g;
+
+			const matches = equalityReg.exec(conditionString);
+			const strapiFieldName = matches[1];
+			const strapiFieldComparisonValue = matches[2];
+
+			let strapiFieldValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiDataAttributes);
+			strapiFieldValue = Strapify.substituteQueryStringVariables(`${strapiFieldValue}`);
+
+			if (strapiFieldValue === strapiFieldComparisonValue) {
+				this.#fieldElement.classList.add(className);
+				console.log(this.#fieldElement.classList)
+			}
+		})
+	}
+
 	#processStrapiInto(strapiAttributes) {
 		const attributeValue = this.#fieldElement.getAttribute("strapi-into");
 		const args = attributeValue.split("|");
@@ -104,6 +130,10 @@ class StrapifyField {
 
 		if (this.#attributes["strapi-class-replace"]) {
 			this.#processStrapiClassReplace(strapiDataAttributes);
+		}
+
+		if (this.#attributes["strapi-class-conditional"]) {
+			this.#processStrapiConditionalClass(strapiDataAttributes);
 		}
 
 		if (this.#attributes["strapi-into"]) {
