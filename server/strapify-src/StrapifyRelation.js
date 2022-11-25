@@ -61,13 +61,11 @@ class StrapifyTemplate {
 		}
 		else if (this.#attributes["strapi-single-type-relation"]) {
 			relationArgs = this.#attributes["strapi-single-type-relation"].split(",").map(arg => arg.trim());
-			console.log(relationArgs[0].split(".")[1])
 			relationFieldName = relationArgs[0].split(".")[1];
 			relationCollectionName = relationArgs[1];
-			//relationCollectionName = relationArgs[1];
 		}
-
-		const relationData = strapiDataAttributes[relationFieldName].data;
+		
+		const relationData = Strapify.getStrapiComponentValue(relationFieldName, strapiDataAttributes).data;
 		let filterString
 		if (Array.isArray(relationData)) {
 			filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");

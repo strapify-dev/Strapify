@@ -96,6 +96,11 @@ class StrapifyCollection {
 		return fieldElms.filter(child => child.closest("[strapi-template]") === templateElm);
 	}
 
+	#findRelationElms(templateElm) {
+		const relationElms = Array.from(templateElm.querySelectorAll("[strapi-relation]"))
+		return relationElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	}
+
 	#holdHeight() {
 		this.#minHeightCache = this.#collectionElement.style.minHeight;
 		this.#collectionElement.style.minHeight = `${this.#collectionElement.offsetHeight}px`;
@@ -133,12 +138,16 @@ class StrapifyCollection {
 		//search the template element for any descendants that are strapify fields with components to generate the populate string
 		let populateComponents = ""
 		let componentFieldElms = this.#findFieldElms(this.#templateElm);
-		componentFieldElms.forEach(fieldElm => {
-			for (let attribute of Strapify.validStrapifyFieldAttributes) {
-				let attributeValue = fieldElm.getAttribute(attribute);
+		let componentRelationElms = this.#findRelationElms(this.#templateElm);
+		let componentElms = componentFieldElms.concat(componentRelationElms);
 
+		componentElms.forEach(componentElm => {
+			for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation"]) {
+				let attributeValue = componentElm.getAttribute(attribute);
+		
 				if (attributeValue) {
-					const args = attributeValue.split("|").map(arg => arg.trim());
+
+					const args = attributeValue.split("|").map(arg => arg.split(",")[0].trim());
 
 					for (let arg of args) {
 						if (arg) {
@@ -169,6 +178,8 @@ class StrapifyCollection {
 				}).join("&");
 			}
 		}).filter(item => item).join("&");
+
+		//console.log(populateComponents)
 
 		return queryString;
 	}

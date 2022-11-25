@@ -127,7 +127,7 @@ class StrapifySingleType {
 			const _singleTypeName = splitSingleTypeArg[0];
 			const strapiData = await strapiRequest("/api/" + _singleTypeName, "?populate=*")
 
-			console.log(strapiData)
+			//console.log(strapiData)
 
 			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement)
 
