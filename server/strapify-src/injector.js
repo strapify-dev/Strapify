@@ -3,6 +3,11 @@ import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import Strapify from "./Strapify";
 
+//create a class called strapify-hide and insert it into the head
+const strapifyHideStyle = document.createElement("style");
+strapifyHideStyle.innerHTML = ".strapify-hide { display: none !important; }";
+document.head.appendChild(strapifyHideStyle);
+
 //find all elements with strapi-single-type attributes 
 const singleTypeElms = document.querySelectorAll(Strapify.validStrapifySingleTypeAttributes.map((attr) => `[${attr}]`).join(", "));
 

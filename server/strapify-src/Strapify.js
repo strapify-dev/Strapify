@@ -72,6 +72,11 @@ function findInsertBeforeElm(templateElm) {
 	return null;
 }
 
+function findStateElements(container) {
+	const stateElms = Array.from(container.querySelectorAll("[strapi-state-element]"));
+	return stateElms.filter(child => child.closest("[strapi-collection]") === container);
+}
+
 function getQueryStringVariables() {
 	//get the query strings variables
 	const queryString = window.location.search.substring(1);
@@ -258,6 +263,7 @@ const Strapify = {
 	findFormInputElms: findFormInputElms,
 	findFormSubmitElms: findFormSubmitElms,
 	findInsertBeforeElm: findInsertBeforeElm,
+	findStateElements: findStateElements,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
 	removeQueryStringVariableReferences: removeQueryStringVariableReferences,

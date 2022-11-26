@@ -5,12 +5,14 @@ import strapiRequest from "./util/strapiRequest";
 class StrapifyCollection {
 	#collectionElement;
 	#collectionData;
+	#state = "initial";
 	#overrideCollectionData;
 	#strapifyTemplates = [];
 
 	#insertionElm;
 	#insertBeforeElm;
 	#templateElm;
+	#stateElms;
 
 	#mutationObserver;
 	#minHeightCache;
@@ -47,6 +49,11 @@ class StrapifyCollection {
 			attributeFilter: Strapify.validStrapifyCollectionAttributes
 		});
 
+		//get the state elements and reflect the state
+		this.#stateElms = Strapify.findStateElements(this.#collectionElement);
+		this.#state = "loading"
+		this.#reflectState();
+
 		//use the first strapi-template element as the template and remove all others
 		const templateElms = Strapify.findTemplateElms(this.#collectionElement);
 		this.#insertionElm = templateElms[0].parentElement;
@@ -79,6 +86,18 @@ class StrapifyCollection {
 
 	#releaseHeight() {
 		this.#collectionElement.style.minHeight = this.#minHeightCache;
+	}
+
+	#reflectState() {
+		this.#stateElms.forEach(stateElm => {
+			const stateKey = stateElm.getAttribute("strapi-state-element");
+
+			if (stateKey === this.#state) {
+				stateElm.classList.remove("strapify-hide");
+			} else {
+				stateElm.classList.add("strapify-hide");
+			}
+		});
 	}
 
 	#onPageControlClick(e) {
@@ -156,60 +175,69 @@ class StrapifyCollection {
 	}
 
 	async process() {
-		//hold the height of the collection element to prevent page from jumping
-		this.#holdHeight();
+		try {
+			//hold the height of the collection element to prevent page from jumping
+			this.#holdHeight();
 
-		//destroy all strapify templates
-		this.#strapifyTemplates.forEach(template => template.destroy());
-		this.#strapifyTemplates = [];
+			//destroy all strapify templates
+			this.#strapifyTemplates.forEach(template => template.destroy());
+			this.#strapifyTemplates = [];
 
-		//get the strapi data
-		if (this.#overrideCollectionData === undefined) {
-			let collectionName
-			if (this.#attributes["strapi-collection"]) {
-				collectionName = this.#attributes["strapi-collection"]
-			}
-			else if (this.#attributes["strapi-relation"]) {
-				collectionName = this.#attributes["strapi-relation"].split(",")[1].trim();
-			}
-			else if (this.#attributes["strapi-single-type-relation"]) {
-				collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
-			}
-			else if (this.#attributes["strapi-single-type-relation"]) {
-				collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
-			}
+			//get the strapi data
+			if (this.#overrideCollectionData === undefined) {
+				let collectionName
+				if (this.#attributes["strapi-collection"]) {
+					collectionName = this.#attributes["strapi-collection"]
+				}
+				else if (this.#attributes["strapi-relation"]) {
+					collectionName = this.#attributes["strapi-relation"].split(",")[1].trim();
+				}
+				else if (this.#attributes["strapi-single-type-relation"]) {
+					collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
+				}
+				else if (this.#attributes["strapi-single-type-relation"]) {
+					collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
+				}
 
-			const queryString = this.#getQueryString();
-			const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
-			this.#collectionData = collectionData
-		} else {
-			this.#collectionData = this.#overrideCollectionData;
-			//console.log("!!!!", this.#collectionData);
-		}
-
-		//loop through the collection data and create a strapify template for each item
-		for (let i = 0; i < this.#collectionData.data.length; i++) {
-			const { id: strapiDataId, attributes: strapiDataAttributes } = this.#collectionData.data[i];
-
-			//clone the template and put it into the DOM
-			let templateClone = this.#templateElm.cloneNode(true);
-			if (this.#insertBeforeElm !== null) {
-				this.#insertionElm.insertBefore(templateClone, this.#insertBeforeElm);
+				const queryString = this.#getQueryString();
+				const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
+				this.#collectionData = collectionData
 			} else {
-				this.#insertionElm.appendChild(templateClone);
+				this.#collectionData = this.#overrideCollectionData;
 			}
 
-			//create a strapify template for the template clone
-			const strapifyTemplate = new StrapifyTemplate(templateClone, strapiDataId, strapiDataAttributes);
-			this.#strapifyTemplates.push(strapifyTemplate);
+			//loop through the collection data and create a strapify template for each item
+			for (let i = 0; i < this.#collectionData.data.length; i++) {
+				const { id: strapiDataId, attributes: strapiDataAttributes } = this.#collectionData.data[i];
 
-			//process the strapify template
-			strapifyTemplate.process();
+				//clone the template and put it into the DOM
+				let templateClone = this.#templateElm.cloneNode(true);
+				if (this.#insertBeforeElm !== null) {
+					this.#insertionElm.insertBefore(templateClone, this.#insertBeforeElm);
+				} else {
+					this.#insertionElm.appendChild(templateClone);
+				}
+
+				//create a strapify template for the template clone
+				const strapifyTemplate = new StrapifyTemplate(templateClone, strapiDataId, strapiDataAttributes);
+				this.#strapifyTemplates.push(strapifyTemplate);
+
+				//process the strapify template
+				strapifyTemplate.process();
+			}
+
+			this.#state = "success";
+			this.#reflectState();
+
+			//release the height of the collection element
+			this.#releaseHeight();
+		} catch (err) {
+			this.#state = "error";
+			this.#reflectState();
+			console.error(err);
 		}
-
-		//release the height of the collection element
-		this.#releaseHeight();
 	}
+
 }
 
 export default StrapifyCollection;
