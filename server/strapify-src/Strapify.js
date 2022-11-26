@@ -48,6 +48,16 @@ function findRepeatableElms(templateElm) {
 	return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
 }
 
+function findFormInputElms(containerElm) {
+	const formInputElms = Array.from(containerElm.querySelectorAll("[strapi-form-input], [strapi-auth-input]"));
+	return formInputElms.filter(child => child.closest("[strapi-form], [strapi-auth]") === containerElm);
+}
+
+function findFormSubmitElms(containerElm) {
+	const formSubmitElms = Array.from(containerElm.querySelectorAll("[strapi-form-submit], [strapi-auth-submit]"));
+	return formSubmitElms.filter(child => child.closest("[strapi-form], [strapi-auth]") === containerElm);
+}
+
 function findInsertBeforeElm(templateElm) {
 	let curElm = templateElm.nextElementSibling;
 	while (curElm) {
@@ -216,6 +226,8 @@ const Strapify = {
 	findRelationElms: findRelationElms,
 	findRepeatableElms: findRepeatableElms,
 	findFieldElms: findFieldElms,
+	findFormInputElms: findFormInputElms,
+	findFormSubmitElms: findFormSubmitElms,
 	findInsertBeforeElm: findInsertBeforeElm,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
