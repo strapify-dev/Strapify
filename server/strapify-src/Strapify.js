@@ -8,7 +8,7 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	apiURL = apiURL.replace(/\/$/, "");
 } else {
 	//default to localhost
-	console.error("Strapify: No Strapi API URL was provided. Please provide a Strapi API URL using the data-strapi-api-url attribute on the script tag.");
+	warn("No Strapi API URL was provided. Please provide a Strapi API URL using the data-strapi-api-url attribute on the script tag.");
 	apiURL = "http://localhost:1337";
 }
 
@@ -213,6 +213,7 @@ function modifyElmWithStrapiData(strapiData, elm) {
 
 			break;
 		default:
+			error(`The element type ${elm.tagName} is not supported`);
 			throw new Error("Strapify Error: Attempted to use an unsupported element type - " + elm.tagName);
 	}
 }
