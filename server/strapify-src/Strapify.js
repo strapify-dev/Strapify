@@ -8,6 +8,7 @@ if (this_script.hasAttribute("data-strapi-api-url")) {
 	apiURL = apiURL.replace(/\/$/, "");
 } else {
 	//default to localhost
+	console.error("Strapify: No Strapi API URL was provided. Please provide a Strapi API URL using the data-strapi-api-url attribute on the script tag.");
 	apiURL = "http://localhost:1337";
 }
 
@@ -216,6 +217,33 @@ function modifyElmWithStrapiData(strapiData, elm) {
 	}
 }
 
+function log(...args) {
+	console.group(
+		"%cSTRAPIFY LOG",
+		"background-color: #6d6d6d; color: #ffffff; font-weight: bold; padding: 4px;"
+	);
+	args.forEach(arg => console.log(arg));
+	console.groupEnd();
+}
+
+function warn(...args) {
+	console.group(
+		"%cSTRAPIFY WARNING",
+		"background-color: #9b9023; color: #ffffff; font-weight: bold; padding: 4px;"
+	);
+	args.forEach(arg => console.warn(arg));
+	console.groupEnd();
+}
+
+function error(...args) {
+	console.group(
+		"%cSTRAPIFY ERROR",
+		"background-color: #aa3d3d; color: #ffffff; font-weight: bold; padding: 4px;"
+	);
+	args.forEach(arg => console.error(arg));
+	console.groupEnd();
+}
+
 const Strapify = {
 	apiURL: apiURL,
 	validStrapifySingleTypeAttributes: validStrapifySingleTypeAttributes,
@@ -235,7 +263,10 @@ const Strapify = {
 	getArguments: getArguments,
 	getProcessedArguments: getProcessedArguments,
 	getStrapiComponentValue: getStrapiComponentValue,
-	modifyElmWithStrapiData: modifyElmWithStrapiData
+	modifyElmWithStrapiData: modifyElmWithStrapiData,
+	log: log,
+	warn: warn,
+	error: error
 }
 
 export default Strapify
