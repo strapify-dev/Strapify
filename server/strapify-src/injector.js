@@ -37,13 +37,13 @@ async function strapify() {
 	for (let i = 0; i < singleTypeElms.length; i++) {
 		const singleTypeElm = singleTypeElms[i]
 		const strapifySingleType = new StrapifySingleType(singleTypeElm);
-		promises.push(await strapifySingleType.process());
+		promises.push(strapifySingleType.process());
 	}
 
 	for (let i = 0; i < collectionElms.length; i++) {
 		const collectionElm = collectionElms[i]
 		const strapifyCollection = new StrapifyCollection(collectionElm);
-		promises.push(await strapifyCollection.process());
+		promises.push(strapifyCollection.process());
 	}
 
 	await Promise.allSettled(promises)
