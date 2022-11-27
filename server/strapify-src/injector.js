@@ -26,23 +26,27 @@ async function strapify() {
 	//remove all delete elements
 	deleteElms.forEach(deleteElm => deleteElm.remove());
 
+	const promises = []
+
 	for (let i = 0; i < formElms.length; i++) {
 		const formElm = formElms[i]
 		const strapifyForm = new StrapifyForm(formElm)
-		await strapifyForm.process()
+		promises.push(strapifyForm.process())
 	}
 
 	for (let i = 0; i < singleTypeElms.length; i++) {
 		const singleTypeElm = singleTypeElms[i]
 		const strapifySingleType = new StrapifySingleType(singleTypeElm);
-		await strapifySingleType.process();
+		promises.push(await strapifySingleType.process());
 	}
 
 	for (let i = 0; i < collectionElms.length; i++) {
 		const collectionElm = collectionElms[i]
 		const strapifyCollection = new StrapifyCollection(collectionElm);
-		await strapifyCollection.process();
+		promises.push(await strapifyCollection.process());
 	}
+
+	await Promise.allSettled(promises)
 
 	window.Webflow.destroy();
 	window.Webflow.ready();
