@@ -26,6 +26,10 @@ const validStrapifyFieldAttributes = [
 	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional", "strapi-into"
 ];
 
+const validStrapifyControllAttributes = [
+	"strapi-page-control", "strapi-filter-control", "strapi-sort-control",
+]
+
 const queryStringVariables = getQueryStringVariables();
 let ix2Timeout;
 
@@ -48,6 +52,21 @@ function findRelationElms(containerElm) {
 function findRepeatableElms(templateElm) {
 	const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
 	return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
+}
+
+function findPageControlElms(containerElm) {
+	const pageControlElms = Array.from(containerElm.querySelectorAll("[strapi-page-control]"));
+	return pageControlElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElm);
+}
+
+function findFilterControlElms(containerElm) {
+	const filterControlElms = Array.from(containerElm.querySelectorAll("[strapi-filter-control]"));
+	return filterControlElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElm);
+}
+
+function findSortControlElms(containerElm) {
+	const sortControlElms = Array.from(containerElm.querySelectorAll("[strapi-sort-control]"));
+	return sortControlElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElm);
 }
 
 function findFormInputElms(containerElm) {
@@ -279,11 +298,15 @@ const Strapify = {
 	validStrapifySingleTypeAttributes: validStrapifySingleTypeAttributes,
 	validStrapifyCollectionAttributes: validStrapifyCollectionAttributes,
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
+	validStrapifyControllAttributes: validStrapifyControllAttributes,
 	queryStringVariables: queryStringVariables,
 	findTemplateElms: findTemplateElms,
 	findRelationElms: findRelationElms,
 	findRepeatableElms: findRepeatableElms,
 	findFieldElms: findFieldElms,
+	findPageControlElms: findPageControlElms,
+	findFilterControlElms: findFilterControlElms,
+	findSortControlElms: findSortControlElms,
 	findFormInputElms: findFormInputElms,
 	findFormSubmitElms: findFormSubmitElms,
 	findInsertBeforeElm: findInsertBeforeElm,

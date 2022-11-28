@@ -61,10 +61,32 @@ class StrapifyCollection {
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
 
-		//get page control elements and add event listeners to page control elements
-		const pageControlElms = this.#collectionElement.querySelectorAll("[strapi-page-control]");
+		//get page control elements and add event listeners 
+		const pageControlElms = Strapify.findPageControlElms(this.#collectionElement);
 		for (let pageControlElm of pageControlElms) {
-			pageControlElm.addEventListener("click", this.#onPageControlClick.bind(this));
+			if (pageControlElm.tagName === "BUTTON" || pageControlElm.tagName === "A") {
+				pageControlElm.addEventListener("click", this.#onPageControlClick.bind(this));
+			}
+		}
+
+		//get filter control elements and add event listeners 
+		const filterControlElms = Strapify.findFilterControlElms(this.#collectionElement);
+		for (let filterControlElm of filterControlElms) {
+			if (filterControlElm.tagName === "BUTTON" || filterControlElm.tagName === "A") {
+				filterControlElm.addEventListener("click", this.#onFilterControlClick.bind(this));
+			} else if (filterControlElm.tagName === "SELECT") {
+				filterControlElm.addEventListener("change", this.#onFilterControlChange.bind(this));
+			}
+		}
+
+		//get sort control elements and add event listeners to sort control elements
+		const sortControlElms = Strapify.findSortControlElms(this.#collectionElement);
+		for (let sortControlElm of sortControlElms) {
+			if (sortControlElm.tagName === "BUTTON" || sortControlElm.tagName === "A") {
+				sortControlElm.addEventListener("click", this.#onSortControlClick.bind(this));
+			} else if (sortControlElm.tagName === "SELECT") {
+				sortControlElm.addEventListener("change", this.#onSortControlChange.bind(this));
+			}
 		}
 	}
 
@@ -120,6 +142,34 @@ class StrapifyCollection {
 				this.#collectionElement.setAttribute("strapi-page", newPageIndex);
 			}
 		}
+	}
+
+	#onFilterControlClick(e) {
+		const filterControlElm = e.target;
+		const filter = filterControlElm.getAttribute("strapi-filter-control");
+
+		this.#collectionElement.setAttribute("strapi-filter", filter);
+	}
+
+	#onFilterControlChange(e) {
+		const filterControlElm = e.target;
+		const filter = filterControlElm.value;
+
+		this.#collectionElement.setAttribute("strapi-filter", filter);
+	}
+
+	#onSortControlClick(e) {
+		const sortControlElm = e.target;
+		const sort = sortControlElm.getAttribute("strapi-sort-control");
+
+		this.#collectionElement.setAttribute("strapi-sort", sort);
+	}
+
+	#onSortControlChange(e) {
+		const sortControlElm = e.target;
+		const sort = sortControlElm.value;
+
+		this.#collectionElement.setAttribute("strapi-sort", sort);
 	}
 
 	#getQueryString() {
