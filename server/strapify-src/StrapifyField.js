@@ -97,7 +97,6 @@ class StrapifyField {
 
 			if (strapiFieldValue === strapiFieldComparisonValue) {
 				this.#fieldElement.classList.add(className);
-				console.log(this.#fieldElement.classList)
 			}
 		})
 	}
