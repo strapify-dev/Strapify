@@ -3,8 +3,6 @@ import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import Strapify from "./Strapify";
 
-
-
 async function strapify() {
 	//create a class called strapify-hide and insert it into the head
 	const strapifyHideStyle = document.createElement("style");
@@ -48,10 +46,10 @@ async function strapify() {
 
 	await Promise.allSettled(promises)
 
-	window.Webflow.destroy();
-	window.Webflow.ready();
-	window.Webflow.require("ix2").init();
-	document.dispatchEvent(new Event("readystatechange"));
+	//window.Webflow.destroy();
+	//window.Webflow.ready();
+	//window.Webflow.require("ix2").init();
+	//document.dispatchEvent(new Event("readystatechange"));
 }
 
 strapify();

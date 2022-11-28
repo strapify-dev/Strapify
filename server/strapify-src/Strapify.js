@@ -27,6 +27,7 @@ const validStrapifyFieldAttributes = [
 ];
 
 const queryStringVariables = getQueryStringVariables();
+let ix2Timeout;
 
 function findTemplateElms(containerElement) {
 	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template]"))
@@ -223,6 +224,29 @@ function modifyElmWithStrapiData(strapiData, elm) {
 	}
 }
 
+function reinitializeIX2() {
+	if (!window.Webflow) {
+		return
+	}
+
+	function initIX2() {
+		console.log("reinitializing ix2");
+		window.Webflow.destroy();
+		window.Webflow.ready();
+		window.Webflow.require("ix2").init();
+		document.dispatchEvent(new Event("readystatechange"));
+
+		ix2Timeout = null
+	}
+
+	//use ix2Timeout to prevent multiple calls to initIX2() from being made
+	if (ix2Timeout) {
+		clearTimeout(ix2Timeout);
+	}
+
+	ix2Timeout = setTimeout(initIX2, 150);
+}
+
 function log(...args) {
 	console.group(
 		"%cSTRAPIFY LOG",
@@ -271,6 +295,7 @@ const Strapify = {
 	getProcessedArguments: getProcessedArguments,
 	getStrapiComponentValue: getStrapiComponentValue,
 	modifyElmWithStrapiData: modifyElmWithStrapiData,
+	reinitializeIX2: reinitializeIX2,
 	log: log,
 	warn: warn,
 	error: error

@@ -229,6 +229,8 @@ class StrapifyCollection {
 			this.#state = "success";
 			this.#reflectState();
 
+			Strapify.reinitializeIX2()
+
 			//release the height of the collection element
 			this.#releaseHeight();
 		} catch (err) {
