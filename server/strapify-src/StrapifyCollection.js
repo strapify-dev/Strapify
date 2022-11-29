@@ -29,7 +29,7 @@ class StrapifyCollection {
 		"strapi-sort-internal-relation": undefined,
 		"strapi-sort-internal-control": undefined,
 		"strapi-page": undefined,
-		"strapi-page-size": undefined,
+		"strapi-page-size": undefined
 	}
 
 	constructor(collectionElement, overrideCollectionData) {
@@ -251,6 +251,15 @@ class StrapifyCollection {
 				//process the strapify template
 				strapifyTemplate.process();
 			}
+
+			//dispatch custom event with the collection data
+			this.#collectionElement.dispatchEvent(new CustomEvent("collectionchange", {
+				bubbles: false,
+				target: this.#collectionElement,
+				detail: {
+					collectionData: this.#collectionData,
+				}
+			}));
 
 			this.#state = "success";
 			this.#reflectState();
