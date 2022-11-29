@@ -106,12 +106,12 @@ class StrapifyCollection {
 	}
 
 	#holdHeight() {
-		this.#minHeightCache = this.#collectionElement.style.minHeight;
-		this.#collectionElement.style.minHeight = `${this.#collectionElement.offsetHeight}px`;
+		this.#minHeightCache = this.#insertionElm.style.minHeight;
+		this.#insertionElm.style.minHeight = `${this.#insertionElm.offsetHeight}px`;
 	}
 
 	#releaseHeight() {
-		this.#collectionElement.style.minHeight = this.#minHeightCache;
+		this.#insertionElm.style.minHeight = this.#minHeightCache;
 	}
 
 	#reflectState() {
@@ -125,29 +125,6 @@ class StrapifyCollection {
 			}
 		});
 	}
-
-	#onPageControlClick(e) {
-		const pageControlElm = e.target;
-		const type = pageControlElm.getAttribute("strapi-page-control");
-
-		const page = this.#collectionData.meta.pagination.page;
-		const pageCount = this.#collectionData.meta.pagination.pageCount;
-
-		if (type === "right") {
-			const newPageIndex = Math.min(page + 1, pageCount);
-			if (newPageIndex !== page) {
-				this.#collectionElement.setAttribute("strapi-page", newPageIndex);
-			}
-
-		}
-		else if (type === "left") {
-			const newPageIndex = Math.max(page - 1, 1);
-			if (newPageIndex !== page) {
-				this.#collectionElement.setAttribute("strapi-page", newPageIndex);
-			}
-		}
-	}
-
 
 	#getQueryString() {
 		let qs = Strapify.substituteQueryStringVariables;
