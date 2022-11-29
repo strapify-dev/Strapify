@@ -6,6 +6,9 @@ class StrapifyControl {
 	#controlElement;
 	#collectionElement
 	#strapifyCollection
+
+	#radioButtons
+	#checkboxes
 	#mutationObserver;
 
 	#controlType;
@@ -44,11 +47,35 @@ class StrapifyControl {
 			this.#controlType = "strapi-sort";
 		}
 
+		//button or a
 		if (this.#controlElement.tagName === "BUTTON" || this.#controlElement.tagName === "A") {
 			this.#controlElement.addEventListener("click", this.#onButtonEvent.bind(this));
 		}
+		//select
 		else if (this.#controlElement.tagName === "SELECT") {
 			this.#controlElement.addEventListener("change", this.#onSelectEvent.bind(this));
+		}
+		//radio or checkbox
+		else {
+			//look for radio buttons
+			this.#radioButtons = Array.from(this.#controlElement.querySelectorAll("input[type='radio']"));
+
+			//look for checkboxes
+			this.#checkboxes = Array.from(this.#controlElement.querySelectorAll("input[type='checkbox']"));
+
+			//if there are radio buttons
+			if (this.#radioButtons.length > 0) {
+				this.#radioButtons.forEach((radio) => {
+					radio.addEventListener("change", this.#onRadioEvent.bind(this));
+				});
+			}
+
+			//if there are checkboxes
+			if (this.#checkboxes.length > 0) {
+				this.#checkboxes.forEach((checkbox) => {
+					checkbox.addEventListener("change", this.#onCheckboxEvent.bind(this));
+				});
+			}
 		}
 	}
 
@@ -119,11 +146,41 @@ class StrapifyControl {
 	}
 
 	#onRadioEvent(e) {
-
+		if (this.#controlType === "strapi-page") {
+			this.#strapifyCollection.setPage(parseInt(e.target.value));
+		}
+		else if (this.#controlType === "strapi-filter") {
+			const filter = e.target.value
+			this.#updateCollectionAttribute(filter)
+		}
+		else if (this.#controlType === "strapi-sort") {
+			const sort = e.target.value
+			this.#updateCollectionAttribute(sort)
+		}
 	}
 
 	#onCheckboxEvent(e) {
-
+		if (this.#controlType === "strapi-page") {
+			console.error("strapi-page-control cannot be used with checkboxes");
+		}
+		else if (this.#controlType === "strapi-filter") {
+			const filters = []
+			this.#checkboxes.forEach((checkbox) => {
+				if (checkbox.checked) {
+					filters.push(checkbox.getAttribute("strapi-control-value"))
+				}
+			})
+			this.#updateCollectionAttribute(filters.join(" | "))
+		}
+		else if (this.#controlType === "strapi-sort") {
+			const sorts = []
+			this.#checkboxes.forEach((checkbox) => {
+				if (checkbox.checked) {
+					sorts.push(checkbox.getAttribute("strapi-control-value"))
+				}
+			})
+			this.#updateCollectionAttribute(sorts.join(" | "))
+		}
 	}
 }
 
