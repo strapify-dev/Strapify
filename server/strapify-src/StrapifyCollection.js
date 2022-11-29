@@ -1,4 +1,5 @@
 import Strapify from "./Strapify.js";
+import StrapifyControl from "./StrapifyControl.js";
 import StrapifyTemplate from "./StrapifyTemplate"
 import strapiRequest from "./util/strapiRequest";
 
@@ -22,7 +23,11 @@ class StrapifyCollection {
 		"strapi-relation": undefined,
 		"strapi-single-type-relation": undefined,
 		"strapi-filter": undefined,
+		"strapi-filter-internal-relation": undefined,
+		"strapi-filter-internal-control": undefined,
 		"strapi-sort": undefined,
+		"strapi-sort-internal-relation": undefined,
+		"strapi-sort-internal-control": undefined,
 		"strapi-page": undefined,
 		"strapi-page-size": undefined,
 	}
@@ -61,38 +66,37 @@ class StrapifyCollection {
 		this.#templateElm = templateElms[0].cloneNode(true);
 		templateElms.forEach(templateElm => templateElm.remove());
 
-		//get page control elements and add event listeners 
 		const pageControlElms = Strapify.findPageControlElms(this.#collectionElement);
-		for (let pageControlElm of pageControlElms) {
-			if (pageControlElm.tagName === "BUTTON" || pageControlElm.tagName === "A") {
-				pageControlElm.addEventListener("click", this.#onPageControlClick.bind(this));
-			}
-		}
-
-		//get filter control elements and add event listeners 
 		const filterControlElms = Strapify.findFilterControlElms(this.#collectionElement);
-		for (let filterControlElm of filterControlElms) {
-			if (filterControlElm.tagName === "BUTTON" || filterControlElm.tagName === "A") {
-				filterControlElm.addEventListener("click", this.#onFilterControlClick.bind(this));
-			} else if (filterControlElm.tagName === "SELECT") {
-				filterControlElm.addEventListener("change", this.#onFilterControlChange.bind(this));
-			}
-		}
-
-		//get sort control elements and add event listeners to sort control elements
 		const sortControlElms = Strapify.findSortControlElms(this.#collectionElement);
-		for (let sortControlElm of sortControlElms) {
-			if (sortControlElm.tagName === "BUTTON" || sortControlElm.tagName === "A") {
-				sortControlElm.addEventListener("click", this.#onSortControlClick.bind(this));
-			} else if (sortControlElm.tagName === "SELECT") {
-				sortControlElm.addEventListener("change", this.#onSortControlChange.bind(this));
-			}
-		}
+
+		const controlElms = [...pageControlElms, ...filterControlElms, ...sortControlElms];
+		controlElms.forEach(controlElm => {
+			const control = new StrapifyControl(controlElm, this.#collectionElement, this);
+		})
 	}
 
 	destroy() {
 		this.#mutationObserver.disconnect();
 		this.#strapifyTemplates.forEach(template => template.destroy());
+	}
+
+	setPage(page) {
+		const pageCount = this.#collectionData.meta.pagination.pageCount;
+
+		const newPage = Math.max(1, Math.min(page, pageCount));
+
+		if (newPage !== this.#collectionData.meta.pagination.page) {
+			this.#collectionElement.setAttribute("strapi-page", newPage);
+		}
+	}
+
+	getPage() {
+		return this.#collectionData.meta.pagination.page;
+	}
+
+	getPageCount() {
+		return this.#collectionData.meta.pagination.pageCount;
 	}
 
 	#updateAttributes() {
@@ -144,33 +148,6 @@ class StrapifyCollection {
 		}
 	}
 
-	#onFilterControlClick(e) {
-		const filterControlElm = e.target;
-		const filter = filterControlElm.getAttribute("strapi-filter-control");
-
-		this.#collectionElement.setAttribute("strapi-filter", filter);
-	}
-
-	#onFilterControlChange(e) {
-		const filterControlElm = e.target;
-		const filter = filterControlElm.value;
-
-		this.#collectionElement.setAttribute("strapi-filter", filter);
-	}
-
-	#onSortControlClick(e) {
-		const sortControlElm = e.target;
-		const sort = sortControlElm.getAttribute("strapi-sort-control");
-
-		this.#collectionElement.setAttribute("strapi-sort", sort);
-	}
-
-	#onSortControlChange(e) {
-		const sortControlElm = e.target;
-		const sort = sortControlElm.value;
-
-		this.#collectionElement.setAttribute("strapi-sort", sort);
-	}
 
 	#getQueryString() {
 		let qs = Strapify.substituteQueryStringVariables;
@@ -202,10 +179,32 @@ class StrapifyCollection {
 			}
 		});
 
+		let filter = undefined;
+		if (this.#attributes["strapi-filter"]) {
+			filter = this.#attributes["strapi-filter"];
+		}
+		if (this.#attributes["strapi-filter-internal-relation"]) {
+			filter = filter ? filter + " | " + this.#attributes["strapi-filter-internal-relation"] : this.#attributes["strapi-filter-internal-relation"];
+		}
+		if (this.#attributes["strapi-filter-internal-control"]) {
+			filter = filter ? filter + " | " + this.#attributes["strapi-filter-internal-control"] : this.#attributes["strapi-filter-internal-control"];
+		}
+
+		let sort = undefined;
+		if (this.#attributes["strapi-sort"]) {
+			sort = this.#attributes["strapi-sort"];
+		}
+		if (this.#attributes["strapi-sort-internal-relation"]) {
+			sort = sort ? sort + " | " + this.#attributes["strapi-sort-internal-relation"] : this.#attributes["strapi-sort-internal-relation"];
+		}
+		if (this.#attributes["strapi-sort-internal-control"]) {
+			sort = sort ? sort + " | " + this.#attributes["strapi-sort-internal-control"] : this.#attributes["strapi-sort-internal-control"];
+		}
+
 		const queryStringPairs = {
 			"populate=": "*" + (populateComponents !== "" ? populateComponents : ""),
-			"filters": qs(this.#collectionElement.getAttribute("strapi-filter")),
-			"sort=": qs(this.#collectionElement.getAttribute("strapi-sort")),
+			"filters": filter,
+			"sort=": sort,
 			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-page")),
 			"pagination[pageSize]=": qs(this.#collectionElement.getAttribute("strapi-page-size")),
 		}

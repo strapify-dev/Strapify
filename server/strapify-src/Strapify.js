@@ -19,7 +19,9 @@ const validStrapifySingleTypeAttributes = [
 
 const validStrapifyCollectionAttributes = [
 	"strapi-collection", "strapi-filter", "strapi-sort",
-	"strapi-page", "strapi-page-size"
+	"strapi-page", "strapi-page-size",
+	"strapi-filter-internal-relation", "strapi-filter-internal-control", 
+	"strapi-sort-internal-relation", "strapi-sort-internal-control"
 ];
 
 const validStrapifyFieldAttributes = [
