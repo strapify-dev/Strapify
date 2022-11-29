@@ -8,7 +8,8 @@
     "starthot": "npx nodemon index",
     "bundle": "webpack --mode development",
     "bundlehot": "webpack --watch --mode development",
-    "bundleprod": "webpack --mode production"
+    "bundleprod": "webpack --mode production",
+    "buildpeggy": "peggy -o ./strapify-src/strapify-parser.js ./strapify-src/strapify-parser.js.pegjs"
   },
   "author": "Austin Goodman",
   "license": "UNLICENSED",

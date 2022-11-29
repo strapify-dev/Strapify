@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import parser from "./strapify-parser"
 
 const this_script = document.currentScript;
 let apiURL;
@@ -245,6 +246,20 @@ function modifyElmWithStrapiData(strapiData, elm) {
 	}
 }
 
+function parseCondition(condition) {
+	let error = null
+	let result = null
+
+	try {
+		result = parser.parse(condition)
+	} catch (e) {
+		error = e
+		throw new Error(e)
+	}
+
+	return { result: result, error: error }
+}
+
 function reinitializeIX2() {
 	if (!window.Webflow) {
 		return
@@ -320,6 +335,7 @@ const Strapify = {
 	getProcessedArguments: getProcessedArguments,
 	getStrapiComponentValue: getStrapiComponentValue,
 	modifyElmWithStrapiData: modifyElmWithStrapiData,
+	parseCondition: parseCondition,
 	reinitializeIX2: reinitializeIX2,
 	log: log,
 	warn: warn,
