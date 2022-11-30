@@ -335,15 +335,6 @@ function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursion
 
 	const comparisonResult = compareLiteralValues(resolvedLeft, resolvedRight, operatorType);
 
-	console.log("left", left)
-	console.log("right", right)
-	console.log("operator", operatorType)
-
-	console.log("resolvedLeft", resolvedLeft)
-	console.log("resolvedRight", resolvedRight)
-
-	console.log("comparisonResult", comparisonResult)
-
 	return comparisonResult
 }
 
