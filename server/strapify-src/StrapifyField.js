@@ -77,25 +77,49 @@ class StrapifyField {
 		})
 	}
 
+	// #processStrapiConditionalClass(strapiDataAttributes) {
+	// 	const attributeValue = this.#attributes["strapi-class-conditional"];
+	// 	const args = attributeValue.split("|").map(arg => arg.trim());
+
+	// 	args.forEach(arg => {
+	// 		const argSplit = arg.split(",");
+	// 		const conditionString = argSplit[0].trim();
+	// 		const className = argSplit[1].trim();
+
+	// 		const equalityReg = /([\w]+)\s*\[\$eq\]=([\w]+)/g;
+
+	// 		const matches = equalityReg.exec(conditionString);
+	// 		const strapiFieldName = matches[1];
+	// 		const strapiFieldComparisonValue = matches[2];
+
+	// 		let strapiFieldValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiDataAttributes);
+	// 		strapiFieldValue = Strapify.substituteQueryStringVariables(`${strapiFieldValue}`);
+
+	// 		if (strapiFieldValue === strapiFieldComparisonValue) {
+	// 			this.#fieldElement.classList.add(className);
+	// 		}
+	// 	})
+	// }
+
 	#processStrapiConditionalClass(strapiDataAttributes) {
 		const attributeValue = this.#attributes["strapi-class-conditional"];
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		//const args = attributeValue.split("|").map(arg => arg.trim());
+		//const args = attributeValue.split(/(?<!\|)\|(?!\|)/).map(arg => arg.trim());
+
+		//split attributeValue string on single occurence of "|" but not on double occurence of "||"
+		const args = attributeValue.split(/(?<!\|)\|(?!\|)/).map(arg => arg.trim());
 
 		args.forEach(arg => {
 			const argSplit = arg.split(",");
 			const conditionString = argSplit[0].trim();
 			const className = argSplit[1].trim();
 
-			const equalityReg = /([\w]+)\s*\[\$eq\]=([\w]+)/g;
+			const parsedConditionData = Strapify.parseCondition(conditionString).result;
+			console.log(parsedConditionData);
 
-			const matches = equalityReg.exec(conditionString);
-			const strapiFieldName = matches[1];
-			const strapiFieldComparisonValue = matches[2];
+			const conditionSatisfied = Strapify.checkCondition(parsedConditionData, strapiDataAttributes);
 
-			let strapiFieldValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiDataAttributes);
-			strapiFieldValue = Strapify.substituteQueryStringVariables(`${strapiFieldValue}`);
-
-			if (strapiFieldValue === strapiFieldComparisonValue) {
+			if (conditionSatisfied) {
 				this.#fieldElement.classList.add(className);
 			}
 		})

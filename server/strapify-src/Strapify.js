@@ -260,17 +260,108 @@ function parseCondition(condition) {
 	return { result: result, error: error }
 }
 
+function getLiteralValue(valueData, strapiAttributes) {
+	if (valueData.type === "variable") {
+		return getStrapiComponentValue(valueData.value, strapiAttributes);
+	} else if (valueData.type === "string") {
+		return valueData.value;
+	} else if (valueData.type === "boolean") {
+		if (valueData.value === "true") {
+			return true;
+		} else if (valueData.value === "false") {
+			return false;
+		}
+	} else if (valueData.type === "integer") {
+		return parseInt(valueData.value);
+	} else if (valueData.type === "float") {
+		return parseFloat(valueData.value);
+	}
+}
+
+function compareLiteralValues(left, right, operatorType) {
+	switch (operatorType) {
+		case "eq":
+			return left === right;
+		case "ne":
+			return left !== right;
+		case "gt":
+			return left > right;
+		case "ge":
+			return left >= right;
+		case "lt":
+			return left < right;
+		case "le":
+			return left <= right;
+		case "and":
+			return left && right;
+		case "or":
+			return left || right;
+		default:
+			throw new Error("Attempted to use an unsupported operator type - " + operatorType);
+	}
+}
+
+function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursionProtection = 0) {
+	if (infiniteRecursionProtection > 5000) {
+		throw new Error("Overflow protection triggered")
+	}
+
+	const left = parsedConditionData.left;
+	const right = parsedConditionData.right;
+	const operatorType = parsedConditionData.type;
+
+	let resolvedLeft = null;
+	let resolvedRight = null;
+
+	//if left is a value
+	if (left.value !== undefined) {
+		resolvedLeft = getLiteralValue(left, strapiAttributes);
+	}
+
+	//if left is a condition
+	if (left.left !== undefined) {
+		resolvedLeft = checkCondition(left, strapiAttributes, infiniteRecursionProtection + 1);
+	}
+
+	//if right is a value
+	if (right.value !== undefined) {
+		resolvedRight = getLiteralValue(right, strapiAttributes);
+	}
+
+	//if right is a condition
+	if (right.left !== undefined) {
+		resolvedRight = checkCondition(right, strapiAttributes, infiniteRecursionProtection + 1);
+	}
+
+	const comparisonResult = compareLiteralValues(resolvedLeft, resolvedRight, operatorType);
+
+	console.log("left", left)
+	console.log("right", right)
+	console.log("operator", operatorType)
+
+	console.log("resolvedLeft", resolvedLeft)
+	console.log("resolvedRight", resolvedRight)
+
+	console.log("comparisonResult", comparisonResult)
+
+	return comparisonResult
+}
+
 function reinitializeIX2() {
 	if (!window.Webflow) {
 		return
 	}
 
 	function initIX2() {
-		console.log("reinitializing ix2");
-		window.Webflow.destroy();
-		window.Webflow.ready();
-		window.Webflow.require("ix2").init();
-		document.dispatchEvent(new Event("readystatechange"));
+		try {
+			console.log("reinitializing ix2");
+			window.Webflow.destroy();
+			window.Webflow.ready();
+			window.Webflow.require("ix2").init();
+			document.dispatchEvent(new Event("readystatechange"));
+		} catch (e) {
+			console.error(e);
+		}
 
 		ix2Timeout = null
 	}
@@ -336,6 +427,7 @@ const Strapify = {
 	getStrapiComponentValue: getStrapiComponentValue,
 	modifyElmWithStrapiData: modifyElmWithStrapiData,
 	parseCondition: parseCondition,
+	checkCondition: checkCondition,
 	reinitializeIX2: reinitializeIX2,
 	log: log,
 	warn: warn,
