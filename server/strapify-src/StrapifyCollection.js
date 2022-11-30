@@ -13,6 +13,7 @@ class StrapifyCollection {
 	#insertionElm;
 	#insertBeforeElm;
 	#templateElm;
+	#conditionalTemplateElms;
 	#stateElms;
 
 	#mutationObserver;
@@ -59,11 +60,21 @@ class StrapifyCollection {
 		this.#state = "loading"
 		this.#reflectState();
 
-		//use the first strapi-template element as the template and remove all others
 		const templateElms = Strapify.findTemplateElms(this.#collectionElement);
+		const conditionalTemplateElms = Strapify.findUniqueConditionalTemplateElms(this.#collectionElement);
+
+		if (conditionalTemplateElms.length > 0) {
+			this.#conditionalTemplateElms = conditionalTemplateElms.map((conditionalTemplateElm) => conditionalTemplateElm.cloneNode(true));
+		} else {
+			this.#templateElm = templateElms[0].cloneNode(true);
+		}
+
 		this.#insertionElm = templateElms[0].parentElement;
 		this.#insertBeforeElm = Strapify.findInsertBeforeElm(templateElms[0]);
-		this.#templateElm = templateElms[0].cloneNode(true);
+
+		//this.#templateElm = templateElms[0].cloneNode(true);
+		//this.#templateElm = conditionalTemplateElms[0];
+
 		templateElms.forEach(templateElm => templateElm.remove());
 
 		const pageControlElms = Strapify.findPageControlElms(this.#collectionElement);
@@ -126,13 +137,13 @@ class StrapifyCollection {
 		});
 	}
 
-	#getQueryString() {
+	#getQueryString(templateElm) {
 		let qs = Strapify.substituteQueryStringVariables;
 
 		//search the template element for any descendants that are strapify fields with components to generate the populate string
 		let populateComponents = ""
-		let componentFieldElms = Strapify.findFieldElms(this.#templateElm);
-		let componentRelationElms = Strapify.findRelationElms(this.#templateElm);
+		let componentFieldElms = Strapify.findFieldElms(templateElm);
+		let componentRelationElms = Strapify.findRelationElms(templateElm);
 		let componentElms = componentFieldElms.concat(componentRelationElms);
 
 		componentElms.forEach(componentElm => {
@@ -225,7 +236,13 @@ class StrapifyCollection {
 					collectionName = this.#attributes["strapi-single-type-relation"].split(",")[1].trim();
 				}
 
-				const queryString = this.#getQueryString();
+				let queryString;
+				if(this.#conditionalTemplateElms) {
+					queryString = this.#getQueryString(this.#conditionalTemplateElms[0]);
+				} else {
+					queryString = this.#getQueryString(this.#templateElm);
+				}
+
 				const collectionData = await strapiRequest(`/api/${collectionName}`, queryString)
 				this.#collectionData = collectionData
 			} else {
@@ -236,8 +253,22 @@ class StrapifyCollection {
 			for (let i = 0; i < this.#collectionData.data.length; i++) {
 				const { id: strapiDataId, attributes: strapiDataAttributes } = this.#collectionData.data[i];
 
+				//determine which template to use
+				let templateElm = this.#templateElm;
+				if(this.#conditionalTemplateElms) {
+					for(let conditionalTemplateElm of this.#conditionalTemplateElms) {
+						const condition = conditionalTemplateElm.getAttribute("strapi-template-conditional");
+						const parsedConditionData = Strapify.parseCondition(condition, strapiDataAttributes).result;
+
+						if(Strapify.checkCondition(parsedConditionData, strapiDataAttributes)) {
+							templateElm = conditionalTemplateElm;
+							break;
+						}
+					}
+				}
+
 				//clone the template and put it into the DOM
-				let templateClone = this.#templateElm.cloneNode(true);
+				let templateClone = templateElm.cloneNode(true);
 				if (this.#insertBeforeElm !== null) {
 					this.#insertionElm.insertBefore(templateClone, this.#insertBeforeElm);
 				} else {

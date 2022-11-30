@@ -37,24 +37,44 @@ const queryStringVariables = getQueryStringVariables();
 let ix2Timeout;
 
 function findTemplateElms(containerElement) {
-	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template]"))
+	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template], [strapi-template-conditional]"))
 	return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElement);
+}
+
+function findUniqueConditionalTemplateElms(containerElm) {
+	const templateElms = findTemplateElms(containerElm);
+
+	//filter templateElms to remove any that have duplicate data attribute values for strapi-template-conditional
+	const templateElmsWithConditionalAttributes = templateElms.filter(templateElm => templateElm.hasAttribute("strapi-template-conditional"));
+	const templateElmsWithDuplicateConditionalAttributes = templateElmsWithConditionalAttributes.filter(templateElm => {
+		const conditionalAttributes = templateElmsWithConditionalAttributes.filter(otherTemplateElm => {
+			return otherTemplateElm.getAttribute("strapi-template-conditional") === templateElm.getAttribute("strapi-template-conditional");
+		});
+
+		return conditionalAttributes.length > 1;
+	});
+
+	const templateElmsWithoutDuplicateConditionalAttributes = templateElmsWithConditionalAttributes.filter(templateElm => {
+		return !templateElmsWithDuplicateConditionalAttributes.includes(templateElm);
+	});
+
+	return templateElmsWithoutDuplicateConditionalAttributes;
 }
 
 function findFieldElms(containerElm) {
 	const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
 	const fieldElms = Array.from(containerElm.querySelectorAll(querySelectorString));
-	return fieldElms.filter(child => child.closest("[strapi-template]") === containerElm);
+	return fieldElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
 }
 
 function findRelationElms(containerElm) {
 	const relationElms = Array.from(containerElm.querySelectorAll("[strapi-relation]"))
-	return relationElms.filter(child => child.closest("[strapi-template]") === containerElm);
+	return relationElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
 }
 
 function findRepeatableElms(templateElm) {
 	const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
-	return repeataleElms.filter(child => child.closest("[strapi-template]") === templateElm);
+	return repeataleElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === templateElm);
 }
 
 function findPageControlElms(containerElm) {
@@ -85,7 +105,7 @@ function findFormSubmitElms(containerElm) {
 function findInsertBeforeElm(templateElm) {
 	let curElm = templateElm.nextElementSibling;
 	while (curElm) {
-		if (!curElm.hasAttribute("strapi-template")) {
+		if (!curElm.hasAttribute("strapi-template") && !curElm.hasAttribute("strapi-template-conditional")) {
 			return curElm;
 		}
 
@@ -400,6 +420,7 @@ const Strapify = {
 	validStrapifyControllAttributes: validStrapifyControllAttributes,
 	queryStringVariables: queryStringVariables,
 	findTemplateElms: findTemplateElms,
+	findUniqueConditionalTemplateElms: findUniqueConditionalTemplateElms,
 	findRelationElms: findRelationElms,
 	findRepeatableElms: findRepeatableElms,
 	findFieldElms: findFieldElms,
