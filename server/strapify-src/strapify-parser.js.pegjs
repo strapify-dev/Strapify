@@ -11,7 +11,7 @@ entry =
 	operator / comparison
 
 group = 
-	"(" _ exp: (comparison / operator) _ ")"
+	"(" _ exp: (operator / comparison) _ ")"
 	{ 
 		return exp
 	}

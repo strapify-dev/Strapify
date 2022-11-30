@@ -453,9 +453,9 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parsecomparison();
+      s3 = peg$parseoperator();
       if (s3 === peg$FAILED) {
-        s3 = peg$parseoperator();
+        s3 = peg$parsecomparison();
       }
       if (s3 !== peg$FAILED) {
         s4 = peg$parse_();
