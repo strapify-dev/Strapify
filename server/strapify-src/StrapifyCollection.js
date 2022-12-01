@@ -73,8 +73,6 @@ class StrapifyCollection {
 		this.#insertionElm = templateElms[0].parentElement;
 		this.#insertBeforeElm = Strapify.findInsertBeforeElm(templateElms[0]);
 
-		console.log(this.#templateElm, this.#conditionalTemplateElms);
-
 		templateElms.forEach(templateElm => templateElm.remove());
 
 		const pageControlElms = Strapify.findPageControlElms(this.#collectionElement);
@@ -137,35 +135,44 @@ class StrapifyCollection {
 		});
 	}
 
-	#getQueryString(templateElm) {
+	#getQueryString() {
 		let qs = Strapify.substituteQueryStringVariables;
 
 		//search the template element for any descendants that are strapify fields with components to generate the populate string
 		let populateComponents = ""
-		let componentFieldElms = Strapify.findFieldElms(templateElm);
-		let componentRelationElms = Strapify.findRelationElms(templateElm);
-		let componentElms = componentFieldElms.concat(componentRelationElms);
 
-		componentElms.forEach(componentElm => {
-			for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation"]) {
-				let attributeValue = componentElm.getAttribute(attribute);
+		let templateElms = [];
+		this.#templateElm && templateElms.push(this.#templateElm);
+		this.#conditionalTemplateElms && this.#conditionalTemplateElms.forEach(conditionalTemplateElm => templateElms.push(conditionalTemplateElm));
 
-				if (attributeValue) {
+		for (let templateElm of templateElms) {
+			let componentFieldElms = Strapify.findFieldElms(templateElm);
+			let componentRelationElms = Strapify.findRelationElms(templateElm);
+			let componentElms = componentFieldElms.concat(componentRelationElms);
 
-					const args = attributeValue.split("|").map(arg => arg.split(",")[0].trim());
+			componentElms.forEach(componentElm => {
+				for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation"]) {
+					let attributeValue = componentElm.getAttribute(attribute);
 
-					for (let arg of args) {
-						if (arg) {
-							const _arg = Strapify.removeQueryStringVariableReferences(arg);
-							if (_arg.includes(".")) {
-								populateComponents += `&populate=${_arg}`;
+					if (attributeValue) {
+
+						const args = attributeValue.split("|").map(arg => arg.split(",")[0].trim());
+
+						for (let arg of args) {
+							if (arg) {
+								const _arg = Strapify.removeQueryStringVariableReferences(arg);
+								if (_arg.includes(".")) {
+									populateComponents += `&populate=${_arg}`;
+								}
 							}
 						}
 					}
 				}
+			});
+		}
 
-			}
-		});
+		//filter out any duplicate populate strings
+		populateComponents = [...new Set(populateComponents.split("&"))].join("&");
 
 		let filter = undefined;
 		if (this.#attributes["strapi-filter"]) {
