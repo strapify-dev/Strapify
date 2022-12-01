@@ -69,7 +69,7 @@ simpleVariable =
 
 /* literals */
 literal =
-	val: (string / number / boolean)
+	val: (string / number / boolean / null)
 
 string = 
 	"'" string: [^']* "'"
@@ -77,6 +77,15 @@ string =
 		return {
 			type: "string",
 			value: string.join("")
+		}
+	}
+
+null = 
+	"null"
+	{
+		return {
+			type: "null",
+			value: null
 		}
 	}
 

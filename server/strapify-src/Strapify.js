@@ -291,7 +291,10 @@ function getLiteralValue(valueData, strapiAttributes) {
 		} else if (valueData.value === "false") {
 			return false;
 		}
-	} else if (valueData.type === "integer") {
+	} else if (valueData.type === "null") {
+		return null;
+	}
+	else if (valueData.type === "integer") {
 		return parseInt(valueData.value);
 	} else if (valueData.type === "float") {
 		return parseFloat(valueData.value);
