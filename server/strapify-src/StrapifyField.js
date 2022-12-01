@@ -5,6 +5,8 @@ class StrapifyField {
 	#strapiDataAttributes
 	#mutationObserver;
 
+	#managedClasses = [];
+
 	#attributes = {
 		"strapi-field": undefined,
 		"strapi-class-add": undefined,
@@ -58,6 +60,7 @@ class StrapifyField {
 			const _strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName.trim());
 			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiAttributes);
 			this.#fieldElement.classList.add(className);
+			this.#managedClasses.push({ state: "added", name: className });
 		})
 	}
 
@@ -74,6 +77,8 @@ class StrapifyField {
 
 			this.#fieldElement.classList.remove(classToReplace);
 			this.#fieldElement.classList.add(classReplaceValue);
+			this.#managedClasses.push({ state: "removed", name: classToReplace });
+			this.#managedClasses.push({ state: "added", name: classReplaceValue });
 		})
 	}
 
@@ -94,6 +99,7 @@ class StrapifyField {
 
 			if (conditionSatisfied) {
 				this.#fieldElement.classList.add(className);
+				this.#managedClasses.push({ state: "added", name: className });
 			}
 		})
 	}
@@ -115,6 +121,15 @@ class StrapifyField {
 
 	process(strapiDataAttributes) {
 		this.#strapiDataAttributes = strapiDataAttributes;
+
+		this.#managedClasses.forEach((managedClass) => {
+			if (managedClass.state === "added") {
+				this.#fieldElement.classList.remove(managedClass.name);
+			} else if (managedClass.state === "removed") {
+				this.#fieldElement.classList.add(managedClass.name);
+			}
+		})
+		this.#managedClasses = [];
 
 		if (this.#attributes["strapi-field"] !== null && this.#attributes["strapi-field"] !== undefined) {
 			this.#processStrapiFieldElms(strapiDataAttributes);
