@@ -1,9 +1,7 @@
 import Strapify from "./Strapify.js";
-import StrapifyCollection from "./StrapifyCollection.js";
 import StrapifyRelation from "./StrapifyRelation.js";
 import StrapifyField from "./StrapifyField";
 import StrapifyRepeatable from "./StrapifyRepeatable.js";
-import strapiRequest from "./util/strapiRequest";
 
 class StrapifyTemplate {
 	#templateElement;
@@ -12,40 +10,23 @@ class StrapifyTemplate {
 	#strapifyFields = [];
 	#strapifyRelations = [];
 	#strapifyRepeatables = [];
-	#mutationObserver;
 
 	#attributes = {
 		"strapi-template": undefined,
 	}
 
-	constructor(templateElement, strapiDataId, strapiDataAttributes) {
+	constructor(templateElement, strapiDataId, strapiDataAttributes, strapifyCollection) {
 		//set the collection element and update the attributes
 		this.#templateElement = templateElement;
 		this.#strapiDataId = strapiDataId;
 		this.#strapiDataAttributes = strapiDataAttributes;
 		this.#updateAttributes();
-
-		//create mutation observer to watch for attribute changes
-		this.#mutationObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				if (mutation.type === "attributes") {
-					this.#updateAttributes();
-					this.process();
-				}
-			});
-		});
-
-		//observe the collection element for attribute changes
-		this.#mutationObserver.observe(this.#templateElement, {
-			attributes: true,
-			attributeFilter: ["strapi-template"]
-		});
 	}
 
 	destroy() {
-		this.#mutationObserver.disconnect();
 		this.#strapifyFields.forEach(field => field.destroy());
 		this.#strapifyRelations.forEach(relation => relation.destroy());
+		this.#strapifyRepeatables.forEach(repeatable => repeatable.destroy());
 		this.#templateElement.remove();
 	}
 
