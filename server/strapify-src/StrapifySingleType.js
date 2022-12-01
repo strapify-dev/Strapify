@@ -107,9 +107,9 @@ class StrapifySingleType {
 
 			//console.log(strapiData)
 
-			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement)
+			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
 
-			strapifyRelation.process(strapiData.data.id, strapiData.data.attributes)
+			strapifyRelation.process()
 		}
 	}
 }

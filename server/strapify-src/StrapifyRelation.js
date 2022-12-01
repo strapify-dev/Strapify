@@ -8,22 +8,27 @@ class StrapifyTemplate {
 	#strapifyCollection;
 	#mutationObserver;
 
+	#strapiDataId;
+	#strapiDataAttributes;
+
 	#attributes = {
 		"strapi-relation": undefined,
 		"strapi-single-type-relation": undefined,
 	}
 
-	constructor(relationElement) {
+	constructor(relationElement, strapiDataId, strapiDataAttributes) {
 		//set the collection element and update the attributes
 		this.#relationElement = relationElement;
+		this.#strapiDataId = strapiDataId;
+		this.#strapiDataAttributes = strapiDataAttributes;
 		this.#updateAttributes();
 
 		//create mutation observer to watch for attribute changes
 		this.#mutationObserver = new MutationObserver((mutations) => {
 			mutations.forEach((mutation) => {
 				if (mutation.type === "attributes") {
-					//this.#updateAttributes();
-					//this.process();
+					this.#updateAttributes();
+					this.process();
 				}
 			});
 		});
@@ -31,7 +36,7 @@ class StrapifyTemplate {
 		//observe the collection element for attribute changes
 		this.#mutationObserver.observe(this.#relationElement, {
 			attributes: true,
-			attributeFilter: ["strapi-relation", "strapi-single-type-relation", ...Strapify.validStrapifyCollectionAttributes]
+			attributeFilter: ["strapi-relation"]
 		});
 	}
 
@@ -47,8 +52,15 @@ class StrapifyTemplate {
 		})
 	}
 
-	async process(strapiDataId, strapiDataAttributes) {
+	async process() {
 		const relationElement = this.#relationElement;
+
+		if (this.#strapifyCollection) {
+			this.#strapifyCollection.destroy()
+		}
+
+		const strapiDataId = this.#strapiDataId;
+		const strapiDataAttributes = this.#strapiDataAttributes;
 
 		//use the relation ids to generate a filter string
 		let relationArgs

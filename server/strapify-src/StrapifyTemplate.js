@@ -61,10 +61,10 @@ class StrapifyTemplate {
 		//find strapify relation elements and process them
 		const strapifyRelationElements = Strapify.findRelationElms(this.#templateElement);
 		strapifyRelationElements.forEach(relationElement => {
-			const strapifyRelation = new StrapifyRelation(relationElement)
+			const strapifyRelation = new StrapifyRelation(relationElement, strapiDataId, strapiDataAttributes)
 			this.#strapifyRelations.push(strapifyRelation);
 
-			strapifyRelation.process(strapiDataId, strapiDataAttributes)
+			strapifyRelation.process()
 		})
 	}
 }

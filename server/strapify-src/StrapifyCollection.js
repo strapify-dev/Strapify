@@ -18,6 +18,7 @@ class StrapifyCollection {
 
 	#mutationObserver;
 	#minHeightCache;
+	#templateElmCache;
 
 	#attributes = {
 		"strapi-collection": undefined,
@@ -61,6 +62,7 @@ class StrapifyCollection {
 		this.#reflectState();
 
 		const templateElms = Strapify.findTemplateElms(this.#collectionElement);
+		this.#templateElmCache = templateElms
 		const conditionalTemplateElms = Strapify.findUniqueConditionalTemplateElms(this.#collectionElement);
 
 		if (conditionalTemplateElms.length > 0) {
@@ -88,6 +90,13 @@ class StrapifyCollection {
 	destroy() {
 		this.#mutationObserver.disconnect();
 		this.#strapifyTemplates.forEach(template => template.destroy());
+		this.#templateElmCache.forEach(templateElm => {
+			if (this.#insertBeforeElm) {
+				this.#insertionElm.insertBefore(templateElm, this.#insertBeforeElm)
+			} else {
+				this.#insertionElm.appendChild(templateElm);
+			}
+		});
 	}
 
 	setPage(page) {
