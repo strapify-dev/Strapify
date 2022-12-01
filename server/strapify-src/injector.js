@@ -9,6 +9,12 @@ async function strapify() {
 	strapifyHideStyle.innerHTML = ".strapify-hide { display: none !important; }";
 	document.head.appendChild(strapifyHideStyle);
 
+	//find all elements with the strapi-delete attribute
+	const deleteElms = document.body.querySelectorAll("[strapi-delete]");
+
+	//remove all delete elements
+	deleteElms.forEach(deleteElm => deleteElm.remove());
+
 	//find all elements with strapi-single-type attributes 
 	const singleTypeElms = document.querySelectorAll(Strapify.validStrapifySingleTypeAttributes.map((attr) => `[${attr}]`).join(", "));
 
@@ -17,12 +23,6 @@ async function strapify() {
 
 	//find all the elements with the strapi-form or strapi-auth attribute
 	const formElms = document.body.querySelectorAll("[strapi-form], [strapi-auth]");
-
-	//find all elements with the strapi-delete attribute
-	const deleteElms = document.body.querySelectorAll("[strapi-delete]");
-
-	//remove all delete elements
-	deleteElms.forEach(deleteElm => deleteElm.remove());
 
 	const promises = []
 
