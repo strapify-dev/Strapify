@@ -65,6 +65,7 @@ class StrapifyCollection {
 
 		if (conditionalTemplateElms.length > 0) {
 			this.#conditionalTemplateElms = conditionalTemplateElms.map((conditionalTemplateElm) => conditionalTemplateElm.cloneNode(true));
+			this.#templateElm = templateElms.filter(templateElm => !templateElm.hasAttribute("strapi-template-conditional"))[0].cloneNode(true);
 		} else {
 			this.#templateElm = templateElms[0].cloneNode(true);
 		}
@@ -72,8 +73,7 @@ class StrapifyCollection {
 		this.#insertionElm = templateElms[0].parentElement;
 		this.#insertBeforeElm = Strapify.findInsertBeforeElm(templateElms[0]);
 
-		//this.#templateElm = templateElms[0].cloneNode(true);
-		//this.#templateElm = conditionalTemplateElms[0];
+		console.log(this.#templateElm, this.#conditionalTemplateElms);
 
 		templateElms.forEach(templateElm => templateElm.remove());
 
@@ -237,7 +237,7 @@ class StrapifyCollection {
 				}
 
 				let queryString;
-				if(this.#conditionalTemplateElms) {
+				if (this.#conditionalTemplateElms) {
 					queryString = this.#getQueryString(this.#conditionalTemplateElms[0]);
 				} else {
 					queryString = this.#getQueryString(this.#templateElm);
@@ -255,12 +255,12 @@ class StrapifyCollection {
 
 				//determine which template to use
 				let templateElm = this.#templateElm;
-				if(this.#conditionalTemplateElms) {
-					for(let conditionalTemplateElm of this.#conditionalTemplateElms) {
+				if (this.#conditionalTemplateElms) {
+					for (let conditionalTemplateElm of this.#conditionalTemplateElms) {
 						const condition = conditionalTemplateElm.getAttribute("strapi-template-conditional");
 						const parsedConditionData = Strapify.parseCondition(condition, strapiDataAttributes).result;
 
-						if(Strapify.checkCondition(parsedConditionData, strapiDataAttributes)) {
+						if (Strapify.checkCondition(parsedConditionData, strapiDataAttributes)) {
 							templateElm = conditionalTemplateElm;
 							break;
 						}
