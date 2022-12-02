@@ -17,7 +17,7 @@ class StrapifyCollection {
 	#stateElms;
 
 	#mutationObserver;
-	#minHeightCache;
+	#minHeightCache;hjdfssd
 	#templateElmCache;
 
 	#attributes = {
@@ -31,7 +31,8 @@ class StrapifyCollection {
 		"strapi-sort-internal-relation": undefined,
 		"strapi-sort-internal-control": undefined,
 		"strapi-page": undefined,
-		"strapi-page-size": undefined
+		"strapi-page-size": undefined,
+		"strapi-hide-on-fail": undefined,
 	}
 
 	constructor(collectionElement, overrideCollectionData) {
@@ -309,6 +310,9 @@ class StrapifyCollection {
 			}));
 
 			this.#state = "success";
+			if(this.#collectionElement.hasAttribute("strapi-hide-on-fail")) {
+				this.#collectionElement.classList.remove("strapify-hide");
+			}
 			this.#reflectState();
 
 			Strapify.reinitializeIX2()
@@ -317,6 +321,9 @@ class StrapifyCollection {
 			this.#releaseHeight();
 		} catch (err) {
 			this.#state = "error";
+			if(this.#collectionElement.hasAttribute("strapi-hide-on-fail")) {
+				this.#collectionElement.classList.add("strapify-hide");
+			}
 			this.#reflectState();
 			console.error(err);
 		}
