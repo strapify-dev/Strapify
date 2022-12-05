@@ -3,6 +3,16 @@ import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import Strapify from "./Strapify";
 
+//wait for content to load and scripts to execute
+document.addEventListener("DOMContentLoaded", () => {
+	console.log("running strapify");
+	strapify();
+});
+
+document.addEventListener("strapifyinitialized", () => {
+	console.log("strapify finished");
+});
+
 async function strapify() {
 	//create a class called strapify-hide and insert it into the head
 	const strapifyHideStyle = document.createElement("style");
@@ -46,10 +56,17 @@ async function strapify() {
 
 	await Promise.allSettled(promises)
 
-	//window.Webflow.destroy();
-	//window.Webflow.ready();
-	//window.Webflow.require("ix2").init();
-	//document.dispatchEvent(new Event("readystatechange"));
-}
+	if (window.Webflow && window.Webflow.require) {
+		console.log("reinitializing ix2 (in strapify-injector)")
+		await window.Webflow.destroy();
+		await window.Webflow.ready();
+		await window.Webflow.require("ix2").init();
+		document.dispatchEvent(new Event("readystatechange"));
+	}
 
-strapify();
+	//dispatch custom event with the collection data
+	document.dispatchEvent(new CustomEvent("strapifyinitialized", {
+		bubbles: false,
+		target: document.body
+	}));
+}
