@@ -208,8 +208,8 @@ class StrapifyCollection {
 
 		const queryStringPairs = {
 			"populate=": "*" + (populateComponents !== "" ? populateComponents : ""),
-			"filters": filter,
-			"sort=": sort,
+			"filters": qs(filter),
+			"sort=": qs(sort),
 			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-page")),
 			"pagination[pageSize]=": qs(this.#collectionElement.getAttribute("strapi-page-size")),
 		}
