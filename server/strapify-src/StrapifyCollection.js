@@ -17,7 +17,7 @@ class StrapifyCollection {
 	#stateElms;
 
 	#mutationObserver;
-	#minHeightCache;hjdfssd
+	#minHeightCache;
 	#templateElmCache;
 
 	#attributes = {
