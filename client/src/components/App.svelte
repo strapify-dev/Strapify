@@ -2,8 +2,9 @@
     import { onMount } from "svelte"
     import CiviconnectSVG from "./CiviconnectSVG.svelte"
     import Header from "./Header.svelte"
-    let webflowURL 
-    let strapiURL 
+    let webflowURL
+    let strapiURL
+    let queryString
     let successMessage = "waiting for url"
     let downloadURL = ""
     let previewURL = ""
@@ -30,7 +31,8 @@
             const responseData = await postResponse.json()
             //   console.log(responseData)
             successMessage = "webflow url successfully downloaded"
-            previewURL = responseData.previewURL
+            previewURL =
+                responseData.previewURL + (queryString ? queryString : "")
             downloadURL = responseData.downloadURL
             console.log(previewURL)
         } else {
@@ -61,6 +63,12 @@
         if (webflowURLFromStorage) {
             webflowURL = webflowURLFromStorage
         }
+
+        //check local storage for queryString
+        const queryStringFromStorage = localStorage.getItem("queryString")
+        if (queryStringFromStorage) {
+            queryString = queryStringFromStorage
+        }
     })
 
     $: /* save webflowURL */ {
@@ -69,15 +77,24 @@
         }
     }
 
-	$: /* save strapiURL */ {
-		if (strapiURL  !== undefined) {
-			localStorage.setItem("strapiURL", strapiURL)
-		}
-	}
+    $: /* save strapiURL */ {
+        if (strapiURL !== undefined) {
+            localStorage.setItem("strapiURL", strapiURL)
+        }
+    }
+
+    $: /* save queryString */ {
+        if (queryString !== undefined) {
+			//replace spaces with %20
+			queryString = queryString.replace(/ /g, "%20")
+
+            localStorage.setItem("queryString", queryString)
+        }
+    }
 </script>
 
 <div class="container">
-    <Header bind:webflowURL bind:strapiURL />
+    <Header bind:webflowURL bind:strapiURL bind:queryString />
 
     <div class="content-panel">
         <div class="button-container">

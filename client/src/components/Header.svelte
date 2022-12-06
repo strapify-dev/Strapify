@@ -4,6 +4,7 @@
 
     export let webflowURL = ""
     export let strapiURL = ""
+    export let queryString = ""
 </script>
 
 <div class="container">
@@ -25,12 +26,19 @@
                 default: "http://localhost:1337",
             }}
         />
+        <URLInput
+            bind:value={queryString}
+            restProps={{
+                placeholder: "?v=Hello World",
+                name: "query-string",
+            }}
+        />
 
-        <div class="status-indicators-container">
+        <!-- <div class="status-indicators-container">
             <StatusIndicator text="Strapi status" url={strapiURL}/>
             <StatusIndicator text="Server status" url={"http://localhost:3000"}/>
             <StatusIndicator text="Webflow site status" url={webflowURL}/>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -60,13 +68,13 @@
         margin-left: auto;
     }
 
-    .status-indicators-container {
+    /* .status-indicators-container {
         display: flex;
         flex-direction: row;
         margin-top: 8px;
         padding-left: 12px;
         gap: 12px;
-    }
+    } */
 
     h1 {
         color: var(--color-yellow);
