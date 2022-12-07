@@ -1,5 +1,5 @@
 import Strapify from '../strapify-src/strapify';
-
+import htmlTemplates from './html-templates'
 
 describe("Strapify.js", () => {
 
@@ -86,7 +86,46 @@ describe("Strapify.js", () => {
 	})
 
 	describe("DOM parsing functions", () => {
+		
+		describe(`findCollectionElms`, () => {
+			test("empty.html", () => {
+				delete window.document
+				window.document = new DOMParser().parseFromString(htmlTemplates["empty"], "text/html")
+				const elms = Strapify.findCollectionElms(window.document)
 
+				expect(elms.length).toBe(0)
+			})
+
+			test("collection-simple.html", () => {
+				delete window.document
+				window.document = new DOMParser().parseFromString(htmlTemplates["collection-simple"], "text/html")
+				const elms = Strapify.findCollectionElms(window.document)
+
+				expect(elms.length).toBe(1)
+				expect(elms[0].id).toBe("div-collection-0")
+			})
+
+			test("collections-simple.html", () => {
+				delete window.document
+				window.document = new DOMParser().parseFromString(htmlTemplates["collections-simple"], "text/html")
+				const elms = Strapify.findCollectionElms(window.document)
+
+				expect(elms.length).toBe(3)
+				expect(elms[0].id).toBe("div-collection-0")
+				expect(elms[1].id).toBe("div-collection-1")
+				expect(elms[2].id).toBe("div-collection-2")
+			})
+
+			test("collection-nested.html", () => {
+				delete window.document
+				window.document = new DOMParser().parseFromString(htmlTemplates["collection-nested"], "text/html")
+				const elms = Strapify.findCollectionElms(window.document)
+
+				expect(elms.length).toBe(2)
+				expect(elms[0].id).toBe("div-collection-0")
+				expect(elms[1].id).toBe("div-collection-1")
+			})
+		})
 	})
 
 })

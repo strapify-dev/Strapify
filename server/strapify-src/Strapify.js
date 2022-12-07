@@ -36,6 +36,10 @@ const validStrapifyControllAttributes = [
 
 let ix2Timeout;
 
+function findCollectionElms(containerElement) {
+	return document.body.querySelectorAll("[strapi-collection]");
+}
+
 function findTemplateElms(containerElement) {
 	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template], [strapi-template-conditional]"))
 	return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElement);
@@ -431,6 +435,7 @@ const Strapify = {
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
 	validStrapifyControllAttributes: validStrapifyControllAttributes,
 	queryStringVariables: getQueryStringVariables(),
+	findCollectionElms: findCollectionElms,
 	findTemplateElms: findTemplateElms,
 	findUniqueConditionalTemplateElms: findUniqueConditionalTemplateElms,
 	findRelationElms: findRelationElms,
