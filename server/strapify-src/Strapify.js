@@ -3,7 +3,7 @@ import parser from "./strapify-parser"
 
 const this_script = document.currentScript;
 let apiURL;
-if (this_script.hasAttribute("data-strapi-api-url")) {
+if (this_script?.hasAttribute("data-strapi-api-url")) {
 	//get the strapi api url from the script tag and remove the trailing slash
 	apiURL = this_script.attributes.getNamedItem("data-strapi-api-url").value;
 	apiURL = apiURL.replace(/\/$/, "");
@@ -34,7 +34,6 @@ const validStrapifyControllAttributes = [
 	"strapi-page-control", "strapi-filter-control", "strapi-sort-control",
 ]
 
-const queryStringVariables = getQueryStringVariables();
 let ix2Timeout;
 
 function findTemplateElms(containerElement) {
@@ -146,6 +145,8 @@ function substituteQueryStringVariables(argument) {
 		return argument;
 	}
 
+	const queryStringVariables = getQueryStringVariables();
+
 	//replace first instance of match with the value of the query string variable for each match
 	const reduced = matches.reduce((acc, match) => {
 		const queryStringVariableValue = queryStringVariables[match.split("qs.")[1]]
@@ -165,10 +166,17 @@ function removeQueryStringVariableReferences(argument) {
 		return argument;
 	}
 
-	//replace first instance of match with the value of the query string variable for each match
-	const reduced = matches.reduce((acc, match) => {
+	//replace first instance of match with the empty string
+	let reduced = matches.reduce((acc, match) => {
 		return acc.replace(new RegExp(`${match}`, "m"), "")
 	}, argument)
+
+	//remove leading or trailing periods
+	reduced = reduced.replace(/^\./gm, "")
+	reduced = reduced.replace(/\.$/gm, "")
+
+	//remove any repeated occurrences of periods
+	reduced = reduced.replace(/\.{2,}/gm, ".")
 
 	return reduced
 }
@@ -422,7 +430,7 @@ const Strapify = {
 	validStrapifyCollectionAttributes: validStrapifyCollectionAttributes,
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,
 	validStrapifyControllAttributes: validStrapifyControllAttributes,
-	queryStringVariables: queryStringVariables,
+	queryStringVariables: getQueryStringVariables(),
 	findTemplateElms: findTemplateElms,
 	findUniqueConditionalTemplateElms: findUniqueConditionalTemplateElms,
 	findRelationElms: findRelationElms,
