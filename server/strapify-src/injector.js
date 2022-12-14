@@ -87,9 +87,7 @@ async function strapify() {
 		promises.push(strapifyCollection.process());
 	}
 
-	console.log(promises)
 	await Promise.allSettled(promises)
-	console.log(promises)
 
 	// if (window.Webflow && window.Webflow.require) {
 	// 	console.log("reinitializing ix2 (in strapify-injector)")
