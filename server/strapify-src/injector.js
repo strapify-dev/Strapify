@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	strapify();
 });
 
-document.addEventListener("strapifyinitialized", () => {
+document.addEventListener("strapifyInitialized", () => {
 	console.log("strapify finished");
 });
 
@@ -87,19 +87,24 @@ async function strapify() {
 		promises.push(strapifyCollection.process());
 	}
 
+	console.log(promises)
 	await Promise.allSettled(promises)
+	console.log(promises)
 
-	if (window.Webflow && window.Webflow.require) {
-		console.log("reinitializing ix2 (in strapify-injector)")
-		await window.Webflow.destroy();
-		await window.Webflow.ready();
-		await window.Webflow.require("ix2").init();
-		document.dispatchEvent(new Event("readystatechange"));
-	}
+	// if (window.Webflow && window.Webflow.require) {
+	// 	console.log("reinitializing ix2 (in strapify-injector)")
+	// 	window.Webflow.destroy();
+	// 	window.Webflow.ready();
+	// 	window.Webflow.require("ix2").init();
+	// 	document.dispatchEvent(new Event("readystatechange"));
+	// }
 
 	//dispatch custom event with the collection data
-	document.dispatchEvent(new CustomEvent("strapifyinitialized", {
+	document.dispatchEvent(new CustomEvent("strapifyInitialized", {
 		bubbles: false,
-		target: document.body
+		detail: {
+			userAuthenticated: !!localStorage.getItem("user"),
+			user: JSON.parse(localStorage.getItem("user"))
+		}
 	}));
 }
