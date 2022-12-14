@@ -2,10 +2,43 @@ import StrapifyCollection from "./StrapifyCollection"
 import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import Strapify from "./Strapify";
+import { strapiRequest } from "./util/strapiRequest";
 
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
 	console.log("running strapify");
+
+	//try to get the user from local storage
+	const user = localStorage.getItem("user");
+
+	//if the user exists, make a request to the user endpoint to test the jwt
+	if (user) {
+		strapiRequest("/api/users/me").then((response) => {
+			//dispatch a custom event with the user data
+			document.dispatchEvent(new CustomEvent("strapifyUserAuthenticated", {
+				bubbles: false,
+				detail: {
+					user: response
+				}
+			}));
+		}).catch((error) => {
+			//dispatch a custom event to indicate that the user authentication failed
+			document.dispatchEvent(new CustomEvent("strapifyUserAuthenticationError", {
+				bubbles: false,
+				detail: {
+					error: error
+				}
+			}));
+
+			//remove the user and jwt from local storage
+			localStorage.removeItem("user");
+			localStorage.removeItem("jwt");
+
+			//refresh the page
+			window.location.reload();
+		});
+	}
+
 	strapify();
 });
 

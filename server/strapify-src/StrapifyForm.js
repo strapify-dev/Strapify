@@ -11,6 +11,8 @@ class StrapifyForm {
 	#attributes = {
 		"strapi-form": undefined,
 		"strapi-auth": undefined,
+		"strapi-success-redirect": undefined,
+		"strapi-error-redirect": undefined,
 	}
 
 	constructor(formElement) {
@@ -85,6 +87,10 @@ class StrapifyForm {
 						user: responseData.user
 					}
 				}));
+
+				if(this.#attributes["strapi-success-redirect"]) {
+					window.location.href = this.#attributes["strapi-success-redirect"];
+				}
 			} catch (error) {
 				//dispatch custom event with error
 				this.#formElement.dispatchEvent(new CustomEvent("strapiAuthRegisterError", {
@@ -93,6 +99,10 @@ class StrapifyForm {
 						error: error
 					}
 				}));
+
+				if(this.#attributes["strapi-error-redirect"]) {
+					window.location.href = this.#attributes["strapi-error-redirect"];
+				}
 
 				console.error(error);
 			}
@@ -111,6 +121,10 @@ class StrapifyForm {
 						user: responseData.user
 					}
 				}));
+
+				if(this.#attributes["strapi-success-redirect"]) {
+					window.location.href = this.#attributes["strapi-success-redirect"];
+				}
 			} catch (error) {
 				//dispatch custom event with error
 				this.#formElement.dispatchEvent(new CustomEvent("strapiAuthLogInError", {
@@ -119,6 +133,10 @@ class StrapifyForm {
 						error: error
 					}
 				}));
+
+				if(this.#attributes["strapi-error-redirect"]) {
+					window.location.href = this.#attributes["strapi-error-redirect"];
+				}
 
 				console.error(error);
 			}
