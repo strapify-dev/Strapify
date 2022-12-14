@@ -33,6 +33,14 @@ class StrapifyForm {
 
 		this.#formInputElms = Strapify.findFormInputElms(this.#formElement);
 		this.#formSubmitElm = Strapify.findFormSubmitElms(this.#formElement)[0];
+
+		this.#formElement.addEventListener("strapiAuthRegistered", (event) => {
+			console.log(event);
+		});
+
+		this.#formElement.addEventListener("strapiAuthLoggedIn", (event) => {
+			console.log(event);
+		});
 	}
 
 	destroy() {
@@ -67,10 +75,26 @@ class StrapifyForm {
 			const responseData = await strapiRegister(formData.username, formData.email, formData.password);
 			localStorage.setItem("jwt", responseData.jwt);
 			localStorage.setItem("user", JSON.stringify(responseData.user));
+
+			//dispatch custom event with registered user data
+			this.#formElement.dispatchEvent(new CustomEvent("strapiAuthRegistered", {
+				bubbles: false,
+				detail: {
+					user: responseData.user
+				}
+			}));
 		} else if (this.#attributes["strapi-auth"] === "authenticate") {
 			const responseData = await strapiAuthenticate(formData.identifier, formData.password);
 			localStorage.setItem("jwt", responseData.jwt);
 			localStorage.setItem("user", JSON.stringify(responseData.user));
+
+			//dispatch custom event with authenticated user data
+			this.#formElement.dispatchEvent(new CustomEvent("strapiAuthLoggedIn", {
+				bubbles: false,
+				detail: {
+					user: responseData.user
+				}
+			}));
 		}
 	}
 
