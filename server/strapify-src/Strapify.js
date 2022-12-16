@@ -382,9 +382,9 @@ function reinitializeIX2() {
 	function initIX2() {
 		try {
 			console.log("reinitializing ix2");
-			window.Webflow.destroy();
-			window.Webflow.ready();
-			window.Webflow.require("ix2").init();
+		//	window.Webflow.destroy();
+		//	window.Webflow.ready();
+		//	window.Webflow.require("ix2").init();
 			document.dispatchEvent(new Event("readystatechange"));
 		} catch (e) {
 			console.error(e);

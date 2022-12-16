@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (user) {
 		strapiRequest("/api/users/me").then((response) => {
 			//dispatch a custom event with the user data
-			document.dispatchEvent(new CustomEvent("strapifyUserAuthenticated", {
+			document.dispatchEvent(new CustomEvent("strapiUserAuthenticated", {
 				bubbles: false,
 				detail: {
 					user: response
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			}));
 		}).catch((error) => {
 			//dispatch a custom event to indicate that the user authentication failed
-			document.dispatchEvent(new CustomEvent("strapifyUserAuthenticationError", {
+			document.dispatchEvent(new CustomEvent("strapiUserAuthenticationError", {
 				bubbles: false,
 				detail: {
 					error: error
@@ -36,10 +36,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 			//refresh the page
 			window.location.reload();
+		}).finally(() => {
+			strapify();
 		});
+	} else {
+		strapify();
 	}
-
-	strapify();
 });
 
 document.addEventListener("strapifyInitialized", () => {
@@ -67,6 +69,9 @@ async function strapify() {
 	//find all the elements with the strapi-form or strapi-auth attribute
 	const formElms = document.body.querySelectorAll("[strapi-form], [strapi-auth]");
 
+	//find all the elements with the strapi-logout attribute
+	const logoutElms = document.body.querySelectorAll("[strapi-logout]");
+
 	const promises = []
 
 	for (let i = 0; i < formElms.length; i++) {
@@ -85,6 +90,15 @@ async function strapify() {
 		const collectionElm = collectionElms[i]
 		const strapifyCollection = new StrapifyCollection(collectionElm);
 		promises.push(strapifyCollection.process());
+	}
+
+	for (let i = 0; i < logoutElms.length; i++) {
+		const logoutElm = logoutElms[i]
+		logoutElm.addEventListener("click", () => {
+			localStorage.removeItem("user");
+			localStorage.removeItem("jwt");
+			window.location.reload();
+		});
 	}
 
 	await Promise.allSettled(promises)
