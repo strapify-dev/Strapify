@@ -27,7 +27,8 @@ const validStrapifyCollectionAttributes = [
 ];
 
 const validStrapifyFieldAttributes = [
-	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional", "strapi-into"
+	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional", 
+	"strapi-into", "strapi-css-rule"
 ];
 
 const validStrapifyControllAttributes = [

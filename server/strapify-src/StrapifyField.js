@@ -13,6 +13,7 @@ class StrapifyField {
 		"strapi-class-replace": undefined,
 		"strapi-class-conditional": undefined,
 		"strapi-into": undefined,
+		"strapi-css-rule": undefined,
 	}
 
 	constructor(fieldElement) {
@@ -119,6 +120,32 @@ class StrapifyField {
 		})
 	}
 
+	#processStrapiCSSRule(strapiAttributes) {
+		const attributeValue = this.#fieldElement.getAttribute("strapi-css-rule");
+		const args = attributeValue.split("|").map(arg => arg.trim());
+
+		args.forEach((arg) => {
+			//strapi variables are wrapped in double curly braces
+			const regex = /{{(.*?)}}/g;
+
+			//get all strapi variables in arg and replace with value from getStrapiComponentValue
+			const matches = arg.match(regex);
+			matches.forEach((match) => {
+				const strapiFieldName = match.substring(2, match.length - 2);
+				let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
+				strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+				arg = arg.replace(match, strapiValue);
+			})
+
+			//add arg to the style attribute of the fieldElement without replacing the existing style attribute
+			const existingStyleAttribute = this.#fieldElement.getAttribute("style");
+			if (existingStyleAttribute !== null && existingStyleAttribute !== undefined) {
+				arg = existingStyleAttribute + arg;
+			}
+			this.#fieldElement.setAttribute("style", arg);
+		})
+	}
+
 	process(strapiDataAttributes) {
 		this.#strapiDataAttributes = strapiDataAttributes;
 
@@ -149,6 +176,10 @@ class StrapifyField {
 
 		if (this.#attributes["strapi-into"]) {
 			this.#processStrapiInto(strapiDataAttributes);
+		}
+
+		if (this.#attributes["strapi-css-rule"]) {
+			this.#processStrapiCSSRule(strapiDataAttributes);
 		}
 	}
 }
