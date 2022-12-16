@@ -301,7 +301,7 @@ class StrapifyCollection {
 			}
 
 			//dispatch custom event with the collection data
-			this.#collectionElement.dispatchEvent(new CustomEvent("collectionchange", {
+			this.#collectionElement.dispatchEvent(new CustomEvent("strapiCollectionChange", {
 				bubbles: false,
 				target: this.#collectionElement,
 				detail: {

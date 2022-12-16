@@ -108,16 +108,28 @@ async function strapify() {
 		const ezFormsElm = ezFormsElms[i];
 		const submitElms = Strapify.findEZFormSubmitElms(ezFormsElm);
 
-		console.log(ezFormsElm)
-
 		for (let j = 0; j < submitElms.length; j++) {
 			const submitElm = submitElms[j];
-			console.log(submitElm)
+
 			submitElm.addEventListener("click", (event) => {
 				event.preventDefault();
 				strapiEZFormsSubmit(ezFormsElm).then((data) => {
-					console.log("data: ", data);
-				})
+					//dispatch a custom event with the data
+					document.dispatchEvent(new CustomEvent("strapiEZFormsSubmitted", {
+						bubbles: false,
+						detail: {
+							data: data
+						}
+					}));
+				}).catch((error) => {
+					//dispatch a custom event with the error
+					document.dispatchEvent(new CustomEvent("strapiEZFormsError", {
+						bubbles: false,
+						detail: {
+							error: error
+						}
+					}));
+				});
 			});
 		}
 	}
