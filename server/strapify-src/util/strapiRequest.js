@@ -47,5 +47,27 @@ const strapiAuthenticate = async (identifier, password) => {
 	}
 }
 
+const strapiEZFormsSubmit = async (formElement) => {
+	const formData = new FormData(formElement);
+	const formDataJson = Object.fromEntries(formData.entries());
+	const jwt = localStorage.getItem("jwt");
+
+	try {
+		const headers = {}
+
+		if (jwt) {
+			headers["Authorization"] = `Bearer ${jwt}`;
+		}
+
+		const response = await axios.post(
+			`${Strapify.apiURL}/api/ezforms/submit`,
+			{ headers: headers, formData: formDataJson }
+		);
+		return response.data;
+	} catch (err) {
+		throw err
+	}
+}
+
 export default strapiRequest;
-export { strapiRequest, strapiRegister, strapiAuthenticate }
+export { strapiRequest, strapiRegister, strapiAuthenticate, strapiEZFormsSubmit }

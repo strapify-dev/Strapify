@@ -124,6 +124,16 @@ function findStateElements(container) {
 	return stateElms.filter(child => child.closest("[strapi-collection]") === container);
 }
 
+function findEZFormElms() {
+	const ezFormElms = Array.from(document.querySelectorAll("[strapi-ezforms-form]"));
+	return ezFormElms;
+}
+
+function findEZFormSubmitElms(containerElm) {
+	const ezFormSubmitElms = Array.from(containerElm.querySelectorAll("[strapi-ezforms-submit]"));
+	return ezFormSubmitElms.filter(child => child.closest("[strapi-ezforms-form]") === containerElm);
+}
+
 function getQueryStringVariables() {
 	//get the query strings variables
 	const queryString = window.location.search.substring(1);
@@ -382,10 +392,10 @@ function reinitializeIX2() {
 	function initIX2() {
 		try {
 			console.log("reinitializing ix2");
-		//	window.Webflow.destroy();
-		//	window.Webflow.ready();
-		//	window.Webflow.require("ix2").init();
-			document.dispatchEvent(new Event("readystatechange"));
+			//	window.Webflow.destroy();
+			//	window.Webflow.ready();
+			//	window.Webflow.require("ix2").init();
+			//	document.dispatchEvent(new Event("readystatechange"));
 		} catch (e) {
 			console.error(e);
 		}
@@ -448,6 +458,8 @@ const Strapify = {
 	findFormSubmitElms: findFormSubmitElms,
 	findInsertBeforeElm: findInsertBeforeElm,
 	findStateElements: findStateElements,
+	findEZFormElms: findEZFormElms,
+	findEZFormSubmitElms: findEZFormSubmitElms,
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
 	removeQueryStringVariableReferences: removeQueryStringVariableReferences,

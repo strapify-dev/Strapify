@@ -2,7 +2,7 @@ import StrapifyCollection from "./StrapifyCollection"
 import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import Strapify from "./Strapify";
-import { strapiRequest } from "./util/strapiRequest";
+import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
@@ -72,6 +72,9 @@ async function strapify() {
 	//find all the elements with the strapi-logout attribute
 	const logoutElms = document.body.querySelectorAll("[strapi-logout]");
 
+	//find all elements with strapi-ezforms-form attributes
+	const ezFormsElms = Strapify.findEZFormElms();
+
 	const promises = []
 
 	for (let i = 0; i < formElms.length; i++) {
@@ -99,6 +102,24 @@ async function strapify() {
 			localStorage.removeItem("jwt");
 			window.location.reload();
 		});
+	}
+
+	for (let i = 0; i < ezFormsElms.length; i++) {
+		const ezFormsElm = ezFormsElms[i];
+		const submitElms = Strapify.findEZFormSubmitElms(ezFormsElm);
+
+		console.log(ezFormsElm)
+
+		for (let j = 0; j < submitElms.length; j++) {
+			const submitElm = submitElms[j];
+			console.log(submitElm)
+			submitElm.addEventListener("click", (event) => {
+				event.preventDefault();
+				strapiEZFormsSubmit(ezFormsElm).then((data) => {
+					console.log("data: ", data);
+				})
+			});
+		}
 	}
 
 	await Promise.allSettled(promises)
