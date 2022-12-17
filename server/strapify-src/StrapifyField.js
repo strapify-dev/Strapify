@@ -111,10 +111,30 @@ class StrapifyField {
 
 		args.forEach((arg) => {
 			const split = arg.split("->");
-			let strapiFieldName = split[0].trim();
-			strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName);
-			const intoDataValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
 			const intoAttributeName = split[1].trim();
+			let intoDataValue = split[0].trim();
+			console.log(intoDataValue);
+			
+			//strapi variables are wrapped in double curly braces
+			const regex = /{{(.*?)}}/g;
+			//get all strapi variables in arg and replace with value from getStrapiComponentValue
+			const matches = arg.match(regex);
+
+			// if no matches, then no strapi variables in arg
+			if (!matches) {
+				intoDataValue = Strapify.substituteQueryStringVariables(intoDataValue);
+				intoDataValue = Strapify.getStrapiComponentValue(intoDataValue, strapiAttributes);
+				this.#fieldElement.setAttribute(intoAttributeName, intoDataValue);
+				return;
+			}
+			
+			// otherwise, replace strapi variables with values from getStrapiComponentValue
+			matches.forEach((match) => {
+				const strapiFieldName = match.substring(2, match.length - 2);
+				let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
+				strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+				intoDataValue = intoDataValue.replace(match, strapiValue);
+			});
 
 			this.#fieldElement.setAttribute(intoAttributeName, intoDataValue);
 		})
