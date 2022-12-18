@@ -2,7 +2,8 @@ import Strapify from "./Strapify";
 import { strapiEZFormsSubmit } from "./util/strapiRequest";
 
 class StrapifyEZFormsForm {
-	#formElement;
+	#formContainerElm;
+	#formElm;
 	#formSubmitElm;
 	#state = "initial";
 	#stateElms;
@@ -11,22 +12,31 @@ class StrapifyEZFormsForm {
 		"strapi-ezforms-form": undefined,
 		"strapi-success-redirect": undefined,
 		"strapi-error-redirect": undefined,
+		"strapi-hide-on-success": undefined,
+		"strapi-hide-on-error": undefined,
 	}
 
-	constructor(formElement) {
-		this.#formElement = formElement;
+	constructor(formContainerElement) {
+		this.#formContainerElm = formContainerElement;
 		this.#updateAttributes();
 
-		this.#stateElms = Strapify.findStateElements(this.#formElement);
-		console.log(this.#stateElms);
+		//check if the formContainerElm is a form element
+		if (this.#formContainerElm.tagName === "FORM") {
+			this.#formElm = this.#formContainerElm;
+		} else {
+			//find the child form which is closest to the formContainerElm
+			this.#formElm = this.#formContainerElm.querySelector("form");
+		}
+
+		this.#stateElms = Strapify.findStateElements(this.#formContainerElm);
 		this.#reflectState();
 
-		this.#formSubmitElm = Strapify.findEZFormSubmitElms(this.#formElement)[0];
+		this.#formSubmitElm = Strapify.findEZFormSubmitElms(this.#formContainerElm)[0];
 	}
 
 	#updateAttributes() {
 		Object.keys(this.#attributes).forEach((attribute) => {
-			this.#attributes[attribute] = this.#formElement.getAttribute(attribute);
+			this.#attributes[attribute] = this.#formContainerElm.getAttribute(attribute);
 		})
 	}
 
@@ -43,7 +53,7 @@ class StrapifyEZFormsForm {
 	}
 
 	async process() {
-		const ezFormsElm = this.#formElement;
+		const ezFormsElm = this.#formElm;
 		const submitElm = this.#formSubmitElm;
 
 		submitElm.addEventListener("click", (event) => {
@@ -57,12 +67,16 @@ class StrapifyEZFormsForm {
 				this.#reflectState();
 
 				//dispatch a custom event with the data
-				this.#formElement.dispatchEvent(new CustomEvent("strapiEZFormsSubmitted", {
+				this.#formContainerElm.dispatchEvent(new CustomEvent("strapiEZFormsSubmitted", {
 					bubbles: false,
 					detail: {
 						data: data
 					}
 				}));
+
+				if(this.#attributes["strapi-hide-on-success"] !== null && this.#attributes["strapi-hide-on-success"] !== undefined) {
+					this.#formContainerElm.classList.add("strapify-hide");
+				}
 
 				if (this.#attributes["strapi-success-redirect"]) {
 					window.location.href = this.#attributes["strapi-success-redirect"];
@@ -72,12 +86,16 @@ class StrapifyEZFormsForm {
 				this.#reflectState();
 
 				//dispatch a custom event with the error
-				this.#formElement.dispatchEvent(new CustomEvent("strapiEZFormsError", {
+				this.#formContainerElm.dispatchEvent(new CustomEvent("strapiEZFormsError", {
 					bubbles: false,
 					detail: {
 						error: error
 					}
 				}));
+
+				if(this.#attributes["strapi-hide-on-error"] !== null && this.#attributes["strapi-hide-on-error"] !== undefined) {
+					this.#formContainerElm.classList.add("strapify-hide");
+				}
 
 				if (this.#attributes["strapi-error-redirect"]) {
 					window.location.href = this.#attributes["strapi-error-redirect"];
