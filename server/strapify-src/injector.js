@@ -1,6 +1,7 @@
 import StrapifyCollection from "./StrapifyCollection"
 import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
+import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
@@ -105,33 +106,9 @@ async function strapify() {
 	}
 
 	for (let i = 0; i < ezFormsElms.length; i++) {
-		const ezFormsElm = ezFormsElms[i];
-		const submitElms = Strapify.findEZFormSubmitElms(ezFormsElm);
-
-		for (let j = 0; j < submitElms.length; j++) {
-			const submitElm = submitElms[j];
-
-			submitElm.addEventListener("click", (event) => {
-				event.preventDefault();
-				strapiEZFormsSubmit(ezFormsElm).then((data) => {
-					//dispatch a custom event with the data
-					document.dispatchEvent(new CustomEvent("strapiEZFormsSubmitted", {
-						bubbles: false,
-						detail: {
-							data: data
-						}
-					}));
-				}).catch((error) => {
-					//dispatch a custom event with the error
-					document.dispatchEvent(new CustomEvent("strapiEZFormsError", {
-						bubbles: false,
-						detail: {
-							error: error
-						}
-					}));
-				});
-			});
-		}
+		const ezFormsElm = ezFormsElms[i]
+		const strapifyEZFormsForm = new StrapifyEZFormsForm(ezFormsElm);
+		strapifyEZFormsForm.process();
 	}
 
 	await Promise.allSettled(promises)

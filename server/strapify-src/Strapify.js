@@ -122,7 +122,7 @@ function findInsertBeforeElm(templateElm) {
 
 function findStateElements(container) {
 	const stateElms = Array.from(container.querySelectorAll("[strapi-state-element]"));
-	return stateElms.filter(child => child.closest("[strapi-collection]") === container);
+	return stateElms.filter(child => child.closest("[strapi-collection], [strapi-ezforms-form]") === container);
 }
 
 function findEZFormElms() {
