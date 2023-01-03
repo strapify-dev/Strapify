@@ -4,25 +4,32 @@ import StrapifyField from "./StrapifyField";
 import StrapifyRepeatable from "./StrapifyRepeatable.js";
 
 class StrapifyTemplate {
+	//the template element this class manages
 	#templateElement;
+
+	//the strapi data id and attributes
 	#strapiDataId
 	#strapiDataAttributes
+
+	//the strapify field, relation, and repeatable objects which belong to this template
 	#strapifyFields = [];
 	#strapifyRelations = [];
 	#strapifyRepeatables = [];
 
+	//the allowed attributes for the template element
 	#attributes = {
 		"strapi-template": undefined,
+		"strapi-template-conditional": undefined
 	}
 
 	constructor(templateElement, strapiDataId, strapiDataAttributes, strapifyCollection) {
-		//set the collection element and update the attributes
 		this.#templateElement = templateElement;
 		this.#strapiDataId = strapiDataId;
 		this.#strapiDataAttributes = strapiDataAttributes;
 		this.#updateAttributes();
 	}
 
+	//destroy all descendant strapify objects and delete the template element
 	destroy() {
 		this.#strapifyFields.forEach(field => field.destroy());
 		this.#strapifyRelations.forEach(relation => relation.destroy());
@@ -36,32 +43,29 @@ class StrapifyTemplate {
 		})
 	}
 
-	process() {
-		const strapiDataId = this.#strapiDataId;
-		const strapiDataAttributes = this.#strapiDataAttributes;
-
-		//find strapify field elements 
+	async process() {
+		//find strapify field elements, instatiate strapify field objects, and process them
 		const strapifyFieldElements = Strapify.findFieldElms(this.#templateElement);
 		strapifyFieldElements.forEach(fieldElement => {
 			const strapifyField = new StrapifyField(fieldElement)
 			this.#strapifyFields.push(strapifyField);
 
-			strapifyField.process(strapiDataAttributes)
+			strapifyField.process(this.#strapiDataAttributes)
 		});
 
-		//find strapify repeatable elements and process them
+		//find strapify repeatable elements, instatiate strapify repeatable objects, and process them
 		const strapifyRepeatableElements = Strapify.findRepeatableElms(this.#templateElement);
 		strapifyRepeatableElements.forEach(repeatableElement => {
-			const strapifyRepeatable = new StrapifyRepeatable(repeatableElement, strapiDataId, strapiDataAttributes)
+			const strapifyRepeatable = new StrapifyRepeatable(repeatableElement, this.#strapiDataId, this.#strapiDataAttributes)
 			this.#strapifyRepeatables.push(strapifyRepeatable);
 
 			strapifyRepeatable.process()
 		});
 
-		//find strapify relation elements and process them
+		//find strapify relation elements, instatiate strapify relation objects, and process them
 		const strapifyRelationElements = Strapify.findRelationElms(this.#templateElement);
 		strapifyRelationElements.forEach(relationElement => {
-			const strapifyRelation = new StrapifyRelation(relationElement, strapiDataId, strapiDataAttributes)
+			const strapifyRelation = new StrapifyRelation(relationElement, this.#strapiDataId, this.#strapiDataAttributes)
 			this.#strapifyRelations.push(strapifyRelation);
 
 			strapifyRelation.process()
