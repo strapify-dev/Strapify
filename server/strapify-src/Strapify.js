@@ -37,7 +37,7 @@ const validStrapifyControllAttributes = [
 
 let ix2Timeout;
 
-function findCollectionElms(containerElement) {
+function findCollectionElms() {
 	return document.body.querySelectorAll("[strapi-collection]");
 }
 
