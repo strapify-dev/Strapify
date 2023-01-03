@@ -3,16 +3,21 @@ import StrapifyTemplate from "./StrapifyTemplate"
 import strapiRequest from "./util/strapiRequest";
 
 class StrapifyControl {
+	//the control element that this object manages
 	#controlElement;
+	//the collection element that the control element controls
 	#collectionElement
+	//the StrapifyCollection object that manages the collection element
 	#strapifyCollection
 
+	//radio buttons elements and checkboxes which are children of the control element
 	#radioButtons
 	#checkboxes
-	#mutationObserver;
 
+	//either "strapi-page", "strapi-filter", or "strapi-sort"
 	#controlType;
 
+	//the strapify data attributes of the control element
 	#attributes = {
 		"strapi-page-control": undefined,
 		"strapi-filter-control": undefined,
@@ -25,20 +30,7 @@ class StrapifyControl {
 		this.#strapifyCollection = strapifyCollection;
 		this.#updateAttributes();
 
-		this.#mutationObserver = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				// if (mutation.type === "attributes") {
-				// 	this.#updateAttributes();
-				// 	this.process();
-				// }
-			});
-		});
-
-		this.#mutationObserver.observe(this.#controlElement, {
-			attributes: true,
-			attributeFilter: Strapify.validStrapifyControllAttributes
-		});
-
+		//determine the type of control
 		if (this.#controlElement.hasAttribute("strapi-page-control")) {
 			this.#controlType = "strapi-page";
 		} else if (this.#controlElement.hasAttribute("strapi-filter-control")) {
@@ -47,15 +39,16 @@ class StrapifyControl {
 			this.#controlType = "strapi-sort";
 		}
 
-		//button or a
+		//add event listeners to trigger the correct action when the control element is interacted with
+		//for button or a elements
 		if (this.#controlElement.tagName === "BUTTON" || this.#controlElement.tagName === "A") {
 			this.#controlElement.addEventListener("click", this.#onButtonEvent.bind(this));
 		}
-		//select
+		//for select elements
 		else if (this.#controlElement.tagName === "SELECT") {
 			this.#controlElement.addEventListener("change", this.#onSelectEvent.bind(this));
-		}
-		//radio or checkbox
+		} 
+		//for radio or checkbox elements
 		else {
 			//look for radio buttons
 			this.#radioButtons = Array.from(this.#controlElement.querySelectorAll("input[type='radio']"));
@@ -80,7 +73,6 @@ class StrapifyControl {
 	}
 
 	destroy() {
-		this.#mutationObserver.disconnect();
 	}
 
 	#updateAttributes() {
