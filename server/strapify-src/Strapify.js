@@ -13,6 +13,11 @@ if (this_script?.hasAttribute("data-strapi-api-url")) {
 	apiURL = "http://localhost:1337";
 }
 
+let applyWebflowAnimationFix = false;
+if (this_script?.hasAttribute("data-apply-webflow-animation-fix")) {
+	applyWebflowAnimationFix = this_script.attributes.getNamedItem("data-apply-webflow-animation-fix").value === "true";
+}
+
 const validStrapifySingleTypeAttributes = [
 	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-relation",
 	"strapi-single-type-repeatable"
@@ -386,17 +391,17 @@ function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursion
 }
 
 function reinitializeIX2() {
-	if (!window.Webflow) {
+	if (!window.Webflow || !applyWebflowAnimationFix) {
 		return
 	}
 
 	function initIX2() {
 		try {
 			console.log("reinitializing ix2");
-			//	window.Webflow.destroy();
-			//	window.Webflow.ready();
-			//	window.Webflow.require("ix2").init();
-			//	document.dispatchEvent(new Event("readystatechange"));
+			window.Webflow.destroy();
+			window.Webflow.ready();
+			window.Webflow.require("ix2").init();
+			document.dispatchEvent(new Event("readystatechange"));
 		} catch (e) {
 			console.error(e);
 		}
