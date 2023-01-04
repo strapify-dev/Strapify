@@ -63,8 +63,13 @@ class StrapifyForm {
 			if (!name) {
 				name = inputElm.getAttribute("strapi-auth-input");
 			}
-
-			formData[name] = inputElm.value;
+			
+			// split input value by | separator, with optional whitespace (e.g. "username | email")
+			const names = name.split(/\s*\|\s*/);
+			names.forEach((name) => {
+				formData[name] = inputElm.value;
+			})
+			
 		})
 
 		return formData;
@@ -96,7 +101,8 @@ class StrapifyForm {
 				this.#formElement.dispatchEvent(new CustomEvent("strapiAuthRegisterError", {
 					bubbles: false,
 					detail: {
-						error: error
+						error: error,
+						errorMessage: error.response.data.error.message
 					}
 				}));
 
@@ -105,6 +111,7 @@ class StrapifyForm {
 				}
 
 				console.error(error);
+				console.error(error.response.data.error.message);
 			}
 
 
