@@ -67,6 +67,7 @@ class StrapifyForm {
 			// split input value by | separator, with optional whitespace (e.g. "username | email")
 			const names = name.split(/\s*\|\s*/);
 			names.forEach((name) => {
+				name = name.trim();
 				formData[name] = inputElm.value;
 			})
 			
