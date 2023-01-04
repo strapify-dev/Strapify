@@ -450,6 +450,10 @@ app.get('/api/preview/:sitename/:filename', function (req, res) {
 	res.sendFile(path.join(__dirname, `/output/${sitename}/${filename}`));
 });
 
+app.get('/strapify-script', function (req, res) {
+	res.sendFile(path.join(__dirname, "/bundle/main.js"));
+});
+
 //  app.get("/*", (req, res) => {
 //  	res.sendFile(path.join(__dirname, "/output/index.html"));
 //  });
