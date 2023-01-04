@@ -118,15 +118,35 @@ class StrapifyField {
 
 	//for strapi-into
 	#processStrapiInto(strapiAttributes) {
-		let attributeValue = this.#fieldElement.getAttribute("strapi-into");
-		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
-		attributeValue = Strapify.substituteStrapiDataAttributes(attributeValue, strapiAttributes);
-
+		const attributeValue = this.#fieldElement.getAttribute("strapi-into");
 		const args = attributeValue.split("|");
+
 		args.forEach((arg) => {
 			const split = arg.split("->");
 			const intoAttributeName = split[1].trim();
 			let intoDataValue = split[0].trim();
+			console.log(intoDataValue);
+
+			//strapi variables are wrapped in double curly braces
+			const regex = /{{(.*?)}}/g;
+			//get all strapi variables in arg and replace with value from getStrapiComponentValue
+			const matches = arg.match(regex);
+
+			//if no matches, then no strapi variables in arg
+			if (!matches) {
+				intoDataValue = Strapify.substituteQueryStringVariables(intoDataValue);
+				intoDataValue = Strapify.getStrapiComponentValue(intoDataValue, strapiAttributes);
+				this.#fieldElement.setAttribute(intoAttributeName, intoDataValue);
+				return;
+			}
+
+			//otherwise, replace strapi variables with values from getStrapiComponentValue
+			matches.forEach((match) => {
+				const strapiFieldName = match.substring(2, match.length - 2);
+				let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
+				strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+				intoDataValue = intoDataValue.replace(match, strapiValue);
+			});
 
 			this.#fieldElement.setAttribute(intoAttributeName, intoDataValue);
 		})
@@ -134,12 +154,22 @@ class StrapifyField {
 
 	//for strapi-css-rule
 	#processStrapiCSSRule(strapiAttributes) {
-		let attributeValue = this.#fieldElement.getAttribute("strapi-css-rule");
-		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
-		attributeValue = Strapify.substituteStrapiDataAttributes(attributeValue, strapiAttributes);
-
+		const attributeValue = this.#fieldElement.getAttribute("strapi-css-rule");
 		const args = attributeValue.split("|").map(arg => arg.trim());
+
 		args.forEach((arg) => {
+			//strapi variables are wrapped in double curly braces
+			const regex = /{{(.*?)}}/g;
+
+			//get all strapi variables in arg and replace with value from getStrapiComponentValue
+			const matches = arg.match(regex);
+			matches.forEach((match) => {
+				const strapiFieldName = match.substring(2, match.length - 2);
+				let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
+				strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+				arg = arg.replace(match, strapiValue);
+			})
+
 			//add arg to the style attribute of the fieldElement without replacing the existing style attribute
 			const existingStyleAttribute = this.#fieldElement.getAttribute("style");
 			if (existingStyleAttribute !== null && existingStyleAttribute !== undefined) {
