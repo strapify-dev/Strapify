@@ -130,7 +130,8 @@ class StrapifyForm {
 				this.#formElement.dispatchEvent(new CustomEvent("strapiAuthLogInError", {
 					bubbles: false,
 					detail: {
-						error: error
+						error: error,
+						errorMessage: error.response.data.error.message
 					}
 				}));
 
@@ -139,6 +140,7 @@ class StrapifyForm {
 				}
 
 				console.error(error);
+				console.error(error.response.data.error.message);
 			}
 
 		}
