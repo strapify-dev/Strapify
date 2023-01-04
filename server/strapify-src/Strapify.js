@@ -32,7 +32,7 @@ const validStrapifyCollectionAttributes = [
 ];
 
 const validStrapifyFieldAttributes = [
-	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional", 
+	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional",
 	"strapi-into", "strapi-css-rule"
 ];
 
@@ -199,6 +199,19 @@ function removeQueryStringVariableReferences(argument) {
 	reduced = reduced.replace(/\.{2,}/gm, ".")
 
 	return reduced
+}
+
+function substituteStrapiDataAttributes(argument, strapiAttributes) {
+	//strapi variables are wrapped in double curly braces
+	const regex = /{{(.*?)}}/g;
+
+	//get all strapi variables in argument and replace with value from getStrapiComponentValue
+	const matches = argument.match(regex);
+	matches.forEach((match) => {
+		const strapiFieldName = match.substring(2, match.length - 2);
+		strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+		arg = arg.replace(match, strapiValue);
+	})
 }
 
 function getArguments(attributeValue) {
@@ -469,6 +482,7 @@ const Strapify = {
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
 	removeQueryStringVariableReferences: removeQueryStringVariableReferences,
+	substituteStrapiDataAttributes: substituteStrapiDataAttributes,
 	getArguments: getArguments,
 	getProcessedArguments: getProcessedArguments,
 	getStrapiComponentValue: getStrapiComponentValue,
