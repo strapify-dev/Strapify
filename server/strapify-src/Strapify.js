@@ -205,13 +205,18 @@ function substituteStrapiDataAttributes(argument, strapiAttributes) {
 	//strapi variables are wrapped in double curly braces
 	const regex = /{{(.*?)}}/g;
 
-	//get all strapi variables in argument and replace with value from getStrapiComponentValue
+	//find matches
 	const matches = argument.match(regex);
+	if(!matches) return argument;
+
+	//get all strapi variables in argument and replace with value from getStrapiComponentValue
 	matches.forEach((match) => {
 		const strapiFieldName = match.substring(2, match.length - 2);
 		strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
-		arg = arg.replace(match, strapiValue);
+		argument = argument.replace(match, strapiValue);
 	})
+
+	return argument;
 }
 
 function getArguments(attributeValue) {
