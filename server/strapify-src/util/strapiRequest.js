@@ -22,13 +22,9 @@ const strapiRequest = async (slug, queryString) => {
 	}
 };
 
-const strapiRegister = async (username, email, password) => {
+const strapiRegister = async (formData) => {
 	try {
-		const response = await axios.post(`${Strapify.apiURL}/api/auth/local/register`, {
-			username: username,
-			email: email,
-			password: password,
-		});
+		const response = await axios.post(`${Strapify.apiURL}/api/auth/local/register`, formData);
 		return response.data;
 	} catch (err) {
 		throw err

@@ -81,7 +81,7 @@ class StrapifyForm {
 
 		if (this.#attributes["strapi-auth"] === "register") {
 			try {
-				const responseData = await strapiRegister(formData.username, formData.email, formData.password);
+				const responseData = await strapiRegister(formData);
 
 				localStorage.setItem("jwt", responseData.jwt);
 				localStorage.setItem("user", JSON.stringify(responseData.user));
