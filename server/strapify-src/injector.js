@@ -98,10 +98,15 @@ async function strapify() {
 	//logout elements are a simple case, so we just handle them here
 	for (let i = 0; i < logoutElms.length; i++) {
 		const logoutElm = logoutElms[i]
+		const logoutRedirect = logoutElm.getAttribute("strapi-logout-redirect");
 		logoutElm.addEventListener("click", () => {
 			localStorage.removeItem("user");
 			localStorage.removeItem("jwt");
-			window.location.reload();
+			if (logoutRedirect) {
+				window.location = logoutRedirect;
+			} else {
+				window.location.reload();
+			}
 		});
 	}
 
