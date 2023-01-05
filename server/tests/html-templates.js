@@ -14,4 +14,22 @@ files.forEach((file) => {
 	htmlTemplates[file.replace(".html", "")] = fileContents;
 });
 
-export default htmlTemplates;
+function composeTemplates(templateNames, development = true) {
+	//choose the base template
+	const base = development ? htmlTemplates["base-development"] : htmlTemplates["base"];
+
+	//content is inserted into the base template before the occurance of this string
+	const insertBeforeString = "<!-- insert here -->";
+
+	//insert the content into the base template
+	const insertionString = templateNames.reduce((acc, templateName) => {
+		acc += htmlTemplates[templateName];
+		acc += "\n"
+		return acc;
+	}, "");
+
+	//insert the insertionString into the base template and return the result
+	return base.replace(insertBeforeString, insertionString);
+}
+
+export default htmlTemplates

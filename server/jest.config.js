@@ -1,7 +1,7 @@
 module.exports = {
-	//preset: "jest-puppeteer",
+	preset: "jest-puppeteer",
 	moduleFileExtensions: ['js'],
 	moduleDirectories: ['node_modules'],
-	testEnvironment: 'jsdom'
+	//testEnvironment: 'jsdom'
 
 };
