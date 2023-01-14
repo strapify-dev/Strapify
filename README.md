@@ -56,7 +56,7 @@ npm install -g peggy
 npm run buildpeggy
 ```
 ```shell
-npm run bundle
+npm run bundlehot
 ```
 the script can then be found in /strapify/bundle/main.js
 
