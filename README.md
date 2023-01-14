@@ -19,7 +19,7 @@ For a website which is hosted, such as a Webflow site, it is easiest to develop 
     npm install -g peggy
     npm run buildpeggy
     ```
-  - and start webpack with hot realoding in another terminal (used to bundle the source scripts) with
+  - and start webpack with hot reloding in another terminal (used to bundle the source scripts) with
     ```shell
     npm run bundlehot
     ```
