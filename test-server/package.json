@@ -1,0 +1,23 @@
+{
+	"name": "strapify",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index",
+		"starthot": "npx nodemon index"
+	},
+	"author": "Austin Goodman, Ray Keating",
+	"license": "UNLICENSED",
+	"dependencies": {
+		"archiver": "^5.3.1",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.1",
+		"express": "^4.18.1",
+		"node-html-parser": "^6.1.1",
+		"url-exist": "^3.0.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	}
+}

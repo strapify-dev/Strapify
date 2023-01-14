@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "debounce": "^1.2.1",
-    "jquery": "^3.6.1",
     "url-exist": "^3.0.1"
   }
 }

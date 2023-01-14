@@ -125,7 +125,6 @@ class StrapifyField {
 			const split = arg.split("->");
 			const intoAttributeName = split[1].trim();
 			let intoDataValue = split[0].trim();
-			console.log(intoDataValue);
 
 			//strapi variables are wrapped in double curly braces
 			const regex = /{{(.*?)}}/g;

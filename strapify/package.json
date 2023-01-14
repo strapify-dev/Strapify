@@ -5,27 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node index",
-    "starthot": "npx nodemon index",
     "bundle": "webpack --mode development",
     "bundlehot": "webpack --watch --mode development",
     "bundleprod": "webpack --mode production",
-    "buildpeggy": "peggy -o ./strapify-src/strapify-parser.js ./strapify-src/strapify-parser.js.pegjs"
+    "buildpeggy": "peggy -o ./src/strapify-parser.js ./src/strapify-parser.js.pegjs"
   },
-  "author": "Austin Goodman",
+  "author": "Austin Goodman, Ray Keating",
   "license": "UNLICENSED",
   "dependencies": {
-    "archiver": "^5.3.1",
     "axios": "^1.1.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "express-flash": "0.0.2",
-    "express-session": "^1.17.3",
-    "marked": "^4.2.2",
-    "mongoose": "^6.3.3",
-    "node-html-parser": "^6.1.1",
-    "url-exist": "^3.0.1"
+    "marked": "^4.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.5",
@@ -35,7 +24,6 @@
     "jest-cli": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
     "jest-puppeteer": "^6.2.0",
-    "nodemon": "^2.0.19",
     "webpack-cli": "^4.10.0"
   }
 }

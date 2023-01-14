@@ -103,12 +103,20 @@ dist
 # TernJS port file
 .tern-port
 
+# vscode files
 .vscode
 
+# dev server output folder
+/test-server/output/*
 
+# strapify test files
+/strapify/tests/html-tests-unvalidated/*
 
-# output folder
-/server/output
+# built strapify files
+/strapify/bundle/*
+/strapify/src/strapify-parser.js
+
+# gitkeep files
 !.gitkeep
 
 

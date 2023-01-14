@@ -378,14 +378,14 @@ app.post("/api/strapify", async (req, res) => {
 	}
 
 	//if bundle/main.js doesn't exist, return an error
-	if (!fs.existsSync("bundle/main.js")) {
+	if (!fs.existsSync(path.join(__dirname, "/../strapify/bundle", "main.js"))) {
 		res.status(500).send("could not find bundle/main.js. Please bundle injector.js on the server.");
 	}
 
 	//copy the main.js file from the bundle folder to the output folder
 	try {
 		fs.copyFileSync(
-			path.join(__dirname, "bundle", "main.js"),
+			path.join(__dirname, "/../strapify/bundle", "main.js"),
 			path.join(`output/${outputFolder}`, "main.js")
 		);
 	} catch (error) {
@@ -436,9 +436,6 @@ app.get('/api/download', function (req, res) {
 //route to get the generated site
 app.get('/api/preview/:sitename/', function (req, res) {
 	const sitename = req.params.sitename;
-
-	console.log(sitename)
-
 	res.sendFile(path.join(__dirname, `/output/${sitename}/index.html`));
 });
 
@@ -451,7 +448,7 @@ app.get('/api/preview/:sitename/:filename', function (req, res) {
 });
 
 app.get('/strapify-script', function (req, res) {
-	res.sendFile(path.join(__dirname, "/bundle/main.js"));
+	res.sendFile(path.join(__dirname, "/../strapify/bundle/main.js"));
 });
 
 //  app.get("/*", (req, res) => {
