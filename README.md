@@ -7,7 +7,7 @@ WIP documentation https://observant-bed-47f.notion.site/Strapify-newest-3c7d220c
 ## How to Run For Development
 For a website with files stored locally, build Strapify and add /strapify/bundle/main.js to your HTML file.
 
-For a website which is hosted, such as a Webflow site, it is easiest to develop Strapify using the development server client, which will allow you to scrape the site and add the Strapify script with a single button press.
+For a website which is hosted, such as a Webflow site, it is easiest to develop Strapify using the development server and client, which will allow you to scrape the site and add the Strapify script with a single button press.
 
 #### Strapify
   - cd into the /strapify folder and install npm deps
