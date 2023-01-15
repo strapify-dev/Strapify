@@ -33,8 +33,8 @@ describe("DOM tests", () => {
 			//wait for strapify to finish
 			await strapifyInitializedPromise
 
-			//wait one second for good measure
-			await page.waitForTimeout(1000)
+			//wait a bit for good measure
+			await page.waitForTimeout(100)
 
 			//write the unvalidated file
 			const pageContents = await page.content()
@@ -51,6 +51,9 @@ describe("DOM tests", () => {
 			//remove all whitespace including tabs, newlines, and spaces, then diff the two DOMs
 			const diff = new DiffDOM().diff(pageContents.replace(/\s/g, ''), validatedFileContents.replace(/\s/g, ''))
 			expect(diff).toEqual([])
+
+			//close the page
+			await page.close()
 		})
 	})
 })
