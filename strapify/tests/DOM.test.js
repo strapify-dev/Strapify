@@ -8,10 +8,15 @@ describe("DOM tests", () => {
 	Object.keys(htmlTemplates).forEach((htmlTemplateName) => {
 		//test each of the test definitions
 		test(htmlTemplateName, async () => {
+			console.log(htmlTemplateName)
+
 			//we read the template into filePath, write the unvalidated file to unvalidatedFilePath, and compare it to the validated file at validatedFilePath
 			const filePath = path.join(__dirname, `./html-templates/${htmlTemplateName}.html`)
 			const unvalidatedFilePath = path.join(__dirname, `./html-tests-unvalidated/${htmlTemplateName}.html`)
 			const validatedFilePath = path.join(__dirname, `./html-tests-validated/${htmlTemplateName}.html`)
+
+			//restart puppeteer
+			await jestPuppeteer.resetBrowser()
 
 			//use this to block until strapify is finished
 			const strapifyInitializedPromise = new Promise(async (resolve, reject) => {
@@ -50,10 +55,7 @@ describe("DOM tests", () => {
 
 			//remove all whitespace including tabs, newlines, and spaces, then diff the two DOMs
 			const diff = new DiffDOM().diff(pageContents.replace(/\s/g, ''), validatedFileContents.replace(/\s/g, ''))
-			expect(diff).toEqual([])
-
-			//close the page
-			await page.close()
+			await expect(diff).toEqual([])
 		})
 	})
 })
