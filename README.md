@@ -41,6 +41,7 @@ For a website which is hosted, such as a Webflow site, it is easiest to develop 
     ```shell
     npm install
     ```
+  - run the client with 
     ```shell
     npm run dev
     ```
@@ -56,7 +57,7 @@ npm install -g peggy
 npm run buildpeggy
 ```
 ```shell
-npm run bundlehot
+npm run bundle
 ```
 the script can then be found in /strapify/bundle/main.js
 
