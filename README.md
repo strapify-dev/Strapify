@@ -73,3 +73,19 @@ the script can then be found in /strapify/bundle/strapify.js
 
 ## How to make changes
 The source files for Strapify are found in /strapify/src. Make any changes and build.
+
+## Testing
+Strapify uses Jest for testing. Some functions are unit tested as usual but since Strapify is all about modifying the DOM, we use a more elaborate system that requires manual human validation initially, and then automated difference testing afterwards.
+
+This system involves three directories
+  1. /strapify/tests/html-templates (place any tests you make in here)
+  2. /strapify/tests/html-tests-unvalidated (never add anything here)
+  3. /strapify/tests/html-tests-validated (move files from html-tests-unvalidated to this directory after manual validation)
+
+The DOM based testing process is as follows: 
+  1. create any tests and add them to the html-templates directory
+  2. run the tests in DOM.test.js. This will result in a file for each template, with the same name as the template, being created in html-tests-unvalidated. These files contain a dump of the DOM after Strapify runs.
+  3. if the test has not been manually validated, the test will fail. In this case, open the test file in html-tests-unvalidated and validate that everything is correct. You must disable javascript when you open the file in a browser. If everything is ok, move it to html-tests-validated and run Jest again
+  4. if a validated file does exist, the dumped DOM will be compared to the content of the validated file to detect any differences.
+  
+  This system allows for unexpected changes in behaviour to be detected automatically. 
