@@ -1,40 +1,21 @@
 import { fail } from 'assert'
+import { DiffDOM } from "diff-dom"
 import htmlTemplates from './html-templates'
-const fs = require('fs')
+import { writeFile, readFile, fileExists } from './util'
 const path = require('path')
-
-function writeFile(filePath, contents) {
-	//delete the file if it already exists
-	if (fs.existsSync(filePath)) {
-		fs.unlink(filePath, (err) => {
-			if (err) {
-				console.error(err)
-			}
-		})
-	}
-
-	//create the file
-	fs.writeFile(filePath, contents, (err) => {
-		if (err) {
-			console.error(err)
-		}
-	})
-}
 
 describe("DOM tests", () => {
 	Object.keys(htmlTemplates).forEach((htmlTemplateName) => {
 		//test each of the test definitions
 		test(htmlTemplateName, async () => {
-			//gernerate the DOM string
-			const domString = htmlTemplates[htmlTemplateName]
-
+			//we read the template into filePath, write the unvalidated file to unvalidatedFilePath, and compare it to the validated file at validatedFilePath
 			const filePath = path.join(__dirname, `./html-templates/${htmlTemplateName}.html`)
 			const unvalidatedFilePath = path.join(__dirname, `./html-tests-unvalidated/${htmlTemplateName}.html`)
 			const validatedFilePath = path.join(__dirname, `./html-tests-validated/${htmlTemplateName}.html`)
 
 			//use this to block until strapify is finished
 			const strapifyInitializedPromise = new Promise(async (resolve, reject) => {
-				await page.exposeFunction("onStrapifyInitialized", (event) => {
+				await page.exposeFunction("onStrapifyInitialized", () => {
 					resolve()
 				})
 			})
@@ -42,7 +23,7 @@ describe("DOM tests", () => {
 			//add a listener for strapifyInitialized
 			await page.evaluateOnNewDocument(() => {
 				document.addEventListener("strapifyInitialized", () => {
-					window.onStrapifyInitialized("working")
+					window.onStrapifyInitialized()
 				})
 			})
 
@@ -60,19 +41,16 @@ describe("DOM tests", () => {
 			writeFile(unvalidatedFilePath, pageContents)
 
 			//check for the validated file
-			if (!fs.existsSync(validatedFilePath)) {
+			if (!fileExists(validatedFilePath)) {
 				fail(`No validated file to compare to. Create the validated file with path ${validatedFilePath}`)
 			}
 
 			//read the validated file
-			const validatedFileContents = fs.readFileSync(validatedFilePath, 'utf8')
+			const validatedFileContents = readFile(validatedFilePath)
 
-			//remove all whitespace including tabs, newlines, and spaces
-			const pageContentsNoWhitespace = pageContents.replace(/\s/g, '')
-			const validatedFileContentsNoWhitespace = validatedFileContents.replace(/\s/g, '')
-
-			//compare the two files
-			expect(pageContentsNoWhitespace).toEqual(validatedFileContentsNoWhitespace)
+			//remove all whitespace including tabs, newlines, and spaces, then diff the two DOMs
+			const diff = new DiffDOM().diff(pageContents.replace(/\s/g, ''), validatedFileContents.replace(/\s/g, ''))
+			expect(diff).toEqual([])
 		})
 	})
 })
