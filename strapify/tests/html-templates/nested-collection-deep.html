@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>nested collection test</h1>
+
+	<div strapi-collection="collection1-entries">
+		<div strapi-template="">
+			<p strapi-field="text">p</p>
+		</div>
+
+		<div strapi-collection="collection1-entries">
+			<div strapi-template="">
+				<p strapi-field="text">p</p>
+			</div>
+
+			<div strapi-collection="collection1-entries">
+				<div strapi-template="">
+					<p strapi-field="text">p</p>
+				</div>
+
+				<div strapi-collection="collection1-entries">
+					<div strapi-template="">
+						<p strapi-field="text">p</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
