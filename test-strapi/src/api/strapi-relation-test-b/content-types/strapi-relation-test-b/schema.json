@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_relation_test_bs",
+  "info": {
+    "singularName": "strapi-relation-test-b",
+    "pluralName": "strapi-relation-test-bs",
+    "displayName": "Strapi Relation Test B",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "text": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "many_b_one_a": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::strapi-relation-test-a.strapi-relation-test-a",
+      "inversedBy": "one_a_many_b"
+    },
+    "many_a_many_b": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::strapi-relation-test-a.strapi-relation-test-a",
+      "mappedBy": "many_b_many_a"
+    },
+    "one_a_one_b": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::strapi-relation-test-a.strapi-relation-test-a",
+      "mappedBy": "one_b_one_a"
+    }
+  }
+}

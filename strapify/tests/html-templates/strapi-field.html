@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>strapi field test</h1>
+
+	<div strapi-collection="strapi-field-tests">
+		<div strapi-template="">
+			<p strapi-field="text">text</p>
+			<p strapi-field="email">email</p>
+			<div strapi-field="rich_text">
+				<p>rich text</p>
+			</div>
+
+			<p strapi-field="number_integer">integer</p>
+			<p strapi-field="number_big_integer">big integer</p>
+			<p strapi-field="number_decimal">decimal</p>
+			<p strapi-field="number_float">float</p>
+
+			<p strapi-field="enum">enum</p>
+
+			<p strapi-field="date">date</p>
+			<p strapi-field="datetime">datetime</p>
+			<p strapi-field="time">time</p>
+
+			<img strapi-field="image" alt="media" />
+			<div strapi-field="video"></div>
+
+			<p strapi-field="boolean">boolean</p>
+
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>

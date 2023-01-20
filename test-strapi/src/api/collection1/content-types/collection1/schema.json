@@ -4,7 +4,8 @@
   "info": {
     "singularName": "collection1",
     "pluralName": "collection1-entries",
-    "displayName": "Collection1"
+    "displayName": "Collection1",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -12,7 +13,9 @@
   "pluginOptions": {},
   "attributes": {
     "text": {
-      "type": "string"
+      "type": "string",
+      "unique": true,
+      "required": true
     }
   }
 }
