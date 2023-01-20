@@ -77,6 +77,13 @@ class StrapifyTemplate {
 			relationCollectionName = relationArgs[1];
 		}
 
+		//if the relation field is empty, delete all templates and return
+		if(strapiDataAttributes[relationFieldName].data == null) {
+			const templates = Strapify.findTemplateElms(relationElement);
+			templates.forEach(template => template.remove());
+			return;
+		}
+
 		const relationData = Strapify.getStrapiComponentValue(relationFieldName, strapiDataAttributes).data;
 		let filterString
 		if (Array.isArray(relationData)) {
