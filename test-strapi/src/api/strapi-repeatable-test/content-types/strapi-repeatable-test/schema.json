@@ -4,7 +4,8 @@
   "info": {
     "singularName": "strapi-repeatable-test",
     "pluralName": "strapi-repeatable-tests",
-    "displayName": "Strapi Repeatable Test"
+    "displayName": "Strapi Repeatable Test",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -15,18 +16,26 @@
       "type": "string"
     },
     "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
     },
     "videos": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
       "allowedTypes": [
         "videos"
-      ],
-      "type": "media",
-      "multiple": true
+      ]
+    },
+    "component": {
+      "displayName": "Repeatable Test Component",
+      "type": "component",
+      "repeatable": true,
+      "component": "general.repeatable-test-component"
     }
   }
 }

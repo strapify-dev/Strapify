@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_general_repeatable_test_components",
+  "info": {
+    "displayName": "Repeatable Test Component"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    }
+  }
+}
