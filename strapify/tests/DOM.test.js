@@ -39,7 +39,7 @@ describe("DOM tests", () => {
 			await strapifyInitializedPromise
 
 			//wait a bit for good measure
-			await page.waitForTimeout(100)
+			await page.waitForTimeout(500)
 
 			//remove the strapify script element
 			await page.evaluate(() => {
