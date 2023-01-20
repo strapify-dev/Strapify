@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+
+	<style>
+		.collection {
+			background-color: rgba(0, 0, 0, 0.1);
+			padding: 10px;
+			margin: 10px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+
+		.template {
+			background-color: rgba(0, 0, 0, 0.1);
+			padding: 10px;
+			margin: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>nested collections and relations test</h1>
+
+	<div strapi-collection="collection1-entries">
+		<div strapi-template="">
+			<p strapi-field="text">p</p>
+		</div>
+
+		<div strapi-collection="strapi-relation-test-as" class="collection">
+			<div strapi-collection="collection1-entries">
+				<div strapi-template="">
+					<p strapi-field="text">p</p>
+				</div>
+			</div>
+
+			<div class="template" strapi-template="">
+				<p>collection A: <span strapi-field="text">element number</span></p>
+				<div strapi-relation="one_a_many_b, strapi-relation-test-bs">
+					<div strapi-collection="collection1-entries">
+						<div strapi-template="">
+							<p strapi-field="text">p</p>
+						</div>
+					</div>
+
+					<div class="template" strapi-template="">
+						<p>collection B: <span strapi-field="text">element number</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
