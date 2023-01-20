@@ -62,7 +62,9 @@ class StrapifyRepeatable {
 				&& Object.keys(this.#strapiDataAttributes[fieldName]).length === 1
 			)
 		) {
-			this.#repeatableElement.remove();
+			Strapify.findTemplateElms(repeatableElement).forEach((collectionElm) => {
+				collectionElm.remove();
+			})
 			return;
 		}
 
