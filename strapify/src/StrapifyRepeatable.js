@@ -55,6 +55,17 @@ class StrapifyRepeatable {
 		const fieldName = this.#attributes["strapi-repeatable"] ? this.#attributes["strapi-repeatable"] : this.#attributes["strapi-single-type-repeatable"].split(".")[1];
 		const repeatableElement = this.#repeatableElement;
 
+		//if media but empty 
+		if (this.#strapiDataAttributes[fieldName] == null ||
+			(
+				this.#strapiDataAttributes[fieldName].data == null
+				&& Object.keys(this.#strapiDataAttributes[fieldName]).length === 1
+			)
+		) {
+			this.#repeatableElement.remove();
+			return;
+		}
+
 		//if media
 		let overrideData
 		if (this.#strapiDataAttributes[fieldName].data) {
@@ -64,7 +75,7 @@ class StrapifyRepeatable {
 				}),
 				meta: {}
 			}
-		} 
+		}
 		//if component
 		else {
 			overrideData = {

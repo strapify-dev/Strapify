@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_repeatable_tests",
+  "info": {
+    "singularName": "strapi-repeatable-test",
+    "pluralName": "strapi-repeatable-tests",
+    "displayName": "Strapi Repeatable Test"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    },
+    "images": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": true
+    },
+    "videos": {
+      "allowedTypes": [
+        "videos"
+      ],
+      "type": "media",
+      "multiple": true
+    }
+  }
+}
