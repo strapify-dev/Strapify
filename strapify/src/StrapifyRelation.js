@@ -80,14 +80,14 @@ class StrapifyTemplate {
 		const relationData = Strapify.getStrapiComponentValue(relationFieldName, strapiDataAttributes).data;
 		let filterString
 		if (Array.isArray(relationData)) {
-			filterString = relationData.map(relation => `[id]=${relation.id}`).join(" | ");
+			filterString = relationData.map(relation => `[id][$eq]=${relation.id}`).join(" | ");
 		} else {
-			filterString = `[id]=${relationData.id}`;
+			filterString = `[id][$eq]=${relationData.id}`;
 		}
 
 		//when the filter string is empty, change it to filter for a non-existent id
 		if (!filterString) {
-			filterString = "[id]=-1";
+			filterString = "[id][$eq]=-1";
 		}
 
 		//add the filter string to the relation element
