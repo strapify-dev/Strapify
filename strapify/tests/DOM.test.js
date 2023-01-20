@@ -41,6 +41,11 @@ describe("DOM tests", () => {
 			//wait a bit for good measure
 			await page.waitForTimeout(100)
 
+			//remove the strapify script element
+			await page.evaluate(() => {
+				document.querySelector("script").remove()
+			})
+
 			//write the unvalidated file
 			const pageContents = await page.content()
 			writeFile(unvalidatedFilePath, pageContents)
