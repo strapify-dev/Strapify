@@ -207,7 +207,7 @@ function substituteStrapiDataAttributes(argument, strapiAttributes) {
 
 	//find matches
 	const matches = argument.match(regex);
-	if(!matches) return argument;
+	if (!matches) return argument;
 
 	//get all strapi variables in argument and replace with value from getStrapiComponentValue
 	matches.forEach((match) => {
@@ -238,9 +238,59 @@ function getStrapiComponentValue(argument, strapiAttributes) {
 	return strapiDataValue;
 }
 
+//non destructive, you can pass non youtube links
+function getEmbeddedYoutubeLink(link) {
+	const youtubeUrl = link.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/);
+	if (youtubeUrl && !youtubeUrl[0].includes("embed")) {
+		const youtubeUrl = new URL(link);
+		const youtubeId = youtubeUrl.searchParams.get("v");
+		return `https://www.youtube.com/embed/${youtubeId}`;
+	}
+
+	return link;
+}
+
+function modifyDivWithStrapiVideoData(strapiData, elm) {
+	//create a video element to replace the div
+	const videoElement = document.createElement("video");
+	videoElement.controls = true;
+	videoElement.src = `${apiURL}${strapiData.data.attributes.url}`;
+	videoElement.type = strapiData.data.attributes.mime;
+
+	//move div attributes and classes to video element
+	elm.getAttributeNames().forEach(atribName => videoElement.setAttribute(atribName, elm.getAttribute(atribName)));
+	elm.classList.forEach(className => videoElement.classList.add(className));
+
+	//replace the div with the video element
+	elm.parentElement.replaceChild(videoElement, elm);
+}
+
+function modifyIFrameWithStrapiData(strapiData, iFrameElm) {
+	const parentElement = iFrameElm.parentElement;
+	const insertBeforeElm = iFrameElm.nextSibling;
+
+	//remove the iframe element
+	iFrameElm.remove();
+
+	//this is also valid when the link is not a youtube link
+	let embedUrl = getEmbeddedYoutubeLink(strapiData)
+
+	//replace the iframe src with the strapi data
+	iFrameElm.setAttribute("src", embedUrl);
+	iFrameElm.setAttribute("title", "")
+
+	//add the iframe element back to the div
+	if (insertBeforeElm) {
+		parentElement.insertBefore(iFrameElm, insertBeforeElm);
+	} else {
+		parentElement.appendChild(iFrameElm);
+	}
+}
+
 function modifyElmWithStrapiData(strapiData, elm) {
-	//look for iframe element with embedly-embed class
-	const iFrameElm = elm.querySelector("iframe");
+	//look for iframe element in elm
+	let iFrameElm = elm.querySelector("iframe");
+	iFrameElm?.parentElement !== elm && (iFrameElm = null);
 
 	switch (true) {
 		case elm instanceof HTMLParagraphElement:
@@ -258,48 +308,20 @@ function modifyElmWithStrapiData(strapiData, elm) {
 			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
 			elm.alt = strapiData.data.attributes.alternativeText;
 			break;
+		case elm instanceof HTMLVideoElement:
+			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
+			elm.type = strapiData.data.attributes.mime;
+			break;
+		case elm instanceof HTMLIFrameElement:
+			modifyIFrameWithStrapiData(strapiData, elm);
 		case elm instanceof HTMLDivElement: //for a div, we could have video or rich text
 			//video
 			if (strapiData.data?.attributes.mime && strapiData?.data?.attributes?.mime.includes("video")) {
-				//create a video element to replace the div
-				const videoElement = document.createElement("video");
-				videoElement.controls = true;
-				videoElement.src = `${apiURL}${strapiData.data.attributes.url}`;
-				videoElement.type = strapiData.data.attributes.mime;
-
-				//move div attributes and classes to video element
-				elm.getAttributeNames().forEach(atribName => videoElement.setAttribute(atribName, elm.getAttribute(atribName)));
-				elm.classList.forEach(className => videoElement.classList.add(className));
-
-				//replace the div with the video element
-				elm.parentElement.replaceChild(videoElement, elm);
+				modifyDivWithStrapiVideoData(strapiData, elm);
 			}
 			//embedded video
 			else if (iFrameElm) {
-				//remove the iframe element
-				iFrameElm.remove();
-
-				let embedUrl = strapiData
-
-				/* 
-					this step allows  a youtube link to be given without the embedded url 
-					check if strapiData is a youtube url but not a youtube embed url 
-					(copilot created these regex expressions, should test more thoroughly)
-				*/
-				const youtubeUrl = strapiData.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/);
-				if (youtubeUrl && !youtubeUrl[0].includes("embed")) {
-					const youtubeUrl = new URL(strapiData);
-					const youtubeId = youtubeUrl.searchParams.get("v");
-					embedUrl = `https://www.youtube.com/embed/${youtubeId}`;
-					console.log(embedUrl);
-				}
-
-				//replace the iframe src with the strapi data
-				iFrameElm.setAttribute("src", embedUrl);
-				iFrameElm.setAttribute("title", "")
-
-				//add the iframe element back to the div
-				elm.appendChild(iFrameElm);
+				modifyIFrameWithStrapiData(strapiData, iFrameElm);
 			}
 			//rich text
 			else {

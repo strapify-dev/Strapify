@@ -28,10 +28,23 @@
 			<p strapi-field="datetime">datetime</p>
 			<p strapi-field="time">time</p>
 
+			<p strapi-field="boolean">boolean</p>
+
 			<img strapi-field="image" alt="media" />
+
+			<h3>video from div: </h3>
 			<div strapi-field="video"></div>
 
-			<p strapi-field="boolean">boolean</p>
+			<h3>video from video: </h3>
+			<video strapi-field="video" controls></video>
+
+			<h3>video from iframe nested in div: </h3>
+			<div strapi-field="video_url">
+				<iframe frameborder="0"></iframe>
+			</div>
+
+			<h3>video from iframe: </h3>
+			<iframe strapi-field="video_url" frameborder="0"></iframe>
 
 			<hr />
 		</div>

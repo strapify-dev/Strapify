@@ -68,6 +68,9 @@
     },
     "boolean": {
       "type": "boolean"
+    },
+    "video_url": {
+      "type": "string"
     }
   }
 }
