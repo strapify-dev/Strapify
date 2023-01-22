@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>strapi single type field test</h1>
+
+	<div>
+		<p strapi-single-type="strapi-single-type-field-test.text">text</p>
+		<p strapi-single-type="strapi-single-type-field-test.email">email</p>
+		<div strapi-single-type="strapi-single-type-field-test.rich_text">
+			<p>rich text</p>
+		</div>
+
+		<p strapi-single-type="strapi-single-type-field-test.number_integer">integer</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_big_integer">big integer</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_decimal">decimal</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_float">float</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.enum">enum</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.date">date</p>
+		<p strapi-single-type="strapi-single-type-field-test.datetime">datetime</p>
+		<p strapi-single-type="strapi-single-type-field-test.time">time</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.boolean">boolean</p>
+
+		<img strapi-single-type="strapi-single-type-field-test.image" alt="media" />
+
+		<h3>video from div: </h3>
+		<div strapi-single-type="strapi-single-type-field-test.video"></div>
+
+		<h3>video from video: </h3>
+		<video strapi-single-type="strapi-single-type-field-test.video" controls></video>
+
+		<h3>video from iframe nested in div: </h3>
+		<div strapi-single-type="strapi-single-type-field-test.video_url">
+			<iframe frameborder="0"></iframe>
+		</div>
+
+		<h3>video from iframe: </h3>
+		<iframe strapi-single-type="strapi-single-type-field-test.video_url" frameborder="0"></iframe>
+
+		<hr />
+	</div>
+</body>
+
+</html>
