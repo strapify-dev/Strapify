@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_into_tests",
+  "info": {
+    "singularName": "strapi-into-test",
+    "pluralName": "strapi-into-tests",
+    "displayName": "Strapi Into Test",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "image_info": {
+      "displayName": "Image Info",
+      "type": "component",
+      "repeatable": false,
+      "component": "general.image-info"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}

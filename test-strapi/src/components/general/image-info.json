@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_general_image_infos",
+  "info": {
+    "displayName": "Image Info"
+  },
+  "options": {},
+  "attributes": {
+    "alt_text": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}
