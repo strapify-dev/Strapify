@@ -302,6 +302,9 @@ class StrapifyCollection {
 				this.#collectionData = this.#overrideCollectionData;
 			}
 
+			//templates will be processed asynchronously, since they can have relations, repeatables
+			const processPromises = [];
+
 			//loop through the collection data and create a strapify template for each item
 			for (let i = 0; i < this.#collectionData.data.length; i++) {
 				const { id: strapiDataId, attributes: strapiDataAttributes } = this.#collectionData.data[i];
@@ -335,10 +338,12 @@ class StrapifyCollection {
 				const strapifyTemplate = new StrapifyTemplate(templateClone, strapiDataId, strapiDataAttributes);
 				this.#strapifyTemplates.push(strapifyTemplate);
 
-				//process the strapify template
-				strapifyTemplate.process();
+				processPromises.push(strapifyTemplate.process());
 			}
 
+			//wait for all templates to be processed
+			await Promise.allSettled(processPromises);
+			
 			//dispatch custom event with the collection data
 			this.#collectionElement.dispatchEvent(new CustomEvent("strapiCollectionChange", {
 				bubbles: false,

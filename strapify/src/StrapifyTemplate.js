@@ -53,14 +53,16 @@ class StrapifyTemplate {
 			strapifyField.process(this.#strapiDataAttributes)
 		});
 
+		const processPromises = [];
+
 		//find strapify repeatable elements, instatiate strapify repeatable objects, and process them
 		const strapifyRepeatableElements = Strapify.findRepeatableElms(this.#templateElement);
-		strapifyRepeatableElements.forEach(repeatableElement => {
+		for (const repeatableElement of strapifyRepeatableElements) {
 			const strapifyRepeatable = new StrapifyRepeatable(repeatableElement, this.#strapiDataId, this.#strapiDataAttributes)
 			this.#strapifyRepeatables.push(strapifyRepeatable);
 
-			strapifyRepeatable.process()
-		});
+			processPromises.push(strapifyRepeatable.process())
+		}
 
 		//find strapify relation elements, instatiate strapify relation objects, and process them
 		const strapifyRelationElements = Strapify.findRelationElms(this.#templateElement);
@@ -68,8 +70,11 @@ class StrapifyTemplate {
 			const strapifyRelation = new StrapifyRelation(relationElement, this.#strapiDataId, this.#strapiDataAttributes)
 			this.#strapifyRelations.push(strapifyRelation);
 
-			strapifyRelation.process()
+			processPromises.push(strapifyRelation.process())
 		})
+
+		//wait for all strapify objects to process
+		await Promise.allSettled(processPromises);
 	}
 }
 
