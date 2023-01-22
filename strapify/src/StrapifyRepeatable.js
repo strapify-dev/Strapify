@@ -57,7 +57,7 @@ class StrapifyRepeatable {
 
 		//when the data field is null (explicitly not undefined), we have an empty media field
 		if (this.#strapiDataAttributes[fieldName].data === null) {
-			console.log("empty media", this.#strapiDataAttributes, this.#attributes)
+			//console.log("empty media", this.#strapiDataAttributes, this.#attributes)
 			Strapify.findTemplateElms(repeatableElement).forEach((collectionElm) => {
 				collectionElm.remove();
 			})

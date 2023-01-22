@@ -1,0 +1,57 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi single type field test</h1>
+
+	<div>
+		<p strapi-single-type="strapi-single-type-field-test.text">test text 1</p>
+		<p strapi-single-type="strapi-single-type-field-test.email">testemail1@hotmail.com</p>
+		<div strapi-single-type="strapi-single-type-field-test.rich_text"><p><strong>Lorem ipsum dolor</strong> sit amet, consectetur adipiscing elit. Sed scelerisque, sem sit amet accumsan dictum, leo neque finibus turpis, iaculis accumsan magna lectus et tellus. <em>Praesent maximus elementum</em> finibus. Donec aliquet tortor justo, eu ultrices velit mollis sit amet. In vitae blandit orci. Maecenas accumsan diam ligula, eu tristique dui eleifend id. </p>
+<ol>
+<li>point 1</li>
+<li>point 2</li>
+</ol>
+<ul>
+<li>point 1</li>
+<li>point 2</li>
+</ul>
+</div>
+
+		<p strapi-single-type="strapi-single-type-field-test.number_integer">1000</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_big_integer">100000000000</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_decimal">0.4443</p>
+		<p strapi-single-type="strapi-single-type-field-test.number_float">0.6666</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.enum">enum value 0</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.date">2023-01-10</p>
+		<p strapi-single-type="strapi-single-type-field-test.datetime">2023-01-14T05:25:00.000Z</p>
+		<p strapi-single-type="strapi-single-type-field-test.time">22:57:00.000</p>
+
+		<p strapi-single-type="strapi-single-type-field-test.boolean">false</p>
+
+		<img strapi-single-type="strapi-single-type-field-test.image" alt="null" src="http://localhost:1337/uploads/dog_tea_e79932836d.jpg">
+
+		<h3>video from div: </h3>
+		<video controls="" src="http://localhost:1337/uploads/Human_Feeding_The_Little_Squirrel_a0fb8f2ba7.mp4" strapi-single-type="strapi-single-type-field-test.video"></video>
+
+		<h3>video from video: </h3>
+		<video strapi-single-type="strapi-single-type-field-test.video" controls="" src="http://localhost:1337/uploads/Human_Feeding_The_Little_Squirrel_a0fb8f2ba7.mp4"></video>
+
+		<h3>video from iframe nested in div: </h3>
+		<div strapi-single-type="strapi-single-type-field-test.video_url">
+			<iframe frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""></iframe>
+		</div>
+
+		<h3>video from iframe: </h3>
+		<iframe strapi-single-type="strapi-single-type-field-test.video_url" frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""><p><a href="https://www.youtube.com/embed/jNQXAC9IVRw">https://www.youtube.com/embed/jNQXAC9IVRw</a></p>
+</iframe>
+
+		<hr>
+	</div>
+
+
+</body></html>

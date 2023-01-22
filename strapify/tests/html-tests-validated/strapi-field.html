@@ -1,0 +1,104 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi field test</h1>
+
+	<div strapi-collection="strapi-field-tests" style="">
+		
+	<div strapi-template="">
+			<p strapi-field="text">test text 1</p>
+			<p strapi-field="email">testemail1@hotmail.com</p>
+			<div strapi-field="rich_text"><p><strong>Lorem ipsum dolor</strong> sit amet, consectetur adipiscing elit. Sed scelerisque, sem sit amet accumsan dictum, leo neque finibus turpis, iaculis accumsan magna lectus et tellus. <em>Praesent maximus elementum</em> finibus. Donec aliquet tortor justo, eu ultrices velit mollis sit amet. In vitae blandit orci. Maecenas accumsan diam ligula, eu tristique dui eleifend id. </p>
+<ol>
+<li>point 1</li>
+<li>point 2</li>
+</ol>
+<ul>
+<li>point 1</li>
+<li>point 2</li>
+</ul>
+</div>
+
+			<p strapi-field="number_integer">1000</p>
+			<p strapi-field="number_big_integer">100000000000</p>
+			<p strapi-field="number_decimal">0.4443</p>
+			<p strapi-field="number_float">0.6666</p>
+
+			<p strapi-field="enum">enum value 0</p>
+
+			<p strapi-field="date">2023-01-10</p>
+			<p strapi-field="datetime">2023-01-26T20:14:00.000Z</p>
+			<p strapi-field="time">00:38:00.000</p>
+
+			<p strapi-field="boolean">false</p>
+
+			<img strapi-field="image" alt="null" src="http://localhost:1337/uploads/dog_tea_e79932836d.jpg">
+
+			<h3>video from div: </h3>
+			<video controls="" src="http://localhost:1337/uploads/Human_Feeding_The_Little_Squirrel_a0fb8f2ba7.mp4" strapi-field="video"></video>
+
+			<h3>video from video: </h3>
+			<video strapi-field="video" controls="" src="http://localhost:1337/uploads/Human_Feeding_The_Little_Squirrel_a0fb8f2ba7.mp4"></video>
+
+			<h3>video from iframe nested in div: </h3>
+			<div strapi-field="video_url">
+				<iframe frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""></iframe>
+			</div>
+
+			<h3>video from iframe: </h3>
+			<iframe strapi-field="video_url" frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""><p><a href="https://www.youtube.com/embed/jNQXAC9IVRw">https://www.youtube.com/embed/jNQXAC9IVRw</a></p>
+</iframe>
+
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="text">test text 2</p>
+			<p strapi-field="email">testemail2@hotmail.com</p>
+			<div strapi-field="rich_text"><p><strong>Lorem ipsum dolor</strong> sit amet, consectetur adipiscing elit. Sed scelerisque, sem sit amet accumsan dictum, leo neque finibus turpis, iaculis accumsan magna lectus et tellus. <em>Praesent maximus elementum</em> finibus. Donec aliquet tortor justo, eu ultrices velit mollis sit amet. In vitae blandit orci. Maecenas accumsan diam ligula, eu tristique dui eleifend id. </p>
+<ol>
+<li>point 1</li>
+<li>point 2</li>
+</ol>
+<ul>
+<li>point 1</li>
+<li>point 2</li>
+</ul>
+</div>
+
+			<p strapi-field="number_integer">1000</p>
+			<p strapi-field="number_big_integer">100000000000</p>
+			<p strapi-field="number_decimal">0.4443</p>
+			<p strapi-field="number_float">0.6666</p>
+
+			<p strapi-field="enum">enum value 0</p>
+
+			<p strapi-field="date">2023-01-10</p>
+			<p strapi-field="datetime">2023-01-26T20:14:00.000Z</p>
+			<p strapi-field="time">00:38:00.000</p>
+
+			<p strapi-field="boolean">false</p>
+
+			<img strapi-field="image" alt="null" src="http://localhost:1337/uploads/mammal_2ce4664bb3.jpg">
+
+			<h3>video from div: </h3>
+			<video controls="" src="http://localhost:1337/uploads/clowfish_63f5f65806.mp4" strapi-field="video"></video>
+
+			<h3>video from video: </h3>
+			<video strapi-field="video" controls="" src="http://localhost:1337/uploads/clowfish_63f5f65806.mp4"></video>
+
+			<h3>video from iframe nested in div: </h3>
+			<div strapi-field="video_url">
+				<iframe frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""></iframe>
+			</div>
+
+			<h3>video from iframe: </h3>
+			<iframe strapi-field="video_url" frameborder="0" src="https://www.youtube.com/embed/jNQXAC9IVRw" title=""><p><a href="https://www.youtube.com/watch?v=jNQXAC9IVRw">https://www.youtube.com/watch?v=jNQXAC9IVRw</a></p>
+</iframe>
+
+			<hr>
+		</div></div>
+
+
+</body></html>

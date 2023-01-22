@@ -1,0 +1,20 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-css-rule test</h1>
+
+	<div strapi-collection="strapi-css-rule-tests" style="display: flex; flex-direction: column; gap: 16px;">
+		
+	<div strapi-template="" style="display: flex; gap: 8px;">
+			<div strapi-css-rule="width: 300px; height: 300px; background: {{color}};" style="width: 300px; height: 300px; background: red;"></div>
+			<div strapi-css-rule="width: 300px; height: 300px; background-image: url({{img_url}});" style="width: 300px; height: 300px; background-image: url(https://picsum.photos/id/237/200/300);"></div>
+		</div><div strapi-template="" style="display: flex; gap: 8px;">
+			<div strapi-css-rule="width: 300px; height: 300px; background: {{color}};" style="width: 300px; height: 300px; background: green;"></div>
+			<div strapi-css-rule="width: 300px; height: 300px; background-image: url({{img_url}});" style="width: 300px; height: 300px; background-image: url(https://picsum.photos/id/238/200/300);"></div>
+		</div></div>
+
+
+</body></html>
