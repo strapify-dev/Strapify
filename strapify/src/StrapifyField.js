@@ -119,7 +119,7 @@ class StrapifyField {
 	//for strapi-into
 	#processStrapiInto(strapiAttributes) {
 		const attributeValue = this.#fieldElement.getAttribute("strapi-into");
-		const args = attributeValue.split("|");
+		const args = attributeValue.split("|").map(arg => arg.trim());
 
 		args.forEach((arg) => {
 			const split = arg.split("->");
