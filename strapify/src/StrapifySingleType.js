@@ -60,24 +60,64 @@ class StrapifySingleType {
 
 	async #processStrapiSingleTypeInto() {
 		const attributeValue = this.#attributes["strapi-single-type-into"]
-		const args = attributeValue.split("|");
+		const args = attributeValue.split("|").map(arg => arg.trim());
 
 		let strapiData = null;
 
 		await args.forEach(async (arg) => {
-			const splitInto = arg.split("->").map((arg) => arg.trim());
-			const singleTypeArg = splitInto[0];
-			const intoAttribute = splitInto[1];
+			const argSplit = arg.split("->").map((arg) => arg.trim());
+			const templateString = argSplit[0].trim();
+			const htmlAttributeName = argSplit[1].trim();
 
-			const splitSingleTypeArg = singleTypeArg.split(".");
-			const _singleTypeName = splitSingleTypeArg[0];
-			const singleTypeFieldName = splitSingleTypeArg[1];
+			//strapi variables are wrapped in double curly braces
+			const regex = /{{(.*?)}}/g;
 
-			if (!strapiData) {
-				strapiData = await strapiRequest("/api/" + _singleTypeName, "?populate=*")
+			//get all strapi variables in arg and replace with value from getStrapiComponentValue
+			const matches = templateString.match(regex);
+
+			//if no matches, then no strapi variables in arg
+			if (!matches) {
+				const templateStringSplit = templateString.split(".");
+				const singleTypeName = templateStringSplit[0];
+				let singleTypeFieldString = templateStringSplit.filter((arg) => arg !== singleTypeName).join(".");
+
+				console.log(singleTypeName, singleTypeFieldString)
+
+				if (!strapiData) {
+					strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
+				}
+
+				singleTypeFieldString = Strapify.substituteQueryStringVariables(singleTypeFieldString);
+				singleTypeFieldString = Strapify.getStrapiComponentValue(singleTypeFieldString, strapiData.data.attributes);
+				this.#singleTypeElement.setAttribute(htmlAttributeName, singleTypeFieldString);
+				//console.log(singleTypeFieldString)
+				return;
 			}
 
-			this.#singleTypeElement.setAttribute(intoAttribute, strapiData.data.attributes[singleTypeFieldName]);
+			let singleTypeDataValue = templateString;
+
+			//otherwise, replace strapi variables with values from getStrapiComponentValue
+			for (let i = 0; i < matches.length; i++) {
+				let match = matches[i];
+
+				const strapiFieldName = match.substring(2, match.length - 2);
+
+				const templateStringSplit = strapiFieldName.split(".");
+				const singleTypeName = templateStringSplit[0];
+				let singleTypeFieldString = templateStringSplit.filter((arg) => arg !== singleTypeName).join(".");
+
+				console.log(singleTypeName, singleTypeFieldString)
+
+				let strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
+
+				let strapiValue = Strapify.substituteQueryStringVariables(singleTypeFieldString);
+				strapiValue = Strapify.getStrapiComponentValue(singleTypeFieldString, strapiData.data.attributes);
+
+				singleTypeDataValue = singleTypeDataValue.replace(match, strapiValue);
+				console.log(singleTypeDataValue)
+			}
+
+			this.#singleTypeElement.setAttribute(htmlAttributeName, singleTypeDataValue);
 		})
 	}
 

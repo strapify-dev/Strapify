@@ -207,7 +207,16 @@ function substituteStrapiDataAttributes(argument, strapiAttributes) {
 
 	//find matches
 	const matches = argument.match(regex);
-	if (!matches) return argument;
+
+
+	//if no matches, then no strapi variables in arg
+	if (!matches) {
+		console.log("intoDataValue", intoDataValue)
+		intoDataValue = Strapify.substituteQueryStringVariables(intoDataValue);
+		intoDataValue = Strapify.getStrapiComponentValue(intoDataValue, strapiAttributes);
+	
+		return intoDataValue;
+	}
 
 	//get all strapi variables in argument and replace with value from getStrapiComponentValue
 	matches.forEach((match) => {

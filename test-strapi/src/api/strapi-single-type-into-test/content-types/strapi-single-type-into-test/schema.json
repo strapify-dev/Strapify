@@ -1,0 +1,20 @@
+{
+  "kind": "singleType",
+  "collectionName": "strapi_single_type_into_tests",
+  "info": {
+    "singularName": "strapi-single-type-into-test",
+    "pluralName": "strapi-single-type-into-tests",
+    "displayName": "Strapi Single Type Into Test"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "image_info": {
+      "type": "component",
+      "repeatable": false,
+      "component": "general.image-info"
+    }
+  }
+}
