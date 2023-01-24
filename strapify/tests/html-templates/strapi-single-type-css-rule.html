@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>strapi-single-type-css-rule test</h1>
+
+	<div style="display: flex; flex-direction: column; gap: 16px;">
+		<div style="display: flex; gap: 8px;">
+			<div strapi-single-type-css-rule="width: 300px; height: 300px; background: {{strapi-single-type-css-rule-test.color}};"></div>
+			<div strapi-single-type-css-rule="width: 300px; height: 300px; background-image: url({{strapi-single-type-css-rule-test.img_url}});"></div>
+		</div>
+	</div>
+</body>
+
+</html>

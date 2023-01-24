@@ -19,7 +19,7 @@ if (this_script?.hasAttribute("data-apply-webflow-animation-fix")) {
 }
 
 const validStrapifySingleTypeAttributes = [
-	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-relation",
+	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-css-rule", "strapi-single-type-relation",
 	"strapi-single-type-repeatable"
 ];
 
