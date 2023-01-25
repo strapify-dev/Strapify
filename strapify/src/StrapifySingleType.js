@@ -7,6 +7,9 @@ class StrapifySingleType {
 	#singleTypeElement;
 	#mutationObserver;
 
+	//the css classes that have been added to the field element (class-add, class-conditional, ...)
+	#managedClasses = [];
+
 	#attributes = {
 		"strapi-single-type": undefined,
 		"strapi-single-type-into": undefined,
@@ -42,6 +45,34 @@ class StrapifySingleType {
 		Object.keys(this.#attributes).forEach((attribute) => {
 			this.#attributes[attribute] = this.#singleTypeElement.getAttribute(attribute);
 		})
+	}
+
+	#splitSingleTypeNameFromArgument(argument) {
+		const split = argument.split(".");
+		const singleTypeName = split[0];
+		const singleTypeField = split.slice(1).join(".");
+
+		return { singleTypeName, singleTypeField };
+	}
+
+	async #processStrapiSingleTypeClassAdd() {
+		const attributeValue = this.#attributes["strapi-single-type-class-add"]
+		const args = attributeValue.split("|").map(arg => arg.trim());
+
+		for(let i = 0; i < args.length; i++) {
+			const arg = args[i];
+
+			const splitArg = this.#splitSingleTypeNameFromArgument(arg);
+			const strapiFieldName = splitArg.singleTypeName;
+			const singleTypeField = splitArg.singleTypeField;
+
+			const strapiData = await strapiRequest("/api/" + strapiFieldName, "?populate=*");
+
+			const _strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName.trim());
+			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiData.data.attributes);
+			this.#singleTypeElement.classList.add(className);
+			this.#managedClasses.push({ state: "added", name: className });
+		}
 	}
 
 	async #processStrapiSingleType() {
@@ -181,7 +212,7 @@ class StrapifySingleType {
 			await this.#processStrapiSingleTypeInto();
 		}
 
-		if(this.#attributes["strapi-single-type-css-rule"]) {
+		if (this.#attributes["strapi-single-type-css-rule"]) {
 			await this.#processStrapiSingleTypeCSSRule();
 		}
 
@@ -199,8 +230,6 @@ class StrapifySingleType {
 			const splitSingleTypeArg = this.#attributes["strapi-single-type-relation"].split(".");
 			const _singleTypeName = splitSingleTypeArg[0];
 			const strapiData = await strapiRequest("/api/" + _singleTypeName, "?populate=*")
-
-			//console.log(strapiData)
 
 			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
 

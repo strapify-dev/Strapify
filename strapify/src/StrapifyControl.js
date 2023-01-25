@@ -82,7 +82,7 @@ class StrapifyControl {
 	}
 
 	#updateCollectionAttribute(attributeValue) {
-		this.#collectionElement.setAttribute(this.#controlType + "-internal-control", attributeValue);
+		this.#collectionElement.setAttribute(this.#controlType /*+ "-internal-control"*/, attributeValue);
 	}
 
 	#onButtonEvent(e) {

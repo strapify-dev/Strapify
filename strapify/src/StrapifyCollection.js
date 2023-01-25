@@ -233,6 +233,8 @@ class StrapifyCollection {
 			filter = filter ? filter + " | " + this.#attributes["strapi-filter-internal-control"] : this.#attributes["strapi-filter-internal-control"];
 		}
 
+		//console.log(filter)
+
 		//join the user sort with the internal sort attributes that are set by the control elements and relation restrictions
 		let sort = undefined;
 		if (this.#attributes["strapi-sort"]) {
