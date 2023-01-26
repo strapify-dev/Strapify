@@ -22,6 +22,7 @@ class StrapifyControl {
 		"strapi-page-control": undefined,
 		"strapi-filter-control": undefined,
 		"strapi-sort-control": undefined,
+		"strapi-control-preserve-initial": undefined,
 	}
 
 	constructor(controlElement, collectionElement, strapifyCollection) {
@@ -47,7 +48,7 @@ class StrapifyControl {
 		//for select elements
 		else if (this.#controlElement.tagName === "SELECT") {
 			this.#controlElement.addEventListener("change", this.#onSelectEvent.bind(this));
-		} 
+		}
 		//for radio or checkbox elements
 		else {
 			//look for radio buttons
@@ -82,7 +83,11 @@ class StrapifyControl {
 	}
 
 	#updateCollectionAttribute(attributeValue) {
-		this.#collectionElement.setAttribute(this.#controlType /*+ "-internal-control"*/, attributeValue);
+		let attribName = this.#controlType;
+		if (this.#controlElement.hasAttribute("strapi-control-preserve-initial")) {
+			attribName += "-internal-control"
+		}
+		this.#collectionElement.setAttribute(attribName, attributeValue);
 	}
 
 	#onButtonEvent(e) {
