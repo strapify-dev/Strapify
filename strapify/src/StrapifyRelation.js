@@ -2,7 +2,6 @@ import Strapify from "./Strapify.js";
 import StrapifyCollection from "./StrapifyCollection.js";
 import StrapifyField from "./StrapifyField";
 import strapiRequest from "./util/strapiRequest";
-import qs from "qs";
 
 class StrapifyTemplate {
 	#relationElement;
