@@ -20,7 +20,7 @@ if (this_script?.hasAttribute("data-apply-webflow-animation-fix")) {
 
 const validStrapifySingleTypeAttributes = [
 	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-css-rule", "strapi-single-type-relation",
-	"strapi-single-type-repeatable"
+	"strapi-single-type-repeatable", "strapi-single-type-class-add", "strapi-single-type-class-replace", "strapi-single-type-class-conditional",
 ];
 
 const validStrapifyCollectionAttributes = [
@@ -214,7 +214,7 @@ function substituteStrapiDataAttributes(argument, strapiAttributes) {
 		console.log("intoDataValue", intoDataValue)
 		intoDataValue = Strapify.substituteQueryStringVariables(intoDataValue);
 		intoDataValue = Strapify.getStrapiComponentValue(intoDataValue, strapiAttributes);
-	
+
 		return intoDataValue;
 	}
 

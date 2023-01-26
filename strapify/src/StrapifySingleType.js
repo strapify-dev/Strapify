@@ -13,6 +13,9 @@ class StrapifySingleType {
 	#attributes = {
 		"strapi-single-type": undefined,
 		"strapi-single-type-into": undefined,
+		"strapi-single-type-class-add": undefined,
+		"strapi-single-type-class-replace": undefined,
+		"strapi-single-type-class-conditional": undefined,
 		"strapi-single-type-css-rule": undefined,
 		"strapi-single-type-relation": undefined,
 		"strapi-single-type-repeatable": undefined
@@ -59,16 +62,19 @@ class StrapifySingleType {
 		const attributeValue = this.#attributes["strapi-single-type-class-add"]
 		const args = attributeValue.split("|").map(arg => arg.trim());
 
-		for(let i = 0; i < args.length; i++) {
+		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 
 			const splitArg = this.#splitSingleTypeNameFromArgument(arg);
-			const strapiFieldName = splitArg.singleTypeName;
+			const singleTypeName = splitArg.singleTypeName;
 			const singleTypeField = splitArg.singleTypeField;
 
-			const strapiData = await strapiRequest("/api/" + strapiFieldName, "?populate=*");
+			console.log(singleTypeName)
+			console.log(singleTypeField)
 
-			const _strapiFieldName = Strapify.substituteQueryStringVariables(strapiFieldName.trim());
+			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
+
+			const _strapiFieldName = Strapify.substituteQueryStringVariables(singleTypeField);
 			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiData.data.attributes);
 			this.#singleTypeElement.classList.add(className);
 			this.#managedClasses.push({ state: "added", name: className });
@@ -214,6 +220,10 @@ class StrapifySingleType {
 
 		if (this.#attributes["strapi-single-type-css-rule"]) {
 			await this.#processStrapiSingleTypeCSSRule();
+		}
+
+		if (this.#attributes["strapi-single-type-class-add"]) {
+			await this.#processStrapiSingleTypeClassAdd();
 		}
 
 		if (this.#attributes["strapi-single-type-repeatable"]) {
