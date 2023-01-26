@@ -4,7 +4,8 @@
   "info": {
     "singularName": "strapi-single-type-class-test",
     "pluralName": "strapi-single-type-class-tests",
-    "displayName": "Strapi Single Type Class Test"
+    "displayName": "Strapi Single Type Class Test",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -16,6 +17,9 @@
     },
     "background": {
       "type": "string"
+    },
+    "should_be_blue": {
+      "type": "boolean"
     }
   }
 }

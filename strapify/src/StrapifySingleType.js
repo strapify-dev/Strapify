@@ -105,6 +105,34 @@ class StrapifySingleType {
 		}
 	}
 
+	async #processStrapiSingleTypeConditionalClass() {
+		const attributeValue = this.#attributes["strapi-single-type-class-conditional"]
+
+		//split attributeValue string on single occurence of "|" but not on double occurence of "||"
+		const args = attributeValue.split(/(?<!\|)\|(?!\|)/).map(arg => arg.trim());
+
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i];
+
+			const subArgs = arg.split(",").map(arg => arg.trim());
+			const conditionString = subArgs[0];
+			const className = subArgs[1];
+
+			console.log(conditionString, className);
+
+			/*need to parse the condition string to find all single types */
+			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
+
+			const parsedConditionData = Strapify.parseCondition(conditionString).result;
+			const conditionSatisfied = Strapify.checkCondition(parsedConditionData, strapiData.data.attributes);
+
+			if (conditionSatisfied) {
+				this.#singleTypeElement.classList.add(className);
+				this.#managedClasses.push({ state: "added", name: className });
+			}
+		}
+	}
+
 	async #processStrapiSingleType() {
 		let attributeValue = this.#attributes["strapi-single-type"]
 		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
@@ -249,8 +277,13 @@ class StrapifySingleType {
 		if (this.#attributes["strapi-single-type-class-add"]) {
 			await this.#processStrapiSingleTypeClassAdd();
 		}
+
 		if (this.#attributes["strapi-single-type-class-replace"]) {
 			await this.#processStrapiSingleTypeClassReplace();
+		}
+
+		if(this.#attributes["strapi-single-type-class-conditional"]) {
+			await this.#processStrapiSingleTypeConditionalClass();
 		}
 
 		if (this.#attributes["strapi-single-type-repeatable"]) {
