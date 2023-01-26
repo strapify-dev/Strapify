@@ -129,29 +129,51 @@ class StrapifyControl {
 	}
 
 	#onSelectEvent(e) {
+		const optionElm = e.target.options[e.target.selectedIndex];
+
 		if (this.#controlType === "strapi-page") {
-			this.#strapifyCollection.setPage(parseInt(e.target.value));
+			let page = e.target.value;
+			if (optionElm.hasAttribute("strapi-control-value")) {
+				page = optionElm.getAttribute("strapi-control-value")
+			}
+			this.#strapifyCollection.setPage(parseInt(page));
 		}
 		else if (this.#controlType === "strapi-filter") {
-			const filter = e.target.value
+			let filter = e.target.value
+			if (optionElm.hasAttribute("strapi-control-value")) {
+				filter = optionElm.getAttribute("strapi-control-value")
+			}
 			this.#updateCollectionAttribute(filter)
 		}
 		else if (this.#controlType === "strapi-sort") {
-			const sort = e.target.value
+			let sort = e.target.value
+			if (optionElm.hasAttribute("strapi-control-value")) {
+				sort = optionElm.getAttribute("strapi-control-value")
+			}
 			this.#updateCollectionAttribute(sort)
 		}
 	}
 
 	#onRadioEvent(e) {
 		if (this.#controlType === "strapi-page") {
-			this.#strapifyCollection.setPage(parseInt(e.target.value));
+			let page = e.target.value;
+			if (e.target.hasAttribute("strapi-control-value")) {
+				page = e.target.getAttribute("strapi-control-value")
+			}
+			this.#strapifyCollection.setPage(parseInt(page));
 		}
 		else if (this.#controlType === "strapi-filter") {
-			const filter = e.target.value
+			let filter = e.target.value
+			if (e.target.hasAttribute("strapi-control-value")) {
+				filter = e.target.getAttribute("strapi-control-value")
+			}
 			this.#updateCollectionAttribute(filter)
 		}
 		else if (this.#controlType === "strapi-sort") {
-			const sort = e.target.value
+			let sort = e.target.value
+			if (e.target.hasAttribute("strapi-control-value")) {
+				sort = e.target.getAttribute("strapi-control-value")
+			}
 			this.#updateCollectionAttribute(sort)
 		}
 	}
