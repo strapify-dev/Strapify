@@ -8,7 +8,7 @@
 </script>
 
 <div class="container">
-    <h1>CIVICONNECT <span>STRAPIFY</span></h1>
+    <h1><span>STRAPIFY</span></h1>
 
     <div class="link-inputs-container">
         <URLInput

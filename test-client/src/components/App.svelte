@@ -1,6 +1,5 @@
 <script>
     import { onMount } from "svelte"
-    import CiviconnectSVG from "./CiviconnectSVG.svelte"
     import Header from "./Header.svelte"
     let webflowURL
     let strapiURL
@@ -120,8 +119,6 @@
             {/if}
         </div>
     </div>
-
-    <!-- <CiviconnectSVG class="logo-svg" /> -->
 </div>
 
 <style>
