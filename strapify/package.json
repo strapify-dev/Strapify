@@ -8,7 +8,10 @@
     "bundle": "webpack --mode development",
     "bundlehot": "webpack --watch --mode development",
     "bundleprod": "webpack --mode production",
-    "buildpeggy": "peggy -o ./src/strapify-parser.js ./src/strapify-parser.js.pegjs"
+    "bundlegzip": "webpack --mode production --env gzip=true",
+    "bundleanalyze": "webpack --mode production --env analyze=true",
+    "buildpeggy": "peggy -o ./src/strapify-parser.js ./src/strapify-parser.js.pegjs",
+    "build": "npm run buildpeggy && npm run bundleprod && npm run bundlegzip"
   },
   "author": "Austin Goodman, Ray Keating",
   "license": "UNLICENSED",
@@ -20,6 +23,7 @@
     "@babel/core": "^7.20.5",
     "@babel/preset-env": "^7.20.2",
     "babel-jest": "^29.3.1",
+    "compression-webpack-plugin": "^10.0.0",
     "diff-dom": "^4.2.8",
     "jest": "^29.3.1",
     "jest-cli": "^29.3.1",
