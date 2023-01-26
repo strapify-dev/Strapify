@@ -78,6 +78,33 @@ class StrapifySingleType {
 		}
 	}
 
+	async #processStrapiSingleTypeClassReplace() {
+		const attributeValue = this.#attributes["strapi-single-type-class-replace"]
+		const args = attributeValue.split("|").map(arg => arg.trim());
+
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i];
+
+			const subArgs = arg.split(",").map(arg => arg.trim());
+			const oldClassName = subArgs[1];
+			const newClassFieldName = subArgs[0];
+
+			const splitArg = this.#splitSingleTypeNameFromArgument(newClassFieldName);
+			const singleTypeName = splitArg.singleTypeName;
+			const singleTypeField = splitArg.singleTypeField;
+
+			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
+
+			const _strapiFieldName = Strapify.substituteQueryStringVariables(singleTypeField);
+			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiData.data.attributes);
+
+			this.#singleTypeElement.classList.remove(oldClassName);
+			this.#singleTypeElement.classList.add(className);
+			this.#managedClasses.push({ state: "removed", name: oldClassName });
+			this.#managedClasses.push({ state: "added", name: className });
+		}
+	}
+
 	async #processStrapiSingleType() {
 		let attributeValue = this.#attributes["strapi-single-type"]
 		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
@@ -221,6 +248,9 @@ class StrapifySingleType {
 
 		if (this.#attributes["strapi-single-type-class-add"]) {
 			await this.#processStrapiSingleTypeClassAdd();
+		}
+		if (this.#attributes["strapi-single-type-class-replace"]) {
+			await this.#processStrapiSingleTypeClassReplace();
 		}
 
 		if (this.#attributes["strapi-single-type-repeatable"]) {
