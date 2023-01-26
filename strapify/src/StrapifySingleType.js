@@ -69,9 +69,6 @@ class StrapifySingleType {
 			const singleTypeName = splitArg.singleTypeName;
 			const singleTypeField = splitArg.singleTypeField;
 
-			console.log(singleTypeName)
-			console.log(singleTypeField)
-
 			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
 
 			const _strapiFieldName = Strapify.substituteQueryStringVariables(singleTypeField);
