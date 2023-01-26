@@ -2,6 +2,7 @@ import Strapify from "./Strapify.js";
 import StrapifyCollection from "./StrapifyCollection.js";
 import StrapifyField from "./StrapifyField";
 import strapiRequest from "./util/strapiRequest";
+import qs from "qs";
 
 class StrapifyTemplate {
 	#relationElement;
@@ -78,24 +79,48 @@ class StrapifyTemplate {
 		}
 
 		//if the relation field is empty, delete all templates and return
-		if(strapiDataAttributes[relationFieldName].data == null) {
+		if (strapiDataAttributes[relationFieldName].data == null) {
 			const templates = Strapify.findTemplateElms(relationElement);
 			templates.forEach(template => template.remove());
 			return;
 		}
 
+		//get the relation data
 		const relationData = Strapify.getStrapiComponentValue(relationFieldName, strapiDataAttributes).data;
-		let filterString
+
+		//get the relation ids
+		let relationIDs = [];
 		if (Array.isArray(relationData)) {
-			filterString = relationData.map(relation => `[id][$eq]=${relation.id}`).join(" | ");
+			relationIDs = relationData.map(relation => relation.id);
 		} else {
-			filterString = `[id][$eq]=${relationData.id}`;
+			relationIDs = [relationData.id];
 		}
+
+		//query string arg offset to allow for the first 10 relations to be used by user
+		const qsOffset = 10;
+
+		//use the relation ids to generate a filter string
+		let filterString = relationIDs.reduce((acc, cur, i) => {
+			let filter = `[id][$in][${qsOffset + i}]=${cur}`;
+			i < relationIDs.length - 1 && (filter += " | ");
+			return acc + filter;
+		}, "");
+
+		//console.log(filterString)
 
 		//when the filter string is empty, change it to filter for a non-existent id
 		if (!filterString) {
 			filterString = "[id][$eq]=-1";
 		}
+
+		// let filterString
+		// if (Array.isArray(relationData)) {
+		// 	filterString = relationData.map(relation => `[id][$eq]=${relation.id}`).join(" | ");
+		// } else {
+		// 	filterString = `[id][$eq]=${relationData.id}`;
+		// }
+
+
 
 		//add the filter string to the relation element
 		relationElement.setAttribute("strapi-filter-internal-relation", filterString);
