@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+
+	<style>
+		.container {
+			background-color: rgba(0, 0, 0, 0.1);
+			padding: 10px;
+			margin: 10px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+
+		.template {
+			background-color: rgba(0, 0, 0, 0.1);
+			padding: 10px;
+			margin: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>strapi-single-type-relation test</h1>
+
+	<h3>one to one:</h3>
+	<div strapi-single-type-relation="strapi-single-type-relation-test.one_to_one, strapi-relation-test-bs"
+		class="container">
+		<div class="template" strapi-template="">
+			<p>collection B: <span strapi-field="text">element number</span></p>
+		</div>
+	</div>
+	<hr />
+
+	<h3>one to many:</h3>
+	<div strapi-single-type-relation="strapi-single-type-relation-test.one_to_many, strapi-relation-test-bs"
+		class="container">
+		<div class="template" strapi-template="">
+			<p>collection B: <span strapi-field="text">element number</span></p>
+		</div>
+	</div>
+	<hr />
+</body>
+
+</html>

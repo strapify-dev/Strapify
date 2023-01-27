@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "strapi_single_type_relation_tests",
+  "info": {
+    "singularName": "strapi-single-type-relation-test",
+    "pluralName": "strapi-single-type-relation-tests",
+    "displayName": "Strapi Single Type Relation Test",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "one_to_one": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::strapi-relation-test-b.strapi-relation-test-b"
+    },
+    "one_to_many": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::strapi-relation-test-b.strapi-relation-test-b"
+    }
+  }
+}
