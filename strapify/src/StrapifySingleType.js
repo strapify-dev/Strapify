@@ -149,7 +149,9 @@ class StrapifySingleType {
 
 		let strapiData = null;
 
-		await args.forEach(async (arg) => {
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i];
+
 			const templateString = arg;
 			const htmlAttributeName = "style"
 
@@ -196,7 +198,7 @@ class StrapifySingleType {
 			}
 
 			this.#singleTypeElement.setAttribute(htmlAttributeName, singleTypeDataValue);
-		})
+		}
 	}
 
 	async #processStrapiSingleTypeInto() {
@@ -277,7 +279,7 @@ class StrapifySingleType {
 			await this.#processStrapiSingleTypeClassReplace();
 		}
 
-		if(this.#attributes["strapi-single-type-class-conditional"]) {
+		if (this.#attributes["strapi-single-type-class-conditional"]) {
 			await this.#processStrapiSingleTypeConditionalClass();
 		}
 
