@@ -1,0 +1,25 @@
+{
+  "kind": "singleType",
+  "collectionName": "strapi_single_type_components_tests",
+  "info": {
+    "singularName": "strapi-single-type-components-test",
+    "pluralName": "strapi-single-type-components-tests",
+    "displayName": "Strapi Single Type Components Test"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "one_level_deep": {
+      "type": "component",
+      "repeatable": false,
+      "component": "nesting-tests.component-one-level-deep"
+    },
+    "two_levels_deep": {
+      "type": "component",
+      "repeatable": false,
+      "component": "nesting-tests.component-two-levels-deep"
+    }
+  }
+}

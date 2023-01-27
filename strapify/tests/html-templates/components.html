@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>components test</h1>
+
+	<div strapi-collection="strapi-components-tests">
+		<div strapi-template="">
+			<p strapi-field="one_level_deep.text">p</p>
+
+			<p strapi-field="two_levels_deep.text" style="margin-left: 24px">p</p>
+			<p strapi-field="two_levels_deep.one_level_deep.text" style="margin-left: 24px">p</p>
+
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>

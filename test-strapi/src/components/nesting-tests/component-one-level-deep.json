@@ -1,0 +1,12 @@
+{
+  "collectionName": "components_nesting_tests_component_one_level_deeps",
+  "info": {
+    "displayName": "Component One  Level Deep"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    }
+  }
+}

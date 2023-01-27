@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>single type components test</h1>
+
+	<div>
+		<p strapi-single-type="strapi-single-type-components-test.one_level_deep.text">
+			p
+		</p>
+
+		<p strapi-single-type="strapi-single-type-components-test.two_levels_deep.text" style="margin-left: 24px">
+			p
+		</p>
+
+		<p strapi-single-type="strapi-single-type-components-test.two_levels_deep.one_level_deep.text"
+			style="margin-left: 24px">
+			p
+		</p>
+	</div>
+</body>
+
+</html>

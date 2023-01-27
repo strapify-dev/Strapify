@@ -1,0 +1,35 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>components test</h1>
+
+	<div strapi-collection="strapi-components-tests" style="">
+		
+	<div strapi-template="">
+			<p strapi-field="one_level_deep.text">1A</p>
+
+			<p strapi-field="two_levels_deep.text" style="margin-left: 24px">1A</p>
+			<p strapi-field="two_levels_deep.one_level_deep.text" style="margin-left: 24px">1B</p>
+
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="one_level_deep.text">2A</p>
+
+			<p strapi-field="two_levels_deep.text" style="margin-left: 24px">2A</p>
+			<p strapi-field="two_levels_deep.one_level_deep.text" style="margin-left: 24px">2B</p>
+
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="one_level_deep.text">3A</p>
+
+			<p strapi-field="two_levels_deep.text" style="margin-left: 24px">3A</p>
+			<p strapi-field="two_levels_deep.one_level_deep.text" style="margin-left: 24px">3B</p>
+
+			<hr>
+		</div></div>
+
+
+</body></html>

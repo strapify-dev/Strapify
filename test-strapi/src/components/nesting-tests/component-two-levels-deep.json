@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_nesting_tests_component_two_levels_deeps",
+  "info": {
+    "displayName": "Component Two Levels Deep"
+  },
+  "options": {},
+  "attributes": {
+    "text": {
+      "type": "string"
+    },
+    "one_level_deep": {
+      "type": "component",
+      "repeatable": false,
+      "component": "nesting-tests.component-one-level-deep"
+    }
+  }
+}

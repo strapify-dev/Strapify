@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_components_tests",
+  "info": {
+    "singularName": "strapi-components-test",
+    "pluralName": "strapi-components-tests",
+    "displayName": "Strapi Components Test",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "one_level_deep": {
+      "displayName": "Component One  Level Deep",
+      "type": "component",
+      "repeatable": false,
+      "component": "nesting-tests.component-one-level-deep"
+    },
+    "two_levels_deep": {
+      "type": "component",
+      "repeatable": false,
+      "component": "nesting-tests.component-two-levels-deep"
+    }
+  }
+}
