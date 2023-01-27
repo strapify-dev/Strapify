@@ -118,13 +118,8 @@ class StrapifySingleType {
 			const conditionString = subArgs[0];
 			const className = subArgs[1];
 
-			console.log(conditionString, className);
-
-			/*need to parse the condition string to find all single types */
-			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
-
 			const parsedConditionData = Strapify.parseCondition(conditionString).result;
-			const conditionSatisfied = Strapify.checkCondition(parsedConditionData, strapiData.data.attributes);
+			const conditionSatisfied = await Strapify.checkConditionSingleType(parsedConditionData);
 
 			if (conditionSatisfied) {
 				this.#singleTypeElement.classList.add(className);

@@ -1,5 +1,6 @@
 import { marked } from "marked";
 import parser from "./strapify-parser"
+import strapiRequest from "./util/strapiRequest";
 
 const this_script = document.currentScript;
 let apiURL;
@@ -402,6 +403,7 @@ function compareLiteralValues(left, right, operatorType) {
 	}
 }
 
+//strapiAttributes is the attributes data from a strapi collection fetch
 function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursionProtection = 0) {
 	if (infiniteRecursionProtection > 5000) {
 		throw new Error("Overflow protection triggered")
@@ -432,6 +434,71 @@ function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursion
 	//if right is a condition
 	if (right.left !== undefined) {
 		resolvedRight = checkCondition(right, strapiAttributes, infiniteRecursionProtection + 1);
+	}
+
+	const comparisonResult = compareLiteralValues(resolvedLeft, resolvedRight, operatorType);
+
+	return comparisonResult
+}
+
+//helper function to ensure parsed single types have their data fetched
+async function updateSingleTypeAttributesForConditionCheck(fieldIdentifier, curAttributes) {
+	//first get the single type name from the field identifier
+	const singleTypeName = fieldIdentifier.split(".")[0];
+
+	//if curAttributes does not already have the data for the single type, fetch it and add it to curAttributes
+	if (curAttributes[singleTypeName] === undefined) {
+		const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
+		curAttributes[singleTypeName] = strapiData.data.attributes;
+	}
+
+	return curAttributes;
+}
+
+/*
+	do not pass strapiAttributes, it is only used as a temp variable for recursion.
+	We will fetch and  add single type data as we need it, creating a strapiAttributes 
+	data structure that emulates the structure of data from a collection component, to 
+	enable code reuse.
+*/
+async function checkConditionSingleType(parsedConditionData, infiniteRecursionProtection = 0, strapiAttributes={}) {
+	if (infiniteRecursionProtection > 5000) {
+		throw new Error("Overflow protection triggered")
+	}
+
+	const left = parsedConditionData.left;
+	const right = parsedConditionData.right;
+	const operatorType = parsedConditionData.type;
+
+	//we need to do an early check for a variable type value so the sinple type data can be fetched
+	if (left.type === "variable") {
+		strapiAttributes = await updateSingleTypeAttributesForConditionCheck(left.value, strapiAttributes);
+	}
+	if(right.type === "variable") {
+		strapiAttributes = await updateSingleTypeAttributesForConditionCheck(right.value, strapiAttributes);
+	}
+
+	let resolvedLeft = null;
+	let resolvedRight = null;
+
+	//if left is a value
+	if (left.value !== undefined) {
+		resolvedLeft = getLiteralValue(left, strapiAttributes);
+	}
+
+	//if left is a condition
+	if (left.left !== undefined) {
+		resolvedLeft = checkCondition(left, strapiAttributes, infiniteRecursionProtection + 1, strapiAttributes);
+	}
+
+	//if right is a value
+	if (right.value !== undefined) {
+		resolvedRight = getLiteralValue(right, strapiAttributes);
+	}
+
+	//if right is a condition
+	if (right.left !== undefined) {
+		resolvedRight = checkCondition(right, strapiAttributes, infiniteRecursionProtection + 1, strapiAttributes);
 	}
 
 	const comparisonResult = compareLiteralValues(resolvedLeft, resolvedRight, operatorType);
@@ -525,6 +592,7 @@ const Strapify = {
 	modifyElmWithStrapiData: modifyElmWithStrapiData,
 	parseCondition: parseCondition,
 	checkCondition: checkCondition,
+	checkConditionSingleType: checkConditionSingleType,
 	reinitializeIX2: reinitializeIX2,
 	log: log,
 	warn: warn,

@@ -35,12 +35,17 @@
 	<div>
 		<div class="div"
 			strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-blue">
-			<p>impressive div</p>
+			<p>blue if should_be_blue, transparent otherwise</p>
+		</div>
+
+		<div class="div"
+			strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-red">
+			<p>red if should_be_blue, transparent otherwise</p>
 		</div>
 
 		<div class="div"
 			strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-blue | strapi-single-type-class-test.should_be_blue == false, bg-red">
-			<p>impressive div</p>
+			<p>blue if should_be_blue, red otherwise</p>
 		</div>
 	</div>
 </body>
