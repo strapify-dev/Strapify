@@ -470,7 +470,7 @@ async function checkConditionSingleType(parsedConditionData, infiniteRecursionPr
 	const right = parsedConditionData.right;
 	const operatorType = parsedConditionData.type;
 
-	//we need to do an early check for a variable type value so the sinple type data can be fetched
+	//we need to do an early check for a variable type value so the single type data can be fetched
 	if (left.type === "variable") {
 		strapiAttributes = await updateSingleTypeAttributesForConditionCheck(left.value, strapiAttributes);
 	}
