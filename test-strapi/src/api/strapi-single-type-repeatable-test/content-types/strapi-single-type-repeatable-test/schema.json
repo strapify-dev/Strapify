@@ -1,0 +1,37 @@
+{
+  "kind": "singleType",
+  "collectionName": "strapi_single_type_repeatable_tests",
+  "info": {
+    "singularName": "strapi-single-type-repeatable-test",
+    "pluralName": "strapi-single-type-repeatable-tests",
+    "displayName": "Strapi Single Type Repeatable Test",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "videos": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "components": {
+      "type": "component",
+      "repeatable": true,
+      "component": "general.repeatable-test-component"
+    }
+  }
+}

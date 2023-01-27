@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>strapi-single-type-repeatable test</h1>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.images">
+		<h3>images:</h3>
+		<div strapi-template="">
+			<img strapi-field="images" />
+		</div>
+	</div>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.videos">
+		<h3>videos:</h3>
+		<div strapi-template="">
+			<video strapi-field="videos" controls />
+		</div>
+	</div>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.components">
+		<h3>videos:</h3>
+		<div strapi-template="">
+			<p strapi-field="components.text"></p>
+		</div>
+	</div>
+</body>
+
+</html>
