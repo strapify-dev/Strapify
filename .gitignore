@@ -112,6 +112,9 @@ dist
 # strapify test files
 /strapify/tests/html-tests-unvalidated/*
 
+# strapify test log files
+/strapify/tests/test-logs/*
+
 # built strapify files
 /strapify/bundle/*
 /strapify/src/strapify-parser.js
