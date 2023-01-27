@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_general_names",
+  "info": {
+    "displayName": "Name"
+  },
+  "options": {},
+  "attributes": {
+    "first": {
+      "type": "string"
+    },
+    "last": {
+      "type": "string"
+    }
+  }
+}

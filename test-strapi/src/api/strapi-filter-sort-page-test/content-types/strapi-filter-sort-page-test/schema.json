@@ -1,0 +1,42 @@
+{
+  "kind": "collectionType",
+  "collectionName": "strapi_filter_sort_page_tests",
+  "info": {
+    "singularName": "strapi-filter-sort-page-test",
+    "pluralName": "strapi-filter-sort-page-tests",
+    "displayName": "Strapi Filter Sort Page Test"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "full_name": {
+      "type": "string"
+    },
+    "name": {
+      "displayName": "Name",
+      "type": "component",
+      "repeatable": false,
+      "component": "general.name"
+    },
+    "boolean": {
+      "type": "boolean"
+    },
+    "number": {
+      "type": "float"
+    },
+    "enum": {
+      "type": "enumeration",
+      "enum": [
+        "enum0",
+        "enum1",
+        "enum2",
+        "enum3"
+      ]
+    },
+    "date": {
+      "type": "date"
+    }
+  }
+}

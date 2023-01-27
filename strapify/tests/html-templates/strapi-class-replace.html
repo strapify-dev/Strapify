@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+
+	<style>
+		.div {
+			width: 200px;
+			height: 200px;
+		}
+
+		.bg-blue {
+			background-color: blue;
+		}
+
+		.bg-red {
+			background-color: red;
+		}
+
+		.bg-black {
+			background-color: black;
+		}
+
+		.font-small {
+			font-size: 10px;
+		}
+
+		.font-large {
+			font-size: 20px;
+		}
+
+		.font-giant {
+			font-size: 42px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>strapi-class-replace test</h1>
+
+	<div strapi-collection="strapi-class-tests">
+		<div strapi-template="">
+			<h4>background only: </h4>
+			<div class="div bg-black" strapi-class-replace="bg-black, background">
+				<p>impressive div</p>
+			</div>
+
+			<h4>background and font: </h4>
+			<div class="div bg-black font-giant" strapi-class-replace="bg-black, background | font-giant, font">
+				<p>impressive div</p>
+			</div>
+
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>

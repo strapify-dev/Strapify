@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+
+	<style>
+		.div {
+			width: 200px;
+			height: 200px;
+		}
+
+		.bg-blue {
+			background-color: blue;
+		}
+
+		.bg-red {
+			background-color: red;
+		}
+
+		.font-small {
+			font-size: 10px;
+		}
+
+		.font-large {
+			font-size: 20px;
+		}
+	</style>
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-class-add test</h1>
+
+	<div strapi-collection="strapi-class-tests" style="">
+		
+	<div strapi-template="">
+			<h4>background only: </h4>
+			<div class="div bg-blue" strapi-class-add="background">
+				<p>impressive div</p>
+			</div>
+
+			<h4>background and font: </h4>
+			<div class="div bg-blue font-small" strapi-class-add="background | font">
+				<p>impressive div</p>
+			</div>
+
+			<hr>
+		</div><div strapi-template="">
+			<h4>background only: </h4>
+			<div class="div bg-red" strapi-class-add="background">
+				<p>impressive div</p>
+			</div>
+
+			<h4>background and font: </h4>
+			<div class="div bg-red font-small" strapi-class-add="background | font">
+				<p>impressive div</p>
+			</div>
+
+			<hr>
+		</div><div strapi-template="">
+			<h4>background only: </h4>
+			<div class="div bg-blue" strapi-class-add="background">
+				<p>impressive div</p>
+			</div>
+
+			<h4>background and font: </h4>
+			<div class="div bg-blue font-large" strapi-class-add="background | font">
+				<p>impressive div</p>
+			</div>
+
+			<hr>
+		</div><div strapi-template="">
+			<h4>background only: </h4>
+			<div class="div bg-red" strapi-class-add="background">
+				<p>impressive div</p>
+			</div>
+
+			<h4>background and font: </h4>
+			<div class="div bg-red font-large" strapi-class-add="background | font">
+				<p>impressive div</p>
+			</div>
+
+			<hr>
+		</div></div>
+
+
+</body></html>
