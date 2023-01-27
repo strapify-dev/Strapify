@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-single-type-css-rule test</h1>
+
+	<div style="display: flex; flex-direction: column; gap: 16px;">
+		<div style="display: flex; gap: 8px;">
+			<div strapi-single-type-css-rule="width: 300px; height: 300px; background: {{strapi-single-type-css-rule-test.color}};" style="width: 300px; height: 300px; background: blue;"></div>
+			<div strapi-single-type-css-rule="width: 300px; height: 300px; background-image: url({{strapi-single-type-css-rule-test.img_url}});" style="width: 300px; height: 300px; background-image: url(https://picsum.photos/id/237/200/300);"></div>
+		</div>
+	</div>
+
+
+</body></html>

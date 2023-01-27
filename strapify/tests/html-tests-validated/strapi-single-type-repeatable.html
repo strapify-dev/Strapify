@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-single-type-repeatable test</h1>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.images" style="">
+		<h3>images:</h3>
+		
+	<div strapi-template="">
+			<img strapi-field="images" src="http://localhost:1337/uploads/dog_tea_e79932836d.jpg" alt="null">
+		</div><div strapi-template="">
+			<img strapi-field="images" src="http://localhost:1337/uploads/mammal_2ce4664bb3.jpg" alt="null">
+		</div></div>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.videos" style="">
+		<h3>videos:</h3>
+		
+	<div strapi-template="">
+			<video strapi-field="videos" controls="" src="http://localhost:1337/uploads/Human_Feeding_The_Little_Squirrel_a0fb8f2ba7.mp4">
+		</video></div><div strapi-template="">
+			<video strapi-field="videos" controls="" src="http://localhost:1337/uploads/clowfish_63f5f65806.mp4">
+		</video></div></div>
+
+	<div strapi-single-type-repeatable="strapi-single-type-repeatable-test.components" style="">
+		<h3>videos:</h3>
+		
+	<div strapi-template="">
+			<p strapi-field="components.text">comp0</p>
+		</div><div strapi-template="">
+			<p strapi-field="components.text">comp1</p>
+		</div></div>
+
+
+</body></html>

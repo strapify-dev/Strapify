@@ -1,0 +1,24 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-single-type-into test</h1>
+
+	<div>
+		<h3>url into src</h3>
+		<img strapi-single-type-into="strapi-single-type-into-test.image_info.url -> src" src="https://picsum.photos/id/237/200/300">
+
+		<h3>url and alt text (multiple arguments)</h3>
+		<img strapi-single-type-into="strapi-single-type-into-test.image_info.url -> src | strapi-single-type-into-test.image_info.alt_text -> alt" alt="doggy">
+
+		<h3>url into style with template</h3>
+		<img strapi-single-type-into="background: url({{strapi-single-type-into-test.image_info.url}}); width: 200px; height: 300px; -> style">
+
+		<h3>url into style with and name (multiple arguments with template)</h3>
+		<img strapi-single-type-into="background: url({{strapi-single-type-into-test.image_info.url}}); width: 200px; height: 300px; -> style | strapi-single-type-into-test.image_info.alt_text -> name">
+	</div>
+
+
+</body></html>

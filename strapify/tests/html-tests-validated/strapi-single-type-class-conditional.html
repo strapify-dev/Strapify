@@ -1,0 +1,47 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+
+	<style>
+		.div {
+			width: 200px;
+			height: 200px;
+		}
+
+		.bg-blue {
+			background-color: blue;
+		}
+
+		.bg-red {
+			background-color: red;
+		}
+
+		.font-small {
+			font-size: 10px;
+		}
+
+		.font-large {
+			font-size: 20px;
+		}
+	</style>
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-single-type-class-conditional test</h1>
+
+	<div>
+		<div class="div bg-blue" strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-blue">
+			<p>blue if should_be_blue, transparent otherwise</p>
+		</div>
+
+		<div class="div bg-red" strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-red">
+			<p>red if should_be_blue, transparent otherwise</p>
+		</div>
+
+		<div class="div bg-blue" strapi-single-type-class-conditional="strapi-single-type-class-test.should_be_blue == true, bg-blue | strapi-single-type-class-test.should_be_blue == false, bg-red">
+			<p>blue if should_be_blue, red otherwise</p>
+		</div>
+	</div>
+
+
+</body></html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+
+	<style>
+		.div {
+			width: 200px;
+			height: 200px;
+		}
+
+		.bg-blue {
+			background-color: blue;
+		}
+
+		.bg-red {
+			background-color: red;
+		}
+
+		.font-small {
+			font-size: 10px;
+		}
+
+		.font-large {
+			font-size: 20px;
+		}
+	</style>
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-single-type-class-add test</h1>
+
+	<div>
+		<div class="div bg-red" strapi-single-type-class-add="strapi-single-type-class-test.background">
+			<p>impressive div</p>
+		</div>
+
+		<div class="div bg-red font-large" strapi-single-type-class-add="strapi-single-type-class-test.background | strapi-single-type-class-test.font">
+			<p>impressive div</p>
+		</div>
+	</div>
+
+
+</body></html>
