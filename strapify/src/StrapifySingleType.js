@@ -207,7 +207,10 @@ class StrapifySingleType {
 
 		let strapiData = null;
 
-		await args.forEach(async (arg) => {
+
+		for (let i = 0; i < args.length; i++) {
+			const arg = args[i];
+
 			const argSplit = arg.split("->").map((arg) => arg.trim());
 			const templateString = argSplit[0].trim();
 			const htmlAttributeName = argSplit[1].trim();
@@ -255,7 +258,7 @@ class StrapifySingleType {
 			}
 
 			this.#singleTypeElement.setAttribute(htmlAttributeName, singleTypeDataValue);
-		})
+		}
 	}
 
 	async process() {
