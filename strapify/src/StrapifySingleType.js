@@ -288,7 +288,7 @@ class StrapifySingleType {
 
 			const strapifyRepeatable = new StrapifyRepeatable(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
 
-			strapifyRepeatable.process()
+			await strapifyRepeatable.process()
 		}
 
 		if (this.#attributes["strapi-single-type-relation"]) {
@@ -298,7 +298,7 @@ class StrapifySingleType {
 
 			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
 
-			strapifyRelation.process()
+			await strapifyRelation.process()
 		}
 	}
 }
