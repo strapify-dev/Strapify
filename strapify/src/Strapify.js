@@ -413,6 +413,14 @@ function checkCondition(parsedConditionData, strapiAttributes, infiniteRecursion
 	const right = parsedConditionData.right;
 	const operatorType = parsedConditionData.type;
 
+	//we need to do an early check for a variable to substitute query string variables
+	if (left.type === "variable") {
+		left.value = substituteQueryStringVariables(left.value);
+	}
+	if (right.type === "variable") {
+		right.value = substituteQueryStringVariables(right.value);
+	}
+
 	let resolvedLeft = null;
 	let resolvedRight = null;
 
@@ -461,7 +469,7 @@ async function updateSingleTypeAttributesForConditionCheck(fieldIdentifier, curA
 	data structure that emulates the structure of data from a collection component, to 
 	enable code reuse.
 */
-async function checkConditionSingleType(parsedConditionData, infiniteRecursionProtection = 0, strapiAttributes={}) {
+async function checkConditionSingleType(parsedConditionData, infiniteRecursionProtection = 0, strapiAttributes = {}) {
 	if (infiniteRecursionProtection > 5000) {
 		throw new Error("Overflow protection triggered")
 	}
@@ -472,9 +480,11 @@ async function checkConditionSingleType(parsedConditionData, infiniteRecursionPr
 
 	//we need to do an early check for a variable type value so the single type data can be fetched
 	if (left.type === "variable") {
+		left.value = substituteQueryStringVariables(left.value);
 		strapiAttributes = await updateSingleTypeAttributesForConditionCheck(left.value, strapiAttributes);
 	}
-	if(right.type === "variable") {
+	if (right.type === "variable") {
+		right.value = substituteQueryStringVariables(right.value);
 		strapiAttributes = await updateSingleTypeAttributesForConditionCheck(right.value, strapiAttributes);
 	}
 
