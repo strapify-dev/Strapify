@@ -3,7 +3,7 @@ const fs = require('fs')
 function writeFile(filePath, contents) {
 	//delete the file if it already exists
 	if (fs.existsSync(filePath)) {
-		fs.unlink(filePath, (err) => {
+		fs.unlinkSync(filePath, (err) => {
 			err && console.error(err)
 		})
 	}
