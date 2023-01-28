@@ -7,7 +7,7 @@ const path = require('path')
 describe("DOM tests", () => {
 	Object.keys(htmlTemplates).forEach((htmlTemplateName) => {
 		//test each of the test definitions
-		test(htmlTemplateName.replace("-", " "), async () => {
+		test(htmlTemplateName.replace(/-/g, " "), async () => {
 			console.log(htmlTemplateName)
 
 			//we read the template into filePath, write the unvalidated file to unvalidatedFilePath, and compare it to the validated file at validatedFilePath
