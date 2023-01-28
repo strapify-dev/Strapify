@@ -3,5 +3,5 @@ module.exports = {
 	moduleFileExtensions: ['js'],
 	moduleDirectories: ['node_modules'],
 	//testEnvironment: 'jsdom'
-
+	testTimeout: 20000
 };

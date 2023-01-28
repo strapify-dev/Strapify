@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+	<style>
+		p {
+			font-size: 12px;
+			margin: 0;
+		}
+
+		hr {
+			border: 1px solid lightgrey;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>strapi-sort test</h1>
+
+	<h3>no sort:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>sort by name:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-sort="full_name" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>sort by name and number desc:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-sort="full_name | number:desc" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>

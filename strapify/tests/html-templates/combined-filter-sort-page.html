@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+	<style>
+		p {
+			font-size: 12px;
+			margin: 0;
+		}
+
+		hr {
+			border: 1px solid lightgrey;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>combined strapi-filter, strapi-sort and strapi-page test</h1>
+
+	<h3>no sort, filter, page:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>sort by full_name, filter by number:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-sort="full_name" strapi-filter="[number][$eq]=34"
+		style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>sort by date enum, filter by number or enum:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-sort="enum"
+		strapi-filter="[$or][0][number][$eq]=34 | [$or][1][enum][$eq]=enum1" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>

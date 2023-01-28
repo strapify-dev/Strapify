@@ -1,0 +1,184 @@
+<!DOCTYPE html><html><head>
+	<meta charset="utf-8">
+	
+	<style>
+		p {
+			font-size: 12px;
+			margin: 0;
+		}
+
+		hr {
+			border: 1px solid lightgrey;
+		}
+	</style>
+<style>.strapify-hide { display: none !important; }</style></head>
+
+<body>
+	<h1>strapi-filter test</h1>
+
+	<h3>no filter:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" style="padding-left: 24px;">
+		
+	<div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum0</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Carter Malone</p>
+			<p><span strapi-field="name.first">Carter</span> <span strapi-field="name.last">Malone</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum1</p>
+			<p strapi-field="date">2023-01-18</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Marty McFly</p>
+			<p><span strapi-field="name.first">Marty</span> <span strapi-field="name.last">McFly</span></p>
+			<p strapi-field="number">23</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum3</p>
+			<p strapi-field="date">2023-01-02</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Paul Dirac</p>
+			<p><span strapi-field="name.first">Paul</span> <span strapi-field="name.last">Dirac</span></p>
+			<p strapi-field="number">89</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum1</p>
+			<p strapi-field="date">2023-05-09</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Marshall Mcluhan</p>
+			<p><span strapi-field="name.first">Marshall</span> <span strapi-field="name.last">Mcluhan</span></p>
+			<p strapi-field="number">76</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum1</p>
+			<p strapi-field="date">2023-09-12</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Ethan Klein</p>
+			<p><span strapi-field="name.first">Ethan </span> <span strapi-field="name.last">Klein</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-01</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div></div>
+
+	<h3>filter by full_name:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-filter="[full_name][$eq]=Kyle Mark" style="padding-left: 24px;">
+		
+	<div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum0</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div></div>
+
+	<h3>filter by full_name and age:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-filter="[$and][0][full_name][$eq]=Kyle Mark | [$and][1][number][$eq]=74" style="padding-left: 24px;">
+		
+	<div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div></div>
+
+	<h3>filter by full_name or boolean:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-filter="[$or][0][full_name][$eq]=Kyle Mark | [$or][1][boolean][$eq]=true" style="padding-left: 24px;">
+		
+	<div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum0</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Carter Malone</p>
+			<p><span strapi-field="name.first">Carter</span> <span strapi-field="name.last">Malone</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum1</p>
+			<p strapi-field="date">2023-01-18</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Ethan Klein</p>
+			<p><span strapi-field="name.first">Ethan </span> <span strapi-field="name.last">Klein</span></p>
+			<p strapi-field="number">34</p>
+			<p strapi-field="boolean">true</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-01</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div><div strapi-template="">
+			<p strapi-field="full_name">Kyle Mark</p>
+			<p><span strapi-field="name.first">Kyle</span> <span strapi-field="name.last">Mark</span></p>
+			<p strapi-field="number">74</p>
+			<p strapi-field="boolean">false</p>
+			<p strapi-field="enum">enum2</p>
+			<p strapi-field="date">2023-01-31</p>
+			<hr>
+		</div></div>
+
+
+</body></html>

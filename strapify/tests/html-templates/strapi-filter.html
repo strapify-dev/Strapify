@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+	<style>
+		p {
+			font-size: 12px;
+			margin: 0;
+		}
+
+		hr {
+			border: 1px solid lightgrey;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>strapi-filter test</h1>
+
+	<h3>no filter:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>filter by full_name:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests" strapi-filter="[full_name][$eq]=Kyle Mark"
+		style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>filter by full_name and age:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests"
+		strapi-filter="[$and][0][full_name][$eq]=Kyle Mark | [$and][1][number][$eq]=74" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+
+	<h3>filter by full_name or boolean:</h3>
+	<div strapi-collection="strapi-filter-sort-page-tests"
+		strapi-filter="[$or][0][full_name][$eq]=Kyle Mark | [$or][1][boolean][$eq]=true" style="padding-left: 24px;">
+		<div strapi-template="">
+			<p strapi-field="full_name">name</p>
+			<p><span strapi-field="name.first">first</span> <span strapi-field="name.last">last</span></p>
+			<p strapi-field="number">number</p>
+			<p strapi-field="boolean">boolean</p>
+			<p strapi-field="enum">enum</p>
+			<p strapi-field="date">date</p>
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>
