@@ -55,17 +55,18 @@ class StrapifyField {
 
 	//for strapi-field
 	#processStrapiFieldElms(strapiAttributes) {
-		const args = StrapifyParse.parseAttribute(
-			this.#attributes["strapi-field"],
-			{
-				multipleArguments: false,
-				subArgumentNames: ["field name"],
-				substituteQueryStringVariables: true
-			},
-			{
-				attributeName: "strapi-field"
-			}
-		)
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-field"], {
+			attributeName: "strapi-field",
+			subArgumentDeliminator: "",
+			multipleArguments: false,
+			subArgumentDetails: [
+				{
+					name: "strapi_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 		const fieldPath = args[0].value;
 
 		const strapiDataValue = Strapify.getStrapiComponentValue(fieldPath, strapiAttributes);
@@ -74,20 +75,21 @@ class StrapifyField {
 
 	//for strapi-class-add
 	#processStrapiClassAddElms(strapiAttributes) {
-		const args = StrapifyParse.parseAttribute(
-			this.#attributes["strapi-class-add"],
-			{
-				multipleArguments: true,
-				subArgumentNames: ["field name"],
-				substituteQueryStringVariables: true
-			},
-			{
-				attributeName: "strapi-class-add"
-			}
-		)
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-add"], {
+			attributeName: "strapi-class-add",
+			subArgumentDeliminator: "",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "strapi_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		args.forEach((arg) => {
-			const strapiFieldName = arg.subArgs["field name"];
+			const strapiFieldName = arg.value
 			const className = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
 			this.#fieldElement.classList.add(className);
 			this.#managedClasses.push({ state: "added", name: className });
@@ -96,21 +98,27 @@ class StrapifyField {
 
 	//for strapi-class-replace
 	#processStrapiClassReplace(strapiAttributes) {
-		const args = StrapifyParse.parseAttribute(
-			this.#attributes["strapi-class-replace"],
-			{
-				multipleArguments: true,
-				subArgumentNames: ["existing class name", "field name"],
-				substituteQueryStringVariables: true
-			},
-			{
-				attributeName: "strapi-class-replace"
-			}
-		)
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-replace"], {
+			attributeName: "strapi-class-replace",
+			subArgumentDeliminator: ",",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "existing_class_name",
+					type: StrapifyParse.SUB_ARG_TYPE.STRING,
+					substituteQueryStringVariables: false
+				},
+				{
+					name: "strapi_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		args.forEach((arg) => {
-			const classToReplace = arg.subArgs["existing class name"];
-			let strapiFieldName = arg.subArgs["field name"];
+			const classToReplace = arg.subArgs[0].value;
+			let strapiFieldName = arg.subArgs[1].value;
 			const classReplaceValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
 
 			this.#fieldElement.classList.remove(classToReplace);
