@@ -3,6 +3,8 @@ import parser from "./strapify-parser"
 import strapiRequest from "./util/strapiRequest";
 
 const this_script = document.currentScript;
+
+//strapi api url attribute
 let apiURL;
 if (this_script?.hasAttribute("data-strapi-api-url")) {
 	//get the strapi api url from the script tag and remove the trailing slash
@@ -14,9 +16,22 @@ if (this_script?.hasAttribute("data-strapi-api-url")) {
 	apiURL = "http://localhost:1337";
 }
 
+//webflow animation fix attribute
 let applyWebflowAnimationFix = false;
 if (this_script?.hasAttribute("data-apply-webflow-animation-fix")) {
 	applyWebflowAnimationFix = this_script.attributes.getNamedItem("data-apply-webflow-animation-fix").value === "true";
+}
+
+//debug mode attribute
+let debugMode = true;
+if (this_script?.hasAttribute("data-debug-mode")) {
+	debugMode = this_script.attributes.getNamedItem("data-debug-mode").value === "true";
+}
+
+//debug validate strapi endpoints attribute
+let debugValidateStrapiEndpoints = false;
+if (this_script?.hasAttribute("data-debug-validate-strapi-endpoints")) {
+	debugValidateStrapiEndpoints = this_script.attributes.getNamedItem("data-debug-validate-strapi-endpoints").value === "true";
 }
 
 const validStrapifySingleTypeAttributes = [
@@ -212,7 +227,6 @@ function substituteStrapiDataAttributes(argument, strapiAttributes) {
 
 	//if no matches, then no strapi variables in arg
 	if (!matches) {
-		console.log("intoDataValue", intoDataValue)
 		intoDataValue = Strapify.substituteQueryStringVariables(intoDataValue);
 		intoDataValue = Strapify.getStrapiComponentValue(intoDataValue, strapiAttributes);
 
@@ -529,7 +543,7 @@ function reinitializeIX2() {
 			window.Webflow.require("ix2").init();
 			document.dispatchEvent(new Event("readystatechange"));
 		} catch (e) {
-			console.error(e);
+			if(debugMode) console.error(e);
 		}
 
 		ix2Timeout = null
@@ -572,6 +586,9 @@ function error(...args) {
 
 const Strapify = {
 	apiURL: apiURL,
+	applyWebflowAnimationFix: applyWebflowAnimationFix,
+	debugMode: debugMode,
+	debugValidateStrapiEndpoints: debugValidateStrapiEndpoints,
 	validStrapifySingleTypeAttributes: validStrapifySingleTypeAttributes,
 	validStrapifyCollectionAttributes: validStrapifyCollectionAttributes,
 	validStrapifyFieldAttributes: validStrapifyFieldAttributes,

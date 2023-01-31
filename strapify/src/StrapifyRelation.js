@@ -105,8 +105,6 @@ class StrapifyTemplate {
 			return acc + filter;
 		}, "");
 
-		//console.log(filterString)
-
 		//when the filter string is empty, change it to filter for a non-existent id
 		if (!filterString) {
 			filterString = "[id][$eq]=-1";

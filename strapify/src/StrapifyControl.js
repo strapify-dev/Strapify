@@ -180,7 +180,7 @@ class StrapifyControl {
 
 	#onCheckboxEvent(e) {
 		if (this.#controlType === "strapi-page") {
-			console.error("strapi-page-control cannot be used with checkboxes");
+			if (Strapify.debugMode) console.error("strapi-page-control cannot be used with checkboxes");
 		}
 		else if (this.#controlType === "strapi-filter") {
 			const filters = []

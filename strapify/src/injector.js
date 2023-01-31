@@ -5,9 +5,11 @@ import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
+const debugMode = Strapify.debugMode;
+
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
-	console.log("running strapify");
+	if (debugMode) console.log("running strapify");
 
 	//try to get the user from local storage
 	const user = localStorage.getItem("user");
@@ -49,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //when the strapify has initialized, write a message to the console
 document.addEventListener("strapifyInitialized", () => {
-	console.log("strapify finished");
+	if (debugMode) console.log("strapify finished");
 });
 
 //this is essentially the entry point for Strapify. It is called when the DOM is ready and user authenticated has been handled

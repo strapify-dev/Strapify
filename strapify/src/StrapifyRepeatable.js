@@ -57,7 +57,6 @@ class StrapifyRepeatable {
 
 		//when the data field is null (explicitly not undefined), we have an empty media field
 		if (this.#strapiDataAttributes[fieldName].data === null) {
-			//console.log("empty media", this.#strapiDataAttributes, this.#attributes)
 			Strapify.findTemplateElms(repeatableElement).forEach((collectionElm) => {
 				collectionElm.remove();
 			})
@@ -67,7 +66,6 @@ class StrapifyRepeatable {
 		//if data is not null or undefined, we have a media field
 		let overrideData
 		if (this.#strapiDataAttributes[fieldName].data) {
-			//console.log("media", this.#strapiDataAttributes, this.#attributes)
 			overrideData = {
 				data: this.#strapiDataAttributes[fieldName].data.map((fieldData) => {
 					return { attributes: { [fieldName]: { data: fieldData } } }
@@ -77,7 +75,6 @@ class StrapifyRepeatable {
 		}
 		//otherwise we must have a component field
 		else {
-			//console.log("component", this.#strapiDataAttributes, this.#attributes)
 			overrideData = {
 				data: this.#strapiDataAttributes[fieldName].map((fieldData) => {
 					return { attributes: { [fieldName]: fieldData } }

@@ -1,7 +1,8 @@
 import Strapify from "./Strapify";
 
-const debugMode = true;
+const debugMode = Strapify.debugMode;
 const debugStrict = true;
+const validateStrapiEndpoints = Strapify.debugValidateStrapiEndpoints;
 
 //sub argument types enum
 const SUB_ARG_TYPE = Object.freeze({
