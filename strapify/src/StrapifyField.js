@@ -130,18 +130,29 @@ class StrapifyField {
 
 	//for strapi-class-conditional
 	#processStrapiConditionalClass(strapiDataAttributes) {
-		const attributeValue = this.#attributes["strapi-class-conditional"];
-
-		//split attributeValue string on single occurence of "|" but not on double occurence of "||"
-		const args = attributeValue.split(/(?<!\|)\|(?!\|)/).map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-conditional"], {
+			attributeName: "strapi-conditional-class",
+			subArgumentDeliminator: ",",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "condition",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION_CONDITION,
+					substituteQueryStringVariables: false
+				},
+				{
+					name: "strapi_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		args.forEach(arg => {
-			const argSplit = arg.split(",");
-			const conditionString = argSplit[0].trim();
-			const className = argSplit[1].trim();
+			const conditionString = arg.subArgs[0].value;
+			const className = arg.subArgs[1].value;
 
 			const parsedConditionData = Strapify.parseCondition(conditionString).result;
-
 			const conditionSatisfied = Strapify.checkCondition(parsedConditionData, strapiDataAttributes);
 
 			if (conditionSatisfied) {
@@ -153,18 +164,33 @@ class StrapifyField {
 
 	//for strapi-into
 	#processStrapiInto(strapiAttributes) {
-		const attributeValue = this.#fieldElement.getAttribute("strapi-into");
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-into"], {
+			attributeName: "strapi-into",
+			subArgumentDeliminator: "->",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "html_attribute_value_template",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION_TEMPLATE,
+					substituteQueryStringVariables: true
+				},
+				{
+					name: "html_attribute_name",
+					type: StrapifyParse.SUB_ARG_TYPE.STRING,
+					substituteQueryStringVariables: false
+				}
+			]
+		})
 
 		args.forEach((arg) => {
-			const split = arg.split("->");
-			const intoAttributeName = split[1].trim();
-			let intoDataValue = split[0].trim();
+			let intoDataValue = arg.subArgs[0].value;
+			const intoAttributeName = arg.subArgs[1].value;
 
 			//strapi variables are wrapped in double curly braces
 			const regex = /{{(.*?)}}/g;
+
 			//get all strapi variables in arg and replace with value from getStrapiComponentValue
-			const matches = arg.match(regex);
+			const matches = intoDataValue.match(regex);
 
 			//if no matches, then no strapi variables in arg
 			if (!matches) {
@@ -188,28 +214,43 @@ class StrapifyField {
 
 	//for strapi-css-rule
 	#processStrapiCSSRule(strapiAttributes) {
-		const attributeValue = this.#fieldElement.getAttribute("strapi-css-rule");
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-css-rule"], {
+			attributeName: "strapi-css-rule",
+			subArgumentDeliminator: "",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "css_rule_template",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION_TEMPLATE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		args.forEach((arg) => {
+			let argValue = arg.subArgs[0].value;
+
 			//strapi variables are wrapped in double curly braces
 			const regex = /{{(.*?)}}/g;
 
 			//get all strapi variables in arg and replace with value from getStrapiComponentValue
-			const matches = arg.match(regex);
-			matches.forEach((match) => {
-				const strapiFieldName = match.substring(2, match.length - 2);
-				let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
-				strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
-				arg = arg.replace(match, strapiValue);
-			})
+			const matches = argValue.match(regex);
+
+			if (matches) {
+				matches.forEach((match) => {
+					const strapiFieldName = match.substring(2, match.length - 2);
+					let strapiValue = Strapify.substituteQueryStringVariables(strapiFieldName);
+					strapiValue = Strapify.getStrapiComponentValue(strapiFieldName, strapiAttributes);
+					argValue = argValue.replace(match, strapiValue);
+				})
+			}
 
 			//add arg to the style attribute of the fieldElement without replacing the existing style attribute
 			const existingStyleAttribute = this.#fieldElement.getAttribute("style");
 			if (existingStyleAttribute !== null && existingStyleAttribute !== undefined) {
-				arg = existingStyleAttribute + arg;
+				argValue = existingStyleAttribute + argValue;
 			}
-			this.#fieldElement.setAttribute("style", arg);
+			this.#fieldElement.setAttribute("style", argValue);
 		})
 	}
 

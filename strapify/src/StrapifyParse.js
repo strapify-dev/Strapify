@@ -215,8 +215,7 @@ function parseAttribute(
 		//parse out the matches from templatable sub arguments
 		for (let subArg of subArgs) {
 			if (
-				subArg.details.type === SUB_ARG_TYPE.SINGLE_TYPE_TEMPLATE || subArg.details.type === SUB_ARG_TYPE.COLLECTION_TEMPLATE ||
-				subArg.details.type === SUB_ARG_TYPE.SINGLE_TYPE_CONDITION || subArg.details.type === SUB_ARG_TYPE.COLLECTION_CONDITION
+				subArg.details.type === SUB_ARG_TYPE.SINGLE_TYPE_TEMPLATE || subArg.details.type === SUB_ARG_TYPE.COLLECTION_TEMPLATE
 			) {
 				subArg.templateMatches = parseMatchesFromTemplateSubargument(subArg);
 			}
