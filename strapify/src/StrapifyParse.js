@@ -2,7 +2,7 @@ import Strapify from "./Strapify";
 
 const debugMode = Strapify.debugMode;
 const debugStrict = true;
-const validateStrapiEndpoints = Strapify.debugValidateStrapiEndpoints;
+const validateStrapiEndpoints = true;//Strapify.debugValidateStrapiEndpoints;
 
 //sub argument types enum
 const SUB_ARG_TYPE = Object.freeze({
@@ -27,6 +27,18 @@ function emitError(message) {
 		throw new StrapifyAttributeValueError(message);
 	} else {
 		console.error(`Strapify Error\n${message}`);
+	}
+}
+
+function validateStrapiEndpointsForSubArg(subArg, parseDetails) {
+	if (subArg.details.type === SUB_ARG_TYPE.COLLECTION) {
+		//determine collection name
+		const collectionName = parseDetails.htmlElement
+			.closest("[strapi-collection]")
+			.getAttribute("strapi-collection");
+
+		//attempt to fetch collection
+
 	}
 }
 
@@ -172,6 +184,7 @@ function parseAttribute(
 	attributeValue, 							//value of the html attribute to parse
 	parseDetails = { 							//grouped for convenience
 		attributeName: "strapi-attribute", 			//name of the attribute to parse
+		htmlElement: undefined, 							//html element the attribute containing the attribute
 		subArgumentDeliminator: ",", 				//deliminator to split subarguments by
 		multipleArguments: false, 					//whether or not multiple arguments are allowed
 		subArgumentDetails: [ 						//array of sub argument details
@@ -224,6 +237,15 @@ function parseAttribute(
 
 		arg.subArgs = subArgs;
 	});
+
+	// //DEBUG -- validate strapi endpoints
+	// if (debugMode && validateStrapiEndpoints) {
+	// 	for (let arg of args) {
+	// 		for (let subArg of arg.subArgs) {
+	// 			validateStrapiEndpointsForSubArg(subArg, parseDetails);
+	// 		}
+	// 	}
+	// }
 
 	return args
 }

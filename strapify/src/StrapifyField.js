@@ -57,6 +57,7 @@ class StrapifyField {
 	#processStrapiFieldElms(strapiAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-field"], {
 			attributeName: "strapi-field",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: "",
 			multipleArguments: false,
 			subArgumentDetails: [
@@ -77,6 +78,7 @@ class StrapifyField {
 	#processStrapiClassAddElms(strapiAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-add"], {
 			attributeName: "strapi-class-add",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: "",
 			multipleArguments: true,
 			subArgumentDetails: [
@@ -100,6 +102,7 @@ class StrapifyField {
 	#processStrapiClassReplace(strapiAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-replace"], {
 			attributeName: "strapi-class-replace",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: ",",
 			multipleArguments: true,
 			subArgumentDetails: [
@@ -132,6 +135,7 @@ class StrapifyField {
 	#processStrapiConditionalClass(strapiDataAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-class-conditional"], {
 			attributeName: "strapi-conditional-class",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: ",",
 			multipleArguments: true,
 			subArgumentDetails: [
@@ -166,6 +170,7 @@ class StrapifyField {
 	#processStrapiInto(strapiAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-into"], {
 			attributeName: "strapi-into",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: "->",
 			multipleArguments: true,
 			subArgumentDetails: [
@@ -216,6 +221,7 @@ class StrapifyField {
 	#processStrapiCSSRule(strapiAttributes) {
 		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-css-rule"], {
 			attributeName: "strapi-css-rule",
+			htmlElement: this.#fieldElement,
 			subArgumentDeliminator: "",
 			multipleArguments: true,
 			subArgumentDetails: [
