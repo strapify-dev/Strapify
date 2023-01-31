@@ -58,9 +58,6 @@ describe("DOM tests", () => {
 			//read the validated file
 			const validatedFileContents = readFile(validatedFilePath)
 
-
-			//const diff = new DiffDOM().diff(pageContents.replace(/\s/g, ''), validatedFileContents.replace(/\s/g, ''))
-
 			//remove all tabs, newlines and double or more spaces from the page contents and validated file contents
 			const cleanedPageContents = pageContents.replace(/\t|\n|\s{2,}/g, '')
 			const cleanedValidatedFileContents = validatedFileContents.replace(/\t|\n|\s{2,}/g, '')
@@ -72,7 +69,6 @@ describe("DOM tests", () => {
 			if (diff.length > 0) {
 				writeFile(path.join(__dirname, `./test-logs/${htmlTemplateName}.log`), JSON.stringify(diff, null, 2))
 			}
-
 
 			await expect(diff).toEqual([])
 		})
