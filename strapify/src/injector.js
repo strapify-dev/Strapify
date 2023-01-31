@@ -4,27 +4,6 @@ import StrapifyForm from "./StrapifyForm";
 import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
-import StrapifyParse from "./StrapifyParse";
-
-const args = StrapifyParse.parseAttribute("text", {
-	attributeName: "strapi-into",
-	subArgumentDeliminator: "->",
-	multipleArguments: false,
-	subArgumentDetails: [
-		{
-			name: "strapi_field_name",
-			type: StrapifyParse.SUB_ARG_TYPE.COLLECTION_TEMPLATE,
-			substituteQueryStringVariables: true
-		},
-		{
-			name: "html_attribute_name",
-			type: StrapifyParse.SUB_ARG_TYPE.STRING,
-			substituteQueryStringVariables: false
-		}
-	]
-})
-
-//console.log(args);
 
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
