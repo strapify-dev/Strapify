@@ -5,11 +5,15 @@ import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
+const version = "0.0.0";
 const debugMode = Strapify.debugMode;
 
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
-	if (debugMode) console.log("running strapify");
+	if (debugMode) {
+		//log the version
+		console.log(`running strapify version ${version}`);
+	}
 
 	//try to get the user from local storage
 	const user = localStorage.getItem("user");

@@ -211,6 +211,8 @@ function parseAttribute(
 		}
 	}
 
+
+
 	//split the attribute value into multiple arguments if necessary
 	let args = splitArguments(attributeValue, parseDetails);
 

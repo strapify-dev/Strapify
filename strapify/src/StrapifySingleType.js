@@ -2,6 +2,7 @@ import Strapify from "./Strapify"
 import StrapifyRelation from "./StrapifyRelation"
 import StrapifyRepeatable from "./StrapifyRepeatable";
 import strapiRequest from "./util/strapiRequest";
+import StrapifyParse from "./StrapifyParse";
 
 class StrapifySingleType {
 	#singleTypeElement;
@@ -59,11 +60,22 @@ class StrapifySingleType {
 	}
 
 	async #processStrapiSingleTypeClassAdd() {
-		const attributeValue = this.#attributes["strapi-single-type-class-add"]
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type-class-add"], {
+			attributeName: "strapi-single-type-class-add",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: "",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "strapi_single_type_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		for (let i = 0; i < args.length; i++) {
-			const arg = args[i];
+			const arg = args[i].value;
 
 			const splitArg = this.#splitSingleTypeNameFromArgument(arg);
 			const singleTypeName = splitArg.singleTypeName;
@@ -71,23 +83,37 @@ class StrapifySingleType {
 
 			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
 
-			const _strapiFieldName = Strapify.substituteQueryStringVariables(singleTypeField);
-			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiData.data.attributes);
+			const className = Strapify.getStrapiComponentValue(singleTypeField, strapiData.data.attributes);
 			this.#singleTypeElement.classList.add(className);
 			this.#managedClasses.push({ state: "added", name: className });
 		}
 	}
 
 	async #processStrapiSingleTypeClassReplace() {
-		const attributeValue = this.#attributes["strapi-single-type-class-replace"]
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type-class-replace"], {
+			attributeName: "strapi-single-type-class-replace",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: ",",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "existing_class_name",
+					type: StrapifyParse.SUB_ARG_TYPE.STRING,
+					substituteQueryStringVariables: false
+				},
+				{
+					name: "strapi_single_type_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 
-			const subArgs = arg.split(",").map(arg => arg.trim());
-			const oldClassName = subArgs[1];
-			const newClassFieldName = subArgs[0];
+			const oldClassName = arg.subArgs[1].value;
+			const newClassFieldName = arg.subArgs[0].value;
 
 			const splitArg = this.#splitSingleTypeNameFromArgument(newClassFieldName);
 			const singleTypeName = splitArg.singleTypeName;
@@ -95,8 +121,7 @@ class StrapifySingleType {
 
 			const strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*");
 
-			const _strapiFieldName = Strapify.substituteQueryStringVariables(singleTypeField);
-			const className = Strapify.getStrapiComponentValue(_strapiFieldName, strapiData.data.attributes);
+			const className = Strapify.getStrapiComponentValue(singleTypeField, strapiData.data.attributes);
 
 			this.#singleTypeElement.classList.remove(oldClassName);
 			this.#singleTypeElement.classList.add(className);
@@ -106,17 +131,30 @@ class StrapifySingleType {
 	}
 
 	async #processStrapiSingleTypeConditionalClass() {
-		const attributeValue = this.#attributes["strapi-single-type-class-conditional"]
-
-		//split attributeValue string on single occurence of "|" but not on double occurence of "||"
-		const args = attributeValue.split(/(?<!\|)\|(?!\|)/).map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type-class-conditional"], {
+			attributeName: "strapi-single-type-class-conditional",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: ",",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "condition",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE_CONDITION,
+					substituteQueryStringVariables: false
+				},
+				{
+					name: "strapi_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 
-			const subArgs = arg.split(",").map(arg => arg.trim());
-			const conditionString = subArgs[0];
-			const className = subArgs[1];
+			const conditionString = arg.subArgs[0].value;
+			const className = arg.subArgs[1].value;
 
 			const parsedConditionData = Strapify.parseCondition(conditionString).result;
 			const conditionSatisfied = await Strapify.checkConditionSingleType(parsedConditionData);
@@ -129,12 +167,25 @@ class StrapifySingleType {
 	}
 
 	async #processStrapiSingleType() {
-		let attributeValue = this.#attributes["strapi-single-type"]
-		attributeValue = Strapify.substituteQueryStringVariables(attributeValue);
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type"], {
+			attributeName: "strapi-single-type",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: "",
+			multipleArguments: false,
+			subArgumentDetails: [
+				{
+					name: "strapi_single_type_field_name",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
-		const split = attributeValue.split(".");
-		const singleTypeName = split[0];
-		const singleTypeFieldArg = split.slice(1).join(".")
+		const newClassFieldName = args[0].subArgs[0].value;
+
+		const split = this.#splitSingleTypeNameFromArgument(newClassFieldName);
+		const singleTypeName = split.singleTypeName;
+		const singleTypeFieldArg = split.singleTypeField;
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
 
@@ -144,15 +195,26 @@ class StrapifySingleType {
 	}
 
 	async #processStrapiSingleTypeCSSRule() {
-		const attributeValue = this.#attributes["strapi-single-type-css-rule"]
-		const args = attributeValue.split("|").map(arg => arg.trim());
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type-css-rule"], {
+			attributeName: "strapi-single-type-css-rule",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: "",
+			multipleArguments: true,
+			subArgumentDetails: [
+				{
+					name: "css_rule_template",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE_TEMPLATE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
 
 		let strapiData = null;
 
 		for (let i = 0; i < args.length; i++) {
 			const arg = args[i];
 
-			const templateString = arg;
+			const templateString = arg.subArgs[0].value;
 			const htmlAttributeName = "style"
 
 			//strapi variables are wrapped in double curly braces
@@ -163,15 +225,14 @@ class StrapifySingleType {
 
 			//if no matches, then no strapi variables in arg
 			if (!matches) {
-				const templateStringSplit = templateString.split(".");
-				const singleTypeName = templateStringSplit[0];
-				let singleTypeFieldString = templateStringSplit.filter((arg) => arg !== singleTypeName).join(".");
+				const templateStringSplit = this.#splitSingleTypeNameFromArgument(templateString)	
+				const singleTypeName = templateStringSplit.singleTypeName;
+				let singleTypeFieldString = templateStringSplit.singleTypeField;
 
 				if (!strapiData) {
 					strapiData = await strapiRequest("/api/" + singleTypeName, "?populate=*")
 				}
 
-				singleTypeFieldString = Strapify.substituteQueryStringVariables(singleTypeFieldString);
 				singleTypeFieldString = Strapify.getStrapiComponentValue(singleTypeFieldString, strapiData.data.attributes);
 				this.#singleTypeElement.setAttribute(htmlAttributeName, singleTypeFieldString);
 				return;
