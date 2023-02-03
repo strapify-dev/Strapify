@@ -75,6 +75,9 @@ class StrapifyTemplate {
 
 		//wait for all strapify objects to process
 		await Promise.allSettled(processPromises);
+
+		//remove strapify-hide class from template element
+		this.#templateElement.classList.remove("strapify-hide");
 	}
 }
 

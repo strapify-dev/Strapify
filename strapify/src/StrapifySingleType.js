@@ -366,6 +366,9 @@ class StrapifySingleType {
 
 			await strapifyRelation.process()
 		}
+
+		//remove strapify-hide class
+		this.#singleTypeElement.classList.remove("strapify-hide");
 	}
 }
 

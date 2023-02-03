@@ -5,8 +5,11 @@ import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
-const version = "0.0.0";
+const version = "0.0.1";
 const debugMode = Strapify.debugMode;
+
+const hiddenTemplateElms = [];
+const hiddenSingleTypeElms = [];
 
 //wait for content to load and scripts to execute
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,6 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
 		//log the version
 		console.log(`running strapify version ${version}`);
 	}
+
+	//create a class called strapify-hide and insert it into the head
+	const strapifyHideStyle = document.createElement("style");
+	strapifyHideStyle.innerHTML = ".strapify-hide { display: none !important; }";
+	document.head.appendChild(strapifyHideStyle);
+
+	//do a preparse for any template elms and hide them
+	const templateElms = document.querySelectorAll("[strapi-template]");
+	templateElms.forEach((templateElm) => {
+		templateElm.classList.add("strapify-hide");
+		hiddenTemplateElms.push(templateElm);
+	});
+
+	//do a preparse for any single type elms and hide them
+	const singleTypeElms = document.querySelectorAll("[strapi-single-type]");
+	singleTypeElms.forEach((singleTypeElm) => {
+		singleTypeElm.classList.add("strapify-hide");
+		hiddenSingleTypeElms.push(singleTypeElm);
+	});
 
 	//try to get the user from local storage
 	const user = localStorage.getItem("user");
@@ -60,11 +82,6 @@ document.addEventListener("strapifyInitialized", () => {
 
 //this is essentially the entry point for Strapify. It is called when the DOM is ready and user authenticated has been handled
 async function strapify() {
-	//create a class called strapify-hide and insert it into the head
-	const strapifyHideStyle = document.createElement("style");
-	strapifyHideStyle.innerHTML = ".strapify-hide { display: none !important; }";
-	document.head.appendChild(strapifyHideStyle);
-
 	//find all elements with the strapi-delete attribute and remove them
 	const deleteElms = document.body.querySelectorAll("[strapi-delete]");
 	deleteElms.forEach(deleteElm => deleteElm.remove());

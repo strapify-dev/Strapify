@@ -197,7 +197,7 @@ function convertSiteDataToFileReadyContent(siteData, strapiURL) {
 	//add script
 	siteData.headElement.insertAdjacentHTML(
 		"beforeend",
-		`<script src=./main.js defer data-strapi-api-url="${strapiURL}">${""}</script>`
+		`<script src=./main.js data-strapi-api-url="${strapiURL}">${""}</script>`
 	);
 
 	//return the converted data
