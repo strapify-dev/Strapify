@@ -5,7 +5,7 @@ import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
 import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
 
-const version = "0.0.1";
+const version = "0.0.2";
 const debugMode = Strapify.debugMode;
 
 const hiddenTemplateElms = [];
