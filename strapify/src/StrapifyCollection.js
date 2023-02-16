@@ -11,7 +11,7 @@ class StrapifyCollection {
 	//visible state of the collectionElement
 	#state = "initial";
 	//used repeatable elements to emulate a non existent strapi collection
-	#overrideCollectionData;
+	#getOverrideCollectionData;
 	//strapify templates that are used to render the collection entries
 	#strapifyTemplates = [];
 
@@ -49,10 +49,10 @@ class StrapifyCollection {
 		"strapi-hide-on-fail": undefined,
 	}
 
-	constructor(collectionElement, overrideCollectionData) {
+	constructor(collectionElement, getOverrideCollectionData) {
 		//set the collection element and update the attributes
 		this.#collectionElement = collectionElement;
-		this.#overrideCollectionData = overrideCollectionData;
+		this.#getOverrideCollectionData = getOverrideCollectionData;
 		this.#updateAttributes();
 
 		//create mutation observer to watch for attribute changes
@@ -279,7 +279,7 @@ class StrapifyCollection {
 
 			//since this class is used for collections, relations and repeatbles we need to determine which of those we are dealing with
 			//when there is no overrideCollectionData, we are dealing with a collection or relation
-			if (this.#overrideCollectionData === undefined) {
+			if (this.#getOverrideCollectionData === undefined) {
 				//get the collection name, how this is done depends on the type of strapify element we are dealing with
 				let collectionName
 				if (this.#attributes["strapi-collection"]) {
@@ -300,7 +300,14 @@ class StrapifyCollection {
 			} 
 			//otherwise we are dealing with a repeatable, so we can just use the overrideCollectionData
 			else {
-				this.#collectionData = this.#overrideCollectionData;
+				this.#collectionData = this.#getOverrideCollectionData();
+
+				//hide colleciton if there is no data
+				if(!this.#collectionData) {
+					this.destroy()
+					this.#collectionElement.remove();
+					return;
+				}
 			}
 
 			//templates will be processed asynchronously, since they can have relations, repeatables
@@ -373,7 +380,7 @@ class StrapifyCollection {
 				this.#collectionElement.classList.add("strapify-hide");
 			}
 			this.#reflectState();
-			if(debugMode) console.error(err);
+			if(Strapify.debugMode) console.error(err);
 		}
 	}
 }

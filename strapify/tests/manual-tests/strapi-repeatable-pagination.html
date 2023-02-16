@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="../../bundle/main.js" data-strapi-api-url="http://localhost:1337"></script>
+</head>
+
+<body>
+	<h1>repeatble pagination test</h1>
+
+	<div strapi-collection="strapi-repeatable-tests">
+		<div strapi-template="">
+			<p strapi-field="text">text</p>
+			<div strapi-repeatable="images" strapi-page-size="1">
+				<div strapi-template="">
+					<img strapi-field="images" />
+				</div>
+
+				<button strapi-page-control="-1">prev</button>
+				<button strapi-page-control="+1">next</button>
+			</div>
+
+			<div strapi-repeatable="videos" strapi-page-size="1">
+				<div strapi-template="">
+					<div strapi-field="videos"></div>
+				</div>
+
+				<button strapi-page-control="-1">prev</button>
+				<button strapi-page-control="+1">next</button>
+			</div>
+
+			<div strapi-repeatable="component" strapi-page-size="1">
+				<div strapi-template="">
+					<div strapi-field="component.text"></div>
+				</div>
+
+				<button strapi-page-control="-1">prev</button>
+				<button strapi-page-control="+1">next</button>
+			</div>
+
+			<hr />
+		</div>
+	</div>
+</body>
+
+</html>
