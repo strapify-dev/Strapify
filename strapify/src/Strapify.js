@@ -49,7 +49,7 @@ const validStrapifyCollectionAttributes = [
 
 const validStrapifyFieldAttributes = [
 	"strapi-field", "strapi-class-add", "strapi-class-replace", "strapi-class-conditional",
-	"strapi-into", "strapi-css-rule"
+	"strapi-into", "strapi-css-rule", "strapi-background-image"
 ];
 
 const validStrapifyControllAttributes = [

@@ -20,6 +20,7 @@ class StrapifyField {
 		"strapi-class-conditional": undefined,
 		"strapi-into": undefined,
 		"strapi-css-rule": undefined,
+		"strapi-background-image": undefined,
 	}
 
 	constructor(fieldElement) {
@@ -260,6 +261,29 @@ class StrapifyField {
 		})
 	}
 
+	#processStrapiBackgroundImage(strapiAttributes) {
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-background-image"], {
+			attributeName: "strapi-background-image",
+			htmlElement: this.#fieldElement,
+			subArgumentDeliminator: "",
+			multipleArguments: false,
+			subArgumentDetails: [
+				{
+					name: "background_image_url",
+					type: StrapifyParse.SUB_ARG_TYPE.COLLECTION_TEMPLATE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
+
+		const fieldPath = args[0].value;
+		const strapiDataValue = Strapify.getStrapiComponentValue(fieldPath, strapiAttributes);
+		const url = strapiDataValue.data.attributes.url;
+
+		this.#fieldElement.style.backgroundImage = `url(${Strapify.apiURL}${url})`;
+		this.#fieldElement.style.backgroundSize = "cover";
+	}
+
 	process(strapiDataAttributes) {
 		this.#strapiDataAttributes = strapiDataAttributes;
 
@@ -280,7 +304,8 @@ class StrapifyField {
 			"strapi-class-replace": this.#processStrapiClassReplace,
 			"strapi-class-conditional": this.#processStrapiConditionalClass,
 			"strapi-into": this.#processStrapiInto,
-			"strapi-css-rule": this.#processStrapiCSSRule
+			"strapi-css-rule": this.#processStrapiCSSRule,
+			"strapi-background-image": this.#processStrapiBackgroundImage
 		}
 		Object.keys(attributeToFunctionMap).forEach((attribute) => {
 			if (this.#attributes[attribute]) {
