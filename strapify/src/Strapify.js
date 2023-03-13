@@ -89,18 +89,33 @@ function findUniqueConditionalTemplateElms(containerElm) {
 
 function findFieldElms(containerElm) {
 	const querySelectorString = Strapify.validStrapifyFieldAttributes.map(attribute => `[${attribute}]`).join(",");
-	const fieldElms = Array.from(containerElm.querySelectorAll(querySelectorString));
-	return fieldElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
+	let fieldElms = Array.from(containerElm.querySelectorAll(querySelectorString));
+	fieldElms = fieldElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
+	// also add the containerElm itself if it has any of the attributes defined in Strapify.validStrapifyFieldAttributes
+	if (Strapify.validStrapifyFieldAttributes.some(attribute => containerElm.hasAttribute(attribute))) {
+		fieldElms.push(containerElm);
+	}
+	return fieldElms;
 }
 
 function findRelationElms(containerElm) {
-	const relationElms = Array.from(containerElm.querySelectorAll("[strapi-relation]"))
-	return relationElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
+	let relationElms = Array.from(containerElm.querySelectorAll("[strapi-relation]"))
+	relationElms = relationElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === containerElm);
+	// also add the containerElm itself if it has a strapi-relation attribute
+	if (containerElm.hasAttribute("strapi-relation")) {
+		relationElms.push(containerElm);
+	}
+	return relationElms;
 }
 
 function findRepeatableElms(templateElm) {
-	const repeataleElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
-	return repeataleElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === templateElm);
+	let repeatableElms = Array.from(templateElm.querySelectorAll("[strapi-repeatable]"))
+	repeatableElms = repeatableElms.filter(child => child.closest("[strapi-template], [strapi-template-conditional]") === templateElm);
+	// also add the templateElm itself if it has a strapi-repeatable attribute
+	if (templateElm.hasAttribute("strapi-repeatable")) {
+		repeatableElms.push(templateElm);
+	}
+	return repeatableElms;
 }
 
 function findPageControlElms(containerElm) {
