@@ -44,14 +44,41 @@ function validateStrapiEndpointsForSubArg(subArg, parseDetails) {
 
 function splitArguments(attributeValue, parseDetails) {
 	//split at single occurences of pipe, but not double or more pipes
-	let argValues = attributeValue.split(/(?<!\|)\|(?!\|)/);
+
+	function findSingleBars(inputString) {
+		let results = [];
+		let prevChar = '';
+		for (let i = 0; i < inputString.length; i++) {
+		  let char = inputString.charAt(i);
+		  if (char === '|' && prevChar !== '|' && (i + 1 === inputString.length || inputString.charAt(i + 1) !== '|')) {
+			results.push(i);
+		  }
+		  prevChar = char;
+		}
+		return results;
+	  }
+
+	function splitBySingleBars(inputString) {
+		let indices = findSingleBars(inputString);
+		let substrings = [];
+		let start = 0;
+		for (let i = 0; i < indices.length; i++) {
+		  let end = indices[i];
+		  substrings.push(inputString.substring(start, end));
+		  start = end + 1;
+		}
+		substrings.push(inputString.substring(start));
+		return substrings;
+	  }
+
+	let argValues = splitBySingleBars(attributeValue);
 	let args = argValues.map((arg, i) => {
 		return {
 			index: i,
 			value: arg.trim()
 		}
 	});
-
+	
 	//DEBUG -- check if multiple arguments were given when not allowed
 	if (debugMode) {
 		if (!parseDetails.multipleArguments && args.length > 1) {
