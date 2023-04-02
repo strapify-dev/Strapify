@@ -19,7 +19,12 @@ const strapiRequest = async (slug, queryString) => {
 		});
 		return response.data;
 	} catch (err) {
-		switch (err.response.status) {
+		if (!err.response) {
+			ErrorHandler.toast(`An unexpected error occurred trying to fetch data from ${url}.  (No response)`);
+			console.error(err);
+			throw err
+		}
+		switch (err?.response.status) {
 			case 401:
 				ErrorHandler.warn(`Unable to access the collection or single type: "${slug.replace("/api/", "")}" due to missing or bad authentication. (401)`)
 				break;

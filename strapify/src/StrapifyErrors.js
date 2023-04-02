@@ -1,9 +1,21 @@
 // internal state that keeps track of how many errors have been logged
 let errorCount = 0;
 
-// internal function to increment the error count
-function incrementErrorCount() {
-	errorCount++;
+let thrownLogs = [];
+
+function logIfUnseen(message, logType) {
+	// logType can be "warn", or "error"
+	if (!thrownLogs.includes(error)) {
+		thrownLogs.push(error);
+		console.group(
+			`%cSTRAPIFY ${logType === "warn" ? "WARNING" : "ERROR"}`,
+			`background-color: ${
+				logType === "warn" ? "#9b9023" : "#aa3d3d"
+			}; color: #ffffff; font-weight: bold; padding: 4px;`
+		);
+		console[logType](message);
+		console.groupEnd();
+	}
 }
 
 function toast(message) {
@@ -53,49 +65,23 @@ function toast(message) {
 	}, 100);
 }
 
-function log(...args) {
-	console.group(
-		"%cSTRAPIFY LOG",
-		"background-color: #6d6d6d; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach((arg) => {
-		console.log(arg);
-	});
-	console.groupEnd();
+function warn(message) {
+	logIfUnseen(message, "warn");
 }
 
-function warn(...args) {
-	console.group(
-		"%cSTRAPIFY WARNING",
-		"background-color: #9b9023; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach((arg) => {
-		console.warn(arg);
-	});
-	console.groupEnd();
-}
-
-function error(...args) {
-	incrementErrorCount();
-	console.group(
-		"%cSTRAPIFY ERROR",
-		"background-color: #aa3d3d; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach((arg) => {
-		if (errorCount > 0) {
-			toast(
-				`${errorCount} Strapify error${
-					errorCount > 1 ? "s" : ""
-				} logged.  See console for details.`
-			);
-		}
-		console.error(arg);
-	});
-	console.groupEnd();
+function error(message) {
+	errorCount++;
+	if (errorCount > 0) {
+		toast(
+			`${errorCount} Strapify error${
+				errorCount > 1 ? "s" : ""
+			} logged.  See console for details.`
+		);
+	}
+	logIfUnseen(message, "error");
 }
 
 function checkForTemplateElement(templateElms, containerElement) {
-	console.log(templateElms, containerElement);
 	if (templateElms.length === 0) {
 		if (containerElement.getAttribute("strapi-collection")) {
 			error(
@@ -159,18 +145,18 @@ function checkIfUndefinedStrapiDataValue(
 }
 
 function checkIfRichText(strapiData, elm) {
-  console.log("checking if rich text");
-	// if the strapiData contains a new line character, it is likely rich text.  If it doesn't, it is likely a string.  Throw a warning if it is a string.
+	// this is a bit of a hacky way to check if the strapiData is rich text, but it should help the webflow people stop using divs for text (text blocks)
+	// if the strapiData contains a new line character or a #, it is likely rich text.  If it doesn't, it is likely a string.  Throw a warning if it is a string.
 	if (
 		typeof strapiData === "string" &&
 		!/#+/.test(strapiData) &&
 		!strapiData.includes("\n") &&
 		!strapiData.includes("\r")
 	) {
-    // if the strapiData is a youtube link, don't throw a warning
-    if (strapiData.includes("http")) {
-      return;
-    }
+		// if the strapiData is a youtube link, don't throw a warning
+		if (strapiData.includes("http")) {
+			return;
+		}
 		warn(
 			`The text field "${elm.getAttribute("strapi-field")}" in the "${elm
 				?.closest("[strapi-collection]")
@@ -190,7 +176,6 @@ const ErrorHandler = {
 	isMultipleMedia,
 	checkIfUndefinedStrapiDataValue,
 	checkIfRichText,
-	log,
 	warn,
 	error,
 	toast,

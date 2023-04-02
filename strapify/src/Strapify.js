@@ -11,6 +11,10 @@ if (this_script?.hasAttribute("data-strapi-api-url")) {
 	//get the strapi api url from the script tag and remove the trailing slash
 	apiURL = this_script.attributes.getNamedItem("data-strapi-api-url").value;
 	apiURL = apiURL.replace(/\/$/, "");
+	// if the api url is just "localhost:1234", prepend the protocol (for local development only)
+	if (apiURL.match(/^(localhost|127\.0\.0\.1):[0-9]+$/)) {
+		apiURL = `http://${apiURL}`;
+	}
 } else {
 	//default to localhost
 	document.addEventListener("DOMContentLoaded", () => {
