@@ -2,6 +2,7 @@ import Strapify from "./Strapify.js";
 import StrapifyControl from "./StrapifyControl.js";
 import StrapifyTemplate from "./StrapifyTemplate"
 import strapiRequest from "./util/strapiRequest";
+import ErrorHandler from "./StrapifyErrors.js";
 
 class StrapifyCollection {
 	//element that contains the strapify-collection attribute
@@ -312,6 +313,11 @@ class StrapifyCollection {
 
 			//templates will be processed asynchronously, since they can have relations, repeatables
 			const processPromises = [];
+
+			// if the length of the collection data is 0, throw a warning
+			if (this.#collectionData.data.length === 0) {
+				ErrorHandler.warn(`Collection "${this.#attributes["strapi-collection"] || this.#attributes["strapi-relation"] || this.#attributes["strapi-single-type-relation"] || this.#attributes["strapi-repeatable"]}" has no entries.`);
+			}
 
 			//loop through the collection data and create a strapify template for each item
 			for (let i = 0; i < this.#collectionData.data.length; i++) {

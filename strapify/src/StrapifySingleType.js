@@ -3,6 +3,7 @@ import StrapifyRelation from "./StrapifyRelation"
 import StrapifyRepeatable from "./StrapifyRepeatable";
 import strapiRequest from "./util/strapiRequest";
 import StrapifyParse from "./StrapifyParse";
+import ErrorHandler from "./StrapifyErrors";
 
 class StrapifySingleType {
 	#singleTypeElement;
@@ -53,6 +54,11 @@ class StrapifySingleType {
 
 	#splitSingleTypeNameFromArgument(argument) {
 		const split = argument.split(".");
+		
+		if (split.length < 2) {
+			ErrorHandler.error(`Invalid strapi-single-type argument: "${argument}". Must be in the format "singleTypeName.fieldName"`);
+		}
+
 		const singleTypeName = split[0];
 		const singleTypeField = split.slice(1).join(".");
 
@@ -188,7 +194,11 @@ class StrapifySingleType {
 		const singleTypeFieldArg = split.singleTypeField;
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
-
+		
+		if (!strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] && typeof !strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] !== "boolean") {
+			ErrorHandler.error(`Single type attribute "${singleTypeName}.${singleTypeFieldArg}" is invalid. The field "${singleTypeFieldArg}" does not exist on the single type "${singleTypeName}".`);
+		}
+		
 		const fieldValue = Strapify.getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);

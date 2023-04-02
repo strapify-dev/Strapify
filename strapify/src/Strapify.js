@@ -1,6 +1,7 @@
 import { marked } from "marked";
 import parser from "./strapify-parser"
 import strapiRequest from "./util/strapiRequest";
+import ErrorHandler from "./StrapifyErrors";
 
 const this_script = document.currentScript;
 
@@ -12,8 +13,11 @@ if (this_script?.hasAttribute("data-strapi-api-url")) {
 	apiURL = apiURL.replace(/\/$/, "");
 } else {
 	//default to localhost
-	warn("No Strapi API URL was provided. Please provide a Strapi API URL using the data-strapi-api-url attribute on the script tag.");
-	apiURL = "http://localhost:1337";
+	document.addEventListener("DOMContentLoaded", () => {
+		ErrorHandler.error(
+			"No Strapi API URL was provided. Please provide a Strapi API URL using the data-strapi-api-url attribute on the script tag."
+		);
+	});
 }
 
 //webflow animation fix attribute
@@ -64,6 +68,7 @@ function findCollectionElms() {
 
 function findTemplateElms(containerElement) {
 	const templateElms = Array.from(containerElement.querySelectorAll("[strapi-template], [strapi-template-conditional]"))
+	ErrorHandler.checkForTemplateElement(templateElms, containerElement);
 	return templateElms.filter(child => child.closest("[strapi-collection], [strapi-relation], [strapi-repeatable], [strapi-single-type-repeatable], [strapi-single-type-relation]") === containerElement);
 }
 
@@ -75,14 +80,14 @@ function findUniqueConditionalTemplateElms(containerElm) {
 	const templateElmsWithDuplicateConditionalAttributes = templateElmsWithConditionalAttributes.filter(templateElm => {
 		const conditionalAttributes = templateElmsWithConditionalAttributes.filter(otherTemplateElm => {
 			return otherTemplateElm.getAttribute("strapi-template-conditional") === templateElm.getAttribute("strapi-template-conditional");
-		});
+				});
 
-		return conditionalAttributes.length > 1;
-	});
+			return conditionalAttributes.length > 1;
+		});
 
 	const templateElmsWithoutDuplicateConditionalAttributes = templateElmsWithConditionalAttributes.filter(templateElm => {
 		return !templateElmsWithDuplicateConditionalAttributes.includes(templateElm);
-	});
+		});
 
 	return templateElmsWithoutDuplicateConditionalAttributes;
 }
@@ -271,7 +276,7 @@ function getStrapiComponentValue(argument, strapiAttributes) {
 	const strapiAttributesNames = argument.split(".");
 
 	let strapiDataValue = strapiAttributesNames.reduce((accumulator, currentValue) => {
-		return accumulator[currentValue];
+			return accumulator[currentValue];
 	}, strapiAttributes);
 
 	return strapiDataValue;
@@ -333,15 +338,20 @@ function modifyElmWithStrapiData(strapiData, elm) {
 
 	switch (true) {
 		case elm instanceof HTMLParagraphElement:
+			ErrorHandler.checkIfText(strapiData, elm);
 			elm.innerHTML = strapiData;
 			break;
 		case elm instanceof HTMLHeadingElement:
+			ErrorHandler.checkIfText(strapiData, elm);
 			elm.innerHTML = strapiData;
 			break;
 		case elm instanceof HTMLSpanElement:
+			ErrorHandler.checkIfText(strapiData, elm);
 			elm.innerHTML = strapiData;
 			break;
 		case elm instanceof HTMLImageElement:
+			ErrorHandler.checkIfSingleMedia(strapiData, elm);
+			if (ErrorHandler.isMultipleMedia(strapiData, elm)) return;
 			elm.removeAttribute("srcset");
 			elm.removeAttribute("sizes");
 			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
@@ -364,13 +374,21 @@ function modifyElmWithStrapiData(strapiData, elm) {
 			}
 			//rich text
 			else {
+				ErrorHandler.checkIfRichText(strapiData, elm);
 				elm.innerHTML = marked.parse(`${strapiData}`);
 			}
 
 			break;
 		default:
-			error(`The element type ${elm.tagName} is not supported`);
-			throw new Error("Strapify Error: Attempted to use an unsupported element type - " + elm.tagName);
+			ErrorHandler.warn(
+				`The "${elm.getAttribute("strapi-field")}" field in the "${elm
+					.closest("[strapi-collection]")
+					.getAttribute(
+						"strapi-collection"
+					)}" collection is being used on an unsupported element: ${
+					elm.tagName
+				}`
+			);
 	}
 }
 
@@ -572,33 +590,6 @@ function reinitializeIX2() {
 	ix2Timeout = setTimeout(initIX2, 150);
 }
 
-function log(...args) {
-	console.group(
-		"%cSTRAPIFY LOG",
-		"background-color: #6d6d6d; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach(arg => console.log(arg));
-	console.groupEnd();
-}
-
-function warn(...args) {
-	console.group(
-		"%cSTRAPIFY WARNING",
-		"background-color: #9b9023; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach(arg => console.warn(arg));
-	console.groupEnd();
-}
-
-function error(...args) {
-	console.group(
-		"%cSTRAPIFY ERROR",
-		"background-color: #aa3d3d; color: #ffffff; font-weight: bold; padding: 4px;"
-	);
-	args.forEach(arg => console.error(arg));
-	console.groupEnd();
-}
-
 const Strapify = {
 	apiURL: apiURL,
 	applyWebflowAnimationFix: applyWebflowAnimationFix,
@@ -636,9 +627,6 @@ const Strapify = {
 	checkCondition: checkCondition,
 	checkConditionSingleType: checkConditionSingleType,
 	reinitializeIX2: reinitializeIX2,
-	log: log,
-	warn: warn,
-	error: error
-}
+};
 
 export default Strapify
