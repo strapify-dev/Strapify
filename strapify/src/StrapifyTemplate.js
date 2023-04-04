@@ -27,6 +27,7 @@ class StrapifyTemplate {
 		this.#strapiDataId = strapiDataId;
 		this.#strapiDataAttributes = strapiDataAttributes;
 		this.#updateAttributes();
+		this.#addIds();
 	}
 
 	//destroy all descendant strapify objects and delete the template element
@@ -42,6 +43,12 @@ class StrapifyTemplate {
 			this.#attributes[attribute] = this.#templateElement.getAttribute(attribute);
 		})
 	}
+
+	#addIds() {
+		if (this.#strapiDataId) {
+			this.#templateElement.setAttribute("strapi-template-id", this.#strapiDataId);
+		}
+	};
 
 	async process() {
 		//find strapify field elements, instatiate strapify field objects, and process them

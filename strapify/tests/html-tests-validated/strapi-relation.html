@@ -26,29 +26,29 @@
 	<h3>one to many with collection A as parent:</h3>
 	<div strapi-collection="strapi-relation-test-as" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection A: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="one_a_many_b, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection A: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="one_a_many_b, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=3 | [id][$in][11]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection B: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection A: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="one_a_many_b, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=4 | [id][$in][11]=5" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="4">
 					<p>collection B: <span strapi-field="text">element 3</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="5">
 					<p>collection B: <span strapi-field="text">element 4</span></p>
 				</div></div>
 		</div></div>
@@ -57,39 +57,39 @@
 	<h3>one to many with collection B as parent:</h3>
 	<div strapi-collection="strapi-relation-test-bs" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection B: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="many_b_one_a, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection A: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection B: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="many_b_one_a, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection A: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection B: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="many_b_one_a, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection A: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="4">
 			<p>collection B: <span strapi-field="text">element 3</span></p>
 			<div strapi-relation="many_b_one_a, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="5">
 			<p>collection B: <span strapi-field="text">element 4</span></p>
 			<div strapi-relation="many_b_one_a, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
 		</div></div>
@@ -99,35 +99,35 @@
 	<h3>many to many with collection A as parent:</h3>
 	<div strapi-collection="strapi-relation-test-as" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection A: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="many_b_many_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection A: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="many_b_many_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1 | [id][$in][11]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection A: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="many_b_many_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1 | [id][$in][11]=2 | [id][$in][12]=3 | [id][$in][13]=4 | [id][$in][14]=5" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection B: <span strapi-field="text">element 2</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="4">
 					<p>collection B: <span strapi-field="text">element 3</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="5">
 					<p>collection B: <span strapi-field="text">element 4</span></p>
 				</div></div>
 		</div></div>
@@ -136,45 +136,45 @@
 	<h3>many to many with collection B as parent:</h3>
 	<div strapi-collection="strapi-relation-test-bs" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection B: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="many_a_many_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=1 | [id][$in][11]=2 | [id][$in][12]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection A: <span strapi-field="text">element 0</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection A: <span strapi-field="text">element 1</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection B: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="many_a_many_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=2 | [id][$in][11]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection A: <span strapi-field="text">element 1</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection B: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="many_a_many_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="4">
 			<p>collection B: <span strapi-field="text">element 3</span></p>
 			<div strapi-relation="many_a_many_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="5">
 			<p>collection B: <span strapi-field="text">element 4</span></p>
 			<div strapi-relation="many_a_many_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
 		</div></div>
@@ -183,25 +183,25 @@
 	<h3>one to one with collection A as parent:</h3>
 	<div strapi-collection="strapi-relation-test-as" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection A: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="one_b_one_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection A: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="one_b_one_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection A: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="one_b_one_a, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection B: <span strapi-field="text">element 2</span></p>
 				</div></div>
 		</div></div>
@@ -210,33 +210,33 @@
 	<h3>one to one with collection B as parent:</h3>
 	<div strapi-collection="strapi-relation-test-bs" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection B: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="one_a_one_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection A: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection B: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="one_a_one_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=2" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection A: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection B: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="one_a_one_b, strapi-relation-test-as" strapi-filter-internal-relation="[id][$in][10]=3" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection A: <span strapi-field="text">element 2</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="4">
 			<p>collection B: <span strapi-field="text">element 3</span></p>
 			<div strapi-relation="one_a_one_b, strapi-relation-test-as">
 				
 			</div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="5">
 			<p>collection B: <span strapi-field="text">element 4</span></p>
 			<div strapi-relation="one_a_one_b, strapi-relation-test-as">
 				
@@ -247,35 +247,35 @@
 	<h3>one to many A to B only:</h3>
 	<div strapi-collection="strapi-relation-test-as" class="collection" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection A: <span strapi-field="text">element 0</span></p>
 			<div strapi-relation="one_way, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection A: <span strapi-field="text">element 1</span></p>
 			<div strapi-relation="one_way, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=2 | [id][$in][11]=1" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
 				</div></div>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection A: <span strapi-field="text">element 2</span></p>
 			<div strapi-relation="one_way, strapi-relation-test-bs" strapi-filter-internal-relation="[id][$in][10]=1 | [id][$in][11]=2 | [id][$in][12]=3 | [id][$in][13]=4 | [id][$in][14]=5" style="">
 				
-			<div class="template" strapi-template="">
+			<div class="template" strapi-template="" strapi-template-id="1">
 					<p>collection B: <span strapi-field="text">element 0</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="2">
 					<p>collection B: <span strapi-field="text">element 1</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="3">
 					<p>collection B: <span strapi-field="text">element 2</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="4">
 					<p>collection B: <span strapi-field="text">element 3</span></p>
-				</div><div class="template" strapi-template="">
+				</div><div class="template" strapi-template="" strapi-template-id="5">
 					<p>collection B: <span strapi-field="text">element 4</span></p>
 				</div></div>
 		</div></div>

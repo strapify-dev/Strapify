@@ -26,7 +26,7 @@
 	<h3>one to one:</h3>
 	<div strapi-single-type-relation="strapi-single-type-relation-test.one_to_one, strapi-relation-test-bs" class="container" strapi-filter-internal-relation="[id][$in][10]=1" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection B: <span strapi-field="text">element 0</span></p>
 		</div></div>
 	<hr>
@@ -34,11 +34,11 @@
 	<h3>one to many:</h3>
 	<div strapi-single-type-relation="strapi-single-type-relation-test.one_to_many, strapi-relation-test-bs" class="container" strapi-filter-internal-relation="[id][$in][10]=1 | [id][$in][11]=2 | [id][$in][12]=3" style="">
 		
-	<div class="template" strapi-template="">
+	<div class="template" strapi-template="" strapi-template-id="1">
 			<p>collection B: <span strapi-field="text">element 0</span></p>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="2">
 			<p>collection B: <span strapi-field="text">element 1</span></p>
-		</div><div class="template" strapi-template="">
+		</div><div class="template" strapi-template="" strapi-template-id="3">
 			<p>collection B: <span strapi-field="text">element 2</span></p>
 		</div></div>
 	<hr>
