@@ -12,3 +12,6 @@
 
 ## 1.0.4
 	- Fix breaking bug caused by lookbehind regex on mobile, added console message for basic errors
+
+## 1.0.5
+	- Add strapi-template-id attribute containing the ID to template elms (only on standard templates, not repeatables or relations).
