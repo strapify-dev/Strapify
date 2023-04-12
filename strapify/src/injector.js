@@ -3,9 +3,9 @@ import StrapifySingleType from "./StrapifySingleType";
 import StrapifyForm from "./StrapifyForm";
 import StrapifyEZFormsForm from "./StrapifyEZFormsForm";
 import Strapify from "./Strapify";
-import { strapiRequest, strapiEZFormsSubmit } from "./util/strapiRequest";
+import { strapiRequest } from "./util/strapiRequest";
 
-const version = "0.0.2";
+const version = process.env.VERSION;
 const debugMode = Strapify.debugMode;
 
 const hiddenTemplateElms = [];
