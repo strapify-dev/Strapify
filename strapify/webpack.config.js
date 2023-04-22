@@ -30,7 +30,22 @@ module.exports = (env, argv) => {
 			path: path.resolve(__dirname, './bundle'),
 			filename: argv.mode === "development" ? `main.js` : `strapify-v${version}.js`
 		},
-
-		plugins: plugins
+		plugins: plugins,
+		module: {
+			rules: [
+				{
+					test: /\.m?js$/,
+					exclude: /node_modules/,
+					use: {
+						loader: 'babel-loader',
+						options: {
+							presets: [
+								['@babel/preset-env', { targets: "defaults" }]
+							]
+						}
+					}
+				}
+			]
+		}
 	}
 }
