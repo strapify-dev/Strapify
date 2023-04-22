@@ -45,6 +45,7 @@ if (this_script?.hasAttribute("data-debug-validate-strapi-endpoints")) {
 const validStrapifySingleTypeAttributes = [
 	"strapi-single-type", "strapi-single-type-into", "strapi-single-type-css-rule", "strapi-single-type-relation",
 	"strapi-single-type-repeatable", "strapi-single-type-class-add", "strapi-single-type-class-replace", "strapi-single-type-class-conditional",
+	"strapi-single-type-background-image"
 ];
 
 const validStrapifyCollectionAttributes = [

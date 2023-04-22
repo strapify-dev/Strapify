@@ -20,7 +20,8 @@ class StrapifySingleType {
 		"strapi-single-type-class-conditional": undefined,
 		"strapi-single-type-css-rule": undefined,
 		"strapi-single-type-relation": undefined,
-		"strapi-single-type-repeatable": undefined
+		"strapi-single-type-repeatable": undefined,
+		"strapi-single-type-background-image": undefined
 	}
 
 	constructor(singleTypeElement) {
@@ -54,7 +55,7 @@ class StrapifySingleType {
 
 	#splitSingleTypeNameFromArgument(argument) {
 		const split = argument.split(".");
-		
+
 		if (split.length < 2) {
 			ErrorHandler.error(`Invalid strapi-single-type argument: "${argument}". Must be in the format "singleTypeName.fieldName"`);
 		}
@@ -194,11 +195,11 @@ class StrapifySingleType {
 		const singleTypeFieldArg = split.singleTypeField;
 
 		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
-		
+
 		if (!strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] && typeof !strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] !== "boolean") {
 			ErrorHandler.error(`Single type attribute "${singleTypeName}.${singleTypeFieldArg}" is invalid. The field "${singleTypeFieldArg}" does not exist on the single type "${singleTypeName}".`);
 		}
-		
+
 		const fieldValue = Strapify.getStrapiComponentValue(singleTypeFieldArg, strapiData.data.attributes)
 
 		Strapify.modifyElmWithStrapiData(fieldValue, this.#singleTypeElement);
@@ -235,7 +236,7 @@ class StrapifySingleType {
 
 			//if no matches, then no strapi variables in arg
 			if (!matches) {
-				const templateStringSplit = this.#splitSingleTypeNameFromArgument(templateString)	
+				const templateStringSplit = this.#splitSingleTypeNameFromArgument(templateString)
 				const singleTypeName = templateStringSplit.singleTypeName;
 				let singleTypeFieldString = templateStringSplit.singleTypeField;
 
@@ -332,6 +333,36 @@ class StrapifySingleType {
 		}
 	}
 
+	async #processStrapiBackgroundImage() {
+		console.log("hello")
+		const args = StrapifyParse.parseAttribute(this.#attributes["strapi-single-type-background-image"], {
+			attributeName: "strapi-single-type-background-image",
+			htmlElement: this.#singleTypeElement,
+			subArgumentDeliminator: "",
+			multipleArguments: false,
+			subArgumentDetails: [
+				{
+					name: "background_image_url",
+					type: StrapifyParse.SUB_ARG_TYPE.SINGLE_TYPE_TEMPLATE,
+					substituteQueryStringVariables: true
+				}
+			]
+		})
+
+		const templateString = args[0].value;
+		const templateStringSplit = this.#splitSingleTypeNameFromArgument(templateString)
+		const singleTypeName = templateStringSplit.singleTypeName;
+		let singleTypeFieldString = templateStringSplit.singleTypeField;
+
+		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldString}`);
+		const fieldValue = Strapify.getStrapiComponentValue(singleTypeFieldString, strapiData.data.attributes)
+
+		const url = fieldValue.data.attributes.url;
+
+		 this.#singleTypeElement.style.backgroundImage = `url(${Strapify.apiURL}${url})`;
+		 this.#singleTypeElement.style.backgroundSize = "cover";
+	}
+
 	async process() {
 		if (this.#attributes["strapi-single-type"]) {
 			await this.#processStrapiSingleType();
@@ -375,6 +406,10 @@ class StrapifySingleType {
 			const strapifyRelation = new StrapifyRelation(this.#singleTypeElement, strapiData.data.id, strapiData.data.attributes)
 
 			await strapifyRelation.process()
+		}
+
+		if (this.#attributes["strapi-single-type-background-image"]) {
+			await this.#processStrapiBackgroundImage();
 		}
 
 		//remove strapify-hide class
