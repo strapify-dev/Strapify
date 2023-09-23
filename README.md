@@ -2,7 +2,7 @@
 
 Strapify is a javascript tool for the automatic client side injection of Strapi CMS data into a website.
 
-Documentation https://strapify.dev/docs
+Documentation https://www.strapify.dev/docs
 
 ## How to Run For Development
 For a website with files stored locally, build Strapify and add /strapify/bundle/main.js to your HTML file.
