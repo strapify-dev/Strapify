@@ -359,7 +359,12 @@ function modifyElmWithStrapiData(strapiData, elm) {
 			if (ErrorHandler.isMultipleMedia(strapiData, elm)) return;
 			elm.removeAttribute("srcset");
 			elm.removeAttribute("sizes");
-			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
+			// if the image is a relative path, prepend the api url
+			if (strapiData.data.attributes.url[0] === "/") {
+				elm.src = `${apiURL}${strapiData.data.attributes.url}`;
+			} else {
+				elm.src = strapiData.data.attributes.url;
+			}
 			elm.alt = strapiData.data.attributes.alternativeText;
 			break;
 		case elm instanceof HTMLVideoElement:
