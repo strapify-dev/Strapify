@@ -71,6 +71,16 @@ class StrapifyControl {
 				});
 			}
 		}
+
+		// if the control type is strapi-filter or strapi-sort, we need to reset the page to 1 when the control is interacted with
+		if (this.#controlType === "strapi-filter" || this.#controlType === "strapi-sort") {
+			this.#controlElement.addEventListener("click", () => {
+				this.#strapifyCollection.setPage(1);
+			})
+			this.#controlElement.addEventListener("change", () => {
+				this.#strapifyCollection.setPage(1);
+			})
+		}
 	}
 
 	destroy() {
