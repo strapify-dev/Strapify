@@ -115,10 +115,6 @@ dist
 # strapify test log files
 /strapify/tests/test-logs/*
 
-# built strapify files
-/strapify/bundle/*
-/strapify/src/strapify-parser.js
-
 # gitkeep files
 !.gitkeep
 
