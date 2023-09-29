@@ -365,7 +365,7 @@ function modifyElmWithStrapiData(strapiData, elm) {
 			} else {
 				elm.src = strapiData.data.attributes.url;
 			}
-			elm.alt = strapiData.data.attributes.alternativeText;
+			elm.alt = strapiData.data.attributes.alternativeText || "";
 			break;
 		case elm instanceof HTMLVideoElement:
 			elm.src = `${apiURL}${strapiData.data.attributes.url}`;
