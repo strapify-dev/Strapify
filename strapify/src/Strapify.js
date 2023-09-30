@@ -242,6 +242,20 @@ function removeQueryStringVariableReferences(argument) {
 	return reduced
 }
 
+// if the argument is a strapi-into attribute, only add the variable itself to the population string
+function extractStrapiIntoFieldNames(argument) {
+	if (argument.includes("{{")) {
+		argument = argument.split("{{")[1];
+		argument = argument.split("}}")[0];
+	}
+	// if there are -> characters, it's a strapi-into attribute.  Only add the variable itself to the population string
+	if (argument.includes(" -> ")) {
+		argument = argument.split("->")[0].trim();
+	}
+
+	return argument;
+}
+
 function substituteStrapiDataAttributes(argument, strapiAttributes) {
 	//strapi variables are wrapped in double curly braces
 	const regex = /{{(.*?)}}/g;
@@ -628,6 +642,7 @@ const Strapify = {
 	getQueryStringVariables: getQueryStringVariables,
 	substituteQueryStringVariables: substituteQueryStringVariables,
 	removeQueryStringVariableReferences: removeQueryStringVariableReferences,
+	extractStrapiIntoFieldNames: extractStrapiIntoFieldNames,
 	substituteStrapiDataAttributes: substituteStrapiDataAttributes,
 	getArguments: getArguments,
 	getProcessedArguments: getProcessedArguments,

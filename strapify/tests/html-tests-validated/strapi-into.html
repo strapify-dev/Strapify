@@ -8,7 +8,7 @@
 
 	<div strapi-collection="strapi-into-tests" style="">
 		
-	<div strapi-template="" class="" strapi-template-id="1">
+		<div strapi-template="" strapi-into="/page?thing={{name}} -> href" class="" strapi-template-id="1" href="/page?thing=doggy">
 			<h3>url into src</h3>
 			<img strapi-into="image_info.url -> src" src="https://picsum.photos/id/237/200/300">
 
@@ -20,6 +20,8 @@
 
 			<h3>url into style with and name (multiple arguments with template)</h3>
 			<img strapi-into="background: url({{image_info.url}}); width: 200px; height: 300px; -> style | image_info.alt_text -> name" style="background: url(https://picsum.photos/id/237/200/300); width: 200px; height: 300px;" name="doggy">
+			
+			<p strapi-field="name">doggy</p>
 		</div></div>
 
 

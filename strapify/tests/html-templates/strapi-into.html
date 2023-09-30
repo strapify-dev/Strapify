@@ -10,7 +10,7 @@
 	<h1>strapi-into test</h1>
 
 	<div strapi-collection="strapi-into-tests">
-		<div strapi-template="">
+		<div strapi-template="" strapi-into="/page?thing={{name}} -> href">
 			<h3>url into src</h3>
 			<img strapi-into="image_info.url -> src">
 
@@ -22,6 +22,8 @@
 
 			<h3>url into style with and name (multiple arguments with template)</h3>
 			<img strapi-into="background: url({{image_info.url}}); width: 200px; height: 300px; -> style | image_info.alt_text -> name">
+
+			<p strapi-field="name"></p>
 		</div>
 	</div>
 </body>
