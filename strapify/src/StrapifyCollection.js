@@ -193,12 +193,14 @@ class StrapifyCollection {
 			//find all strapify elements which may contain component references
 			let componentFieldElms = Strapify.findFieldElms(templateElm);
 			let componentRelationElms = Strapify.findRelationElms(templateElm);
+			let componentRepeatableElms = Strapify.findRepeatableElms(templateElm);
 			let componentElms = componentFieldElms.concat(componentRelationElms);
+			componentElms = componentElms.concat(componentRepeatableElms);
 
 			//and for each of those elements, find any component references and add them to the componentPopulationString
 			componentElms.forEach(componentElm => {
 				//we need to check all the attributes that may contain component references
-				for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation"]) {
+				for (let attribute of [...Strapify.validStrapifyFieldAttributes, "strapi-relation", "strapi-repeatable"]) {
 					let attributeValue = componentElm.getAttribute(attribute);
 
 					if (attributeValue) {
@@ -209,9 +211,9 @@ class StrapifyCollection {
 						for (let arg of args) {
 							if (arg) {
 								const _arg = Strapify.removeQueryStringVariableReferences(arg);
-								if (_arg.includes(".")) {
+								// if (_arg.includes(".")) {
 									componentPopulationString += `&populate=${_arg}`;
-								}
+								// }
 							}
 						}
 					}
@@ -249,7 +251,6 @@ class StrapifyCollection {
 
 		//pairs of query string variable identifiers and the data which will be transformed into their values (just for conciseness)
 		const queryStringPairs = {
-			"populate=": "*" + (componentPopulationString !== "" ? componentPopulationString : ""),
 			"filters": qs(filter),
 			"sort=": qs(sort),
 			"pagination[page]=": qs(this.#collectionElement.getAttribute("strapi-page")),
@@ -265,7 +266,9 @@ class StrapifyCollection {
 			}
 		}).filter(item => item).join("&");
 
-		return queryString;
+
+
+		return queryString + componentPopulationString;
 	}
 
 	async process() {
