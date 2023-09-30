@@ -194,7 +194,7 @@ class StrapifySingleType {
 		const singleTypeName = split.singleTypeName;
 		const singleTypeFieldArg = split.singleTypeField;
 
-		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldArg}`);
+		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=${singleTypeFieldArg}`);
 
 		if (!strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] && typeof !strapiData.data.attributes[singleTypeFieldArg.split(".")[0]] !== "boolean") {
 			ErrorHandler.error(`Single type attribute "${singleTypeName}.${singleTypeFieldArg}" is invalid. The field "${singleTypeFieldArg}" does not exist on the single type "${singleTypeName}".`);
@@ -354,7 +354,7 @@ class StrapifySingleType {
 		const singleTypeName = templateStringSplit.singleTypeName;
 		let singleTypeFieldString = templateStringSplit.singleTypeField;
 
-		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=*&populate=${singleTypeFieldString}`);
+		const strapiData = await strapiRequest("/api/" + singleTypeName, `?populate=${singleTypeFieldString}`);
 		const fieldValue = Strapify.getStrapiComponentValue(singleTypeFieldString, strapiData.data.attributes)
 
 		const url = fieldValue.data.attributes.url;
