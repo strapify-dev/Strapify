@@ -15,6 +15,7 @@ module.exports = (env, argv) => {
 		}));
 	}
 
+	
 
 	const version = process.env.VERSION;
 	if (!version) throw new Error("VERSION environment variable not set. Please set it in the .env file.");
@@ -31,6 +32,7 @@ module.exports = (env, argv) => {
 			filename: argv.mode === "development" ? `main.js` : `strapify-v${version}.js`
 		},
 		plugins: plugins,
+		devtool: 'source-map',
 		module: {
 			rules: [
 				{
@@ -40,7 +42,7 @@ module.exports = (env, argv) => {
 						loader: 'babel-loader',
 						options: {
 							presets: [
-								['@babel/preset-env', { targets: "defaults" }]
+								['@babel/preset-env', { targets: "defaults" }],
 							]
 						}
 					}
