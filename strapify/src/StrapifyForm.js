@@ -36,6 +36,14 @@ class StrapifyForm {
 		this.#formInputElms = Strapify.findFormInputElms(this.#formElement);
 		this.#formSubmitElm = Strapify.findFormSubmitElms(this.#formElement)[0];
 
+		// set any strapi-auth forms to return false on submit
+		if (this.#attributes["strapi-auth"]) {
+			this.#formElement.addEventListener("submit", (e) => {
+				e.preventDefault();
+				return false;
+			});
+		}
+
 		// this.#formElement.addEventListener("strapiAuthRegistered", (event) => {
 		// 	console.log(event);
 		// });

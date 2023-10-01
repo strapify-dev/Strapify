@@ -2089,6 +2089,14 @@ class StrapifyForm {
     _classPrivateFieldSet(this, _formInputElms, _Strapify__WEBPACK_IMPORTED_MODULE_0__["default"].findFormInputElms(_classPrivateFieldGet(this, _formElement)));
     _classPrivateFieldSet(this, _formSubmitElm, _Strapify__WEBPACK_IMPORTED_MODULE_0__["default"].findFormSubmitElms(_classPrivateFieldGet(this, _formElement))[0]);
 
+    // set any strapi-auth forms to return false on submit
+    if (_classPrivateFieldGet(this, _attributes)["strapi-auth"]) {
+      _classPrivateFieldGet(this, _formElement).addEventListener("submit", e => {
+        e.preventDefault();
+        return false;
+      });
+    }
+
     // this.#formElement.addEventListener("strapiAuthRegistered", (event) => {
     // 	console.log(event);
     // });
